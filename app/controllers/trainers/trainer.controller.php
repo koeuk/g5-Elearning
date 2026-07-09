@@ -1,0 +1,1 @@
+<?php require 'views/trainers/manage.view.php';

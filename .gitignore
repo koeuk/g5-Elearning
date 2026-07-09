@@ -1,0 +1,14 @@
+# Environment
+.env
+
+# User uploads (keep the folder, ignore its contents)
+public/uploading/*
+!public/uploading/.gitkeep
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log
+
+# Local tooling
+.claude/
