@@ -317,7 +317,7 @@ Category START -->
 								<button type='submit' class="btn btn-outline-none text-start p-0 w-100">
 									<input type="text" name='email' value='<?= e($email) ?>' hidden>
 									<input type="text" name='id' value='<?= e($cate['category_id']) ?>' hidden>
-									<h5 class="mb-0 text-break"><a class="stretched-link"><?= e($cate['title']) ?></a></h5>
+									<h5 class="mb-0 text-break" style="white-space: normal;"><a class="stretched-link"><?= e($cate['title']) ?></a></h5>
 									<span><?= e($cate['course_count']) ?> Courses</span>
 								</button>
 							</form>

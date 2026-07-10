@@ -55,15 +55,19 @@ final class OrderController extends Controller
     /**
      * Record a payment for each selected, not-yet-paid course.
      *
+     * Works for both card and cash checkout. Card supplies an expiration date;
+     * cash has none, so the payment is dated today. Either way only the
+     * selection and total are required — card details are not collected here.
+     *
      * @return bool true when this request carried a complete, valid payment
      */
     private function processPayment(int $studentId): bool
     {
         $selection = $this->input('selectioned');
-        $date      = $this->input('expiration-date');
         $total     = $this->input('totals');
+        $date      = $this->input('expiration-date') ?: date('Y-m-d');
 
-        if ($selection === '' || $date === '' || $total === '') {
+        if ($selection === '' || $total === '') {
             return false;
         }
 

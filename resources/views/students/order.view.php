@@ -239,7 +239,13 @@
             <input type="text" name='email' value='<?= e($email) ?>' hidden>
             <input type="text" id="modalCourse" name="selectioned" hidden>
             <input type="text" id="totals" name="totals" hidden>
-            <button type="submit" class="btn btn-warning btn-lg paid">Pay Now</button>
+            <div class="d-flex gap-2">
+              <button type="submit" name="method" value="card" class="btn btn-warning btn-lg paid">Pay Now</button>
+              <button type="submit" name="method" value="cash" formnovalidate class="btn btn-success btn-lg paid">
+                <i class="bi bi-cash-coin me-1"></i>Pay with Cash
+              </button>
+            </div>
+            <small class="text-muted d-block mt-2">Choose “Pay with Cash” to reserve now and pay in person — no card details needed.</small>
           </form>
         </div>
       </div>
