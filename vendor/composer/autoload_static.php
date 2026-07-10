@@ -68,6 +68,7 @@ class ComposerStaticInitddd9d42d62637d09ad13733dfb0ffa38
         'App\\Controllers\\Student\\ProfileController' => __DIR__ . '/../..' . '/src/Controllers/Student/ProfileController.php',
         'App\\Controllers\\Trainer\\AuthController' => __DIR__ . '/../..' . '/src/Controllers/Trainer/AuthController.php',
         'App\\Controllers\\Trainer\\HomeController' => __DIR__ . '/../..' . '/src/Controllers/Trainer/HomeController.php',
+        'App\\Controllers\\Trainer\\ManageController' => __DIR__ . '/../..' . '/src/Controllers/Trainer/ManageController.php',
         'App\\Controllers\\Trainer\\ProfileController' => __DIR__ . '/../..' . '/src/Controllers/Trainer/ProfileController.php',
         'App\\Core\\Auth' => __DIR__ . '/../..' . '/src/Core/Auth.php',
         'App\\Core\\Controller' => __DIR__ . '/../..' . '/src/Core/Controller.php',

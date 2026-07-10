@@ -1,129 +1,99 @@
 <?php
 /**
- * Student change-password screen (standalone).
+ * Student change-password screen. Standalone page in the shared student design
+ * system (light/dark).
  *
  * @var bool  $input   whether the form was submitted (show validation state)
- * @var array $require field => error message (currentPassword/newPassword/confirmPassword)
+ * @var array $require currentPassword/newPassword/confirmPassword error messages
  */
+use App\Core\Auth;
+use App\Core\View;
+
 $input   = $input ?? false;
 $require = $require ?? ['currentPassword' => '', 'newPassword' => '', 'confirmPassword' => ''];
+$student = Auth::user() ?? [];
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>E-Learning</title>
-
-	<!-- Meta Tags -->
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<meta name="author" content="Webestica.com">
-	<meta name="description" content="Eduport- LMS, Education and Course Theme">
-
-	<!-- Favicon -->
-	<link rel="shortcut icon" href="assets/images/favicon.ico">
-
-	<!-- Google Font -->
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap">
-
-	<!-- Plugins CSS -->
-	<link rel="stylesheet" type="text/css" href="vendor/font-awesome/css/all.min.css">
-	<link rel="stylesheet" type="text/css" href="vendor/bootstrap-icons/bootstrap-icons.css">
-	<link rel="stylesheet" type="text/css" href="vendor/tiny-slider/tiny-slider.css">
-	<link rel="stylesheet" type="text/css" href="vendor/glightbox/css/glightbox.css">
-
-	<!-- Theme CSS -->
-	<link id="style-switch" rel="stylesheet" type="text/css" href="vendor/css/style.css">
-
-	<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Change password — E‑Learning</title>
+  <script>(function(){try{var s=localStorage.getItem('eLearnTheme');document.documentElement.setAttribute('data-theme',s||((window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light'));}catch(e){document.documentElement.setAttribute('data-theme','light');}})();</script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,400;9..144,0,600;9..144,1,500;9..144,1,600&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="assets/student-ui.css" rel="stylesheet">
+  <style>
+    .d-none-sm{display:inline}@media(max-width:520px){.d-none-sm{display:none}}
+    .pw-wrap{max-width:460px;margin:0 auto;padding:2.5rem 0}
+    .pw-card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:2rem;box-shadow:var(--shadow);animation:ui-fadeup .5s both}
+    .pw-icon{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;font-size:1.5rem;
+      background:var(--bg-tint-1);color:var(--accent);margin-bottom:1rem}
+    .pw-card h1{font-family:var(--serif);font-weight:600;font-size:1.7rem;margin:0 0 .3rem}
+    .pw-card .sub{color:var(--muted);margin:0 0 1.6rem;font-size:.94rem}
+  </style>
 </head>
+<body class="ui-scope">
+  <?= View::partial('layouts/student/topbar', ['student' => $student, 'active' => 'profile']) ?>
 
-<body style="background-image: url('assets/images/bg/lg.jpg'); background-size: cover; background-repeat: no-repeat;">
-<div class="container">
-<div class="container">
-    <div class="row justify-content-center mt-5">
-        <div class="container-fluid justify-content-start">
-            <a href="/student_profile" class="btn btn-orange btn-sm">
-            <i class="bi bi-arrow-left-circle-fill"></i> Back
-            </a>
+  <section class="page pw-wrap">
+    <a href="/student_profile" class="ui-btn ui-btn--ghost" style="padding:.5rem .95rem;font-size:.88rem;margin-bottom:1.4rem"><i class="bi bi-arrow-left"></i> Back to profile</a>
+
+    <div class="pw-card">
+      <div class="pw-icon"><i class="bi bi-shield-lock-fill"></i></div>
+      <h1>Change password</h1>
+      <p class="sub">Keep your account secure with a strong, unique password.</p>
+
+      <form action="/student_password_comfirm" method="post" novalidate>
+        <div class="ui-field">
+          <label class="ui-label" for="currentPassword">Current password</label>
+          <div class="ui-inputwrap">
+            <input class="ui-input <?= ($input && $require['currentPassword'] !== '') ? 'is-invalid' : '' ?>"
+                   type="password" id="currentPassword" name="currentPassword" placeholder="••••••••">
+            <button class="ui-eye" type="button" data-eye="currentPassword" aria-label="Show password"><i class="bi bi-eye"></i></button>
+          </div>
+          <span class="ui-err"><?= e($require['currentPassword']) ?></span>
         </div>
-        <div class="col-lg-5 d-flex">
-            <div class="modal-body border p-4 mt-4 ml-0" style="background-color: #f8f9fa;">
-                <h5 class="mb-4 text-orange text-center">Change password</h5>
-                <form action="/student_password_comfirm" method="post">
-                    <div class="mb-3">
-                        <label for="currentPassword" class="form-label" <?php if($input){if(strlen($require['currentPassword'])>0){echo 'hidden';}}?>>Current Password:</label>
-                        <small class="form-text text-danger">
-                            <?php if($input===true){echo $require['currentPassword'];}?>
-                        </small>
-                        <div class="input-group">
-                            <input type="password" class="form-control" id="currentPassword" name="currentPassword" value='<?php if($input){if(strlen($require['currentPassword'])===0){echo $_POST['currentPassword'];}}?>' required>
-                            <button class="btn btn-outline-secondary" type="button" id="toggleCurrentPassword">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="newPassword" class="form-label" <?php if($input){if(strlen($require['newPassword'])>0){echo 'hidden';}}?>>New Password:</label>
-                        <small class="form-text text-danger">
-                            <?php if($input===true){echo $require['newPassword'];}?>
-                        </small>
-                        <div class="input-group">
-                            <input type="password" class="form-control" id="newPassword" name="newPassword" value='<?php if($input){if(strlen($require['newPassword'])===0){echo $_POST['newPassword'];}}?>' required>
-                            <button class="btn btn-outline-secondary" type="button" id="toggleNewPassword">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="confirmPassword" class="form-label" <?php if($input){if(strlen($require['confirmPassword'])>0){echo 'hidden';}}?>>Confirm New Password:</label>
-                        <small class="form-text text-danger">
-                            <?php if($input===true){echo $require['confirmPassword'];}?>
-                        </small>
-                        <div class="input-group">
-                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" value='<?php if($input){if(strlen($require['confirmPassword'])===0){echo $_POST['confirmPassword'];}}?>' required>
-                            <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-orange d-block mx-auto">Change Password</button>
-                </form>
-            </div>
+
+        <div class="ui-field">
+          <label class="ui-label" for="newPassword">New password</label>
+          <div class="ui-inputwrap">
+            <input class="ui-input <?= ($input && $require['newPassword'] !== '') ? 'is-invalid' : '' ?>"
+                   type="password" id="newPassword" name="newPassword" placeholder="••••••••">
+            <button class="ui-eye" type="button" data-eye="newPassword" aria-label="Show password"><i class="bi bi-eye"></i></button>
+          </div>
+          <span class="ui-err"><?= $require['newPassword'] !== '' ? e($require['newPassword']) : '8+ chars with a letter, number &amp; symbol.' ?></span>
         </div>
+
+        <div class="ui-field">
+          <label class="ui-label" for="confirmPassword">Confirm new password</label>
+          <div class="ui-inputwrap">
+            <input class="ui-input <?= ($input && $require['confirmPassword'] !== '') ? 'is-invalid' : '' ?>"
+                   type="password" id="confirmPassword" name="confirmPassword" placeholder="••••••••">
+            <button class="ui-eye" type="button" data-eye="confirmPassword" aria-label="Show password"><i class="bi bi-eye"></i></button>
+          </div>
+          <span class="ui-err"><?= e($require['confirmPassword']) ?></span>
+        </div>
+
+        <button class="ui-btn ui-btn--primary ui-btn--block" type="submit" style="margin-top:.4rem">
+          <i class="bi bi-check2-circle"></i> Update password
+        </button>
+      </form>
     </div>
-</div>
+  </section>
 
-<script>
-
-document.getElementById('toggleCurrentPassword').addEventListener('click', function() {
-    var currentPasswordInput = document.getElementById('currentPassword');
-    if (currentPasswordInput.type === "password") {
-        currentPasswordInput.type = "text";
-    } else {
-        currentPasswordInput.type = "password";
-    }
-});
-
-document.getElementById('toggleNewPassword').addEventListener('click', function() {
-    var newPasswordInput = document.getElementById('newPassword');
-    if (newPasswordInput.type === "password") {
-        newPasswordInput.type = "text";
-    } else {
-        newPasswordInput.type = "password";
-    }
-});
-
-document.getElementById('toggleConfirmPassword').addEventListener('click', function() {
-    var confirmPasswordInput = document.getElementById('confirmPassword');
-    if (confirmPasswordInput.type === "password") {
-        confirmPasswordInput.type = "text";
-    } else {
-        confirmPasswordInput.type = "password";
-    }
-});
-
-</script>
+  <script src="assets/theme.js"></script>
+  <script>
+    document.querySelectorAll('[data-eye]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var inp = document.getElementById(btn.dataset.eye);
+        var show = inp.type === 'password';
+        inp.type = show ? 'text' : 'password';
+        btn.querySelector('i').className = show ? 'bi bi-eye-slash' : 'bi bi-eye';
+      });
+    });
+  </script>
 </body>
 </html>

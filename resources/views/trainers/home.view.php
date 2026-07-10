@@ -109,6 +109,7 @@ $title = strtolower((string) ($trainer['gender'] ?? '')) === 'male' ? 'Mr.' : 'M
                                 <div class="card-body">
                                     <h5 class="card-title mb-0"><?= e($course['title'] ?? '') ?></h5>
                                     <p class="text-truncate-2 mb-3"><?= e($course['description'] ?? '') ?></p>
+                                    <a href="/trainer_manage?course=<?= (int) $course['course_id'] ?>" class="btn btn-sm btn-orange"><i class="fas fa-cog me-1"></i> Manage</a>
                                 </div>
                             </div>
                         </div>

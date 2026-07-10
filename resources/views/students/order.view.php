@@ -88,7 +88,7 @@
     .courses{display:flex;flex-direction:column;gap:.9rem}
     .course{
       display:flex;align-items:center;gap:1.1rem;padding:.9rem;border-radius:18px;
-      background:linear-gradient(180deg,var(--surface),rgba(20,22,29,.6));
+      background:linear-gradient(180deg,var(--surface),var(--surface-2));
       border:1px solid var(--line); transition:.3s cubic-bezier(.2,.7,.3,1);
       animation:fadeUp .6s both;
     }
@@ -143,7 +143,7 @@
     .sum-item__rm{width:26px;height:26px;border-radius:8px;border:1px solid var(--line);
       background:transparent;color:var(--muted);cursor:pointer;font-size:1rem;line-height:1;transition:.2s}
     .sum-item__rm:hover{color:var(--rose);border-color:rgba(255,107,107,.4)}
-    .summary__foot{padding:1.3rem 1.4rem;border-top:1px solid var(--line);background:rgba(0,0,0,.15)}
+    .summary__foot{padding:1.3rem 1.4rem;border-top:1px solid var(--line);background:var(--surface-2)}
     .total-row{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:1.1rem}
     .total-row span{color:var(--muted);font-weight:600}
     .total-row b{font-family:var(--serif);font-weight:700;font-size:2rem;letter-spacing:-.02em}
@@ -162,7 +162,7 @@
     /* ---- Payment modal ---- */
     .modal{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;padding:1.2rem}
     .modal.is-open{display:flex}
-    .modal__backdrop{position:absolute;inset:0;background:rgba(6,7,10,.72);backdrop-filter:blur(8px);
+    .modal__backdrop{position:absolute;inset:0;background:rgba(6,7,10,.55);backdrop-filter:blur(8px);
       animation:fade .3s both}
     .modal__card{position:relative;width:min(480px,100%);max-height:92vh;overflow-y:auto;border-radius:24px;
       background:var(--surface);border:1px solid var(--line-2);box-shadow:var(--shadow);
@@ -176,7 +176,7 @@
     .modal__body{padding:0 1.6rem 1.6rem}
 
     .pay-sum{border:1px solid var(--line);border-radius:14px;padding:.4rem 1rem;margin-bottom:1.3rem;
-      background:rgba(0,0,0,.18);max-height:150px;overflow-y:auto}
+      background:var(--surface-2);max-height:150px;overflow-y:auto}
     .pay-sum__row{display:flex;justify-content:space-between;padding:.6rem 0;border-bottom:1px solid var(--line);font-size:.9rem}
     .pay-sum__row:last-child{border-bottom:none}
     .pay-sum__row span:first-child{color:var(--muted)}

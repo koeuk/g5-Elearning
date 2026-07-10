@@ -23,6 +23,7 @@ return array(
     'App\\Controllers\\Student\\ProfileController' => $baseDir . '/src/Controllers/Student/ProfileController.php',
     'App\\Controllers\\Trainer\\AuthController' => $baseDir . '/src/Controllers/Trainer/AuthController.php',
     'App\\Controllers\\Trainer\\HomeController' => $baseDir . '/src/Controllers/Trainer/HomeController.php',
+    'App\\Controllers\\Trainer\\ManageController' => $baseDir . '/src/Controllers/Trainer/ManageController.php',
     'App\\Controllers\\Trainer\\ProfileController' => $baseDir . '/src/Controllers/Trainer/ProfileController.php',
     'App\\Core\\Auth' => $baseDir . '/src/Core/Auth.php',
     'App\\Core\\Controller' => $baseDir . '/src/Core/Controller.php',
