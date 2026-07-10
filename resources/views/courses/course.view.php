@@ -30,6 +30,13 @@ $email      = $student['email'] ?? '';
   <link href="assets/student-ui.css" rel="stylesheet">
   <style>.d-none-sm{display:inline}@media(max-width:520px){.d-none-sm{display:none}}
     .crs__desc{color:var(--muted);font-size:.88rem;margin:0 0 .9rem;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+    /* Category top bar: back (left) + filter (right) */
+    .cat-topbar{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.8rem;text-align:left}
+    .cat-filter{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+    .cat-filter .ui-input{padding-top:.62rem;padding-bottom:.62rem;font-size:.9rem}
+    .cat-filter .ui-inputwrap{min-width:210px}
+    .cat-select{width:auto;min-width:158px;cursor:pointer}
+    @media(max-width:560px){.cat-topbar{flex-direction:column;align-items:stretch}.cat-filter{width:100%}.cat-filter .ui-inputwrap{flex:1}}
   </style>
 </head>
 <body class="ui-scope">
@@ -37,7 +44,21 @@ $email      = $student['email'] ?? '';
 
   <!-- Category hero -->
   <section class="page hero-home" style="padding-top:2.5rem">
-    <a href="/student" class="ui-btn ui-btn--ghost" style="padding:.5rem .95rem;font-size:.88rem;margin-bottom:1.4rem"><i class="bi bi-arrow-left"></i> Back to home</a>
+    <!-- Top bar: Back (left) + course filter (right) -->
+    <div class="cat-topbar">
+      <a href="/student" class="ui-btn ui-btn--ghost" style="padding:.5rem .95rem;font-size:.88rem"><i class="bi bi-arrow-left"></i> Back to home</a>
+      <form class="cat-filter" role="search" onsubmit="return false">
+        <div class="ui-inputwrap">
+          <input id="cf-search" class="ui-input" type="search" placeholder="Search courses…" autocomplete="off" aria-label="Search courses">
+          <i class="bi bi-search" style="position:absolute;right:1rem;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none"></i>
+        </div>
+        <select id="cf-status" class="ui-input cat-select" aria-label="Filter by status">
+          <option value="all">All courses</option>
+          <option value="owned">Owned</option>
+          <option value="available">Available</option>
+        </select>
+      </form>
+    </div>
     <p class="k">Category</p>
     <h1><?= e($category['title'] ?? 'Courses') ?></h1>
     <p>Courses to expand your skills and boost your career &amp; salary.</p>
@@ -50,7 +71,7 @@ $email      = $student['email'] ?? '';
     <?php else: ?>
       <div class="course-grid">
         <?php foreach ($courses as $i => $course): $isPaid = !empty($course['paid']); $inCart = !empty($course['in_cart']); ?>
-          <article class="crs" style="animation:ui-fadeup .5s <?= 0.04 * $i ?>s both">
+          <article class="crs" data-status="<?= $isPaid ? 'owned' : 'available' ?>" data-title="<?= e(strtolower((string) $course['title'])) ?>" style="animation:ui-fadeup .5s <?= 0.04 * $i ?>s both">
             <div class="crs__media">
               <img src="uploading/<?= e($course['image_courses']) ?>" alt="" onerror="this.style.display='none'">
               <?php if ($isPaid): ?>
@@ -85,6 +106,7 @@ $email      = $student['email'] ?? '';
           </article>
         <?php endforeach; ?>
       </div>
+      <div id="cf-none" class="empty-block" style="display:none"><i class="bi bi-search"></i>No courses match your filter.</div>
     <?php endif; ?>
   </section>
 
@@ -111,6 +133,31 @@ $email      = $student['email'] ?? '';
     </div>
   </footer>
 
+  <script>
+  // Client-side course filter: search by title + status (all/owned/available).
+  (function () {
+    var search = document.getElementById('cf-search');
+    var status = document.getElementById('cf-status');
+    if (!search || !status) return;
+    var cards = [].slice.call(document.querySelectorAll('.course-grid .crs'));
+    var none = document.getElementById('cf-none');
+    function apply() {
+      var q = (search.value || '').trim().toLowerCase();
+      var st = status.value;
+      var shown = 0;
+      cards.forEach(function (c) {
+        var okText = !q || (c.getAttribute('data-title') || '').indexOf(q) > -1;
+        var okStatus = st === 'all' || c.getAttribute('data-status') === st;
+        var show = okText && okStatus;
+        c.style.display = show ? '' : 'none';
+        if (show) shown++;
+      });
+      if (none) none.style.display = shown ? 'none' : '';
+    }
+    search.addEventListener('input', apply);
+    status.addEventListener('change', apply);
+  })();
+  </script>
   <script src="assets/theme.js"></script>
 </body>
 </html>
