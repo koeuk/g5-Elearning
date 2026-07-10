@@ -43,44 +43,27 @@
                             <h3 class='text-white'>Sign In</h3>
                         </div>
 
-                        <?php
-                        $input = false;
-                        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-                            $input = true;
-                            $require = applySignin($_POST['email'], $_POST['password']);
-                        }
-                        ?>
                         <form action="/access" method='post'>
-                            <label for="floatingInput" class="text-white" <?php if ($input) {
-                                                                                if (strlen($require['email']) > 0) {
-                                                                                    echo 'hidden';
-                                                                                }
+                            <label for="floatingInput" class="text-white" <?php if ($submitted && $errors['email'] !== '') {
+                                                                                echo 'hidden';
                                                                             } ?>>Email</label>
                             <div class="form-floating mb-2 rounded" >
                                 <small class="form-text text-danger">
-                                    <?php if ($input == true) {
-                                        echo $require['email'];
-                                    } ?>
+                                    <?= e($errors['email']) ?>
                                 </small>
-                                <input type="email" class="form-control form-control-lg bd-white text-white" id="floatingInput" placeholder="name@example.com" style="background-color: rgba(0, 0, 0, 0.1);<?php if ($input) {
-                                                                                                                                                                            if (strlen($require['email']) > 0) {
+                                <input type="email" class="form-control form-control-lg bd-white text-white" id="floatingInput" placeholder="name@example.com" style="background-color: rgba(0, 0, 0, 0.1);<?php if ($submitted && $errors['email'] !== '') {
                                                                                                                                                                                 echo 'border: 1px solid lightcoral;';
-                                                                                                                                                                            }
-                                                                                                                                                                        } ?>" name='email' value="<?php if ($input) {
-                                                                                                                                                                                                        echo $_POST['email'];
-                                                                                                                                                                                                    } ?>">
-                                
+                                                                                                                                                                        } ?>" name='email' value="<?= e($old['email']) ?>">
+
                             </div>
-                            <label for="passwordInput" class="text-white" <?php if ($input) {if (strlen($require['password']) > 0) { echo 'hidden';}} ?>>Password</label>
+                            <label for="passwordInput" class="text-white" <?php if ($submitted && $errors['password'] !== '') { echo 'hidden';} ?>>Password</label>
                             <div class="form-floating mb-2 border-white rounded">
                                 <small class="form-text text-danger">
-                                    <?php if ($input == true) {
-                                        echo $require['password'];
-                                    } ?>
+                                    <?= e($errors['password']) ?>
                                 </small>
-                                
+
                                 <div class="input-group">
-                                    <input type="Password" class="form-control form-control-lg bd-white text-white" id="passwordInput" style="background-color: rgba(0, 0, 0, 0.1);<?php if ($input) {if (strlen($require['password']) > 0) {echo 'border: 1px solid lightcoral;';}} ?>" name='password' value="<?php if ($input) {echo $_POST['password'];} ?>">
+                                    <input type="Password" class="form-control form-control-lg bd-white text-white" id="passwordInput" style="background-color: rgba(0, 0, 0, 0.1);<?php if ($submitted && $errors['password'] !== '') {echo 'border: 1px solid lightcoral;';} ?>" name='password' value="">
                                     <button type="button" class="btn btn-light" id="showPasswordBtn"  style="background-color: rgba(0, 0, 0, 0.1);"><i class="bi bi-eye"></i></button>
                                 </div>
                             </div>

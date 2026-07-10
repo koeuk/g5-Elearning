@@ -1,3 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>E-Learning — Admin</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="vendor/css/bootstrap.min.css" rel="stylesheet">
+    <link href="vendor/css/admin.css" rel="stylesheet">
+</head>
+<body>
 <!--  Start -->
 <div class="container-fluid position-relative d-flex p-0">
         <div class="show bg-dark position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center ">
@@ -16,3 +27,6 @@
         </div>
 </div>
 <!--  End -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

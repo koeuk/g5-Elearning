@@ -1,4 +1,12 @@
-<?php require 'models/admin.manage.model.php' ?>
+<?php
+/**
+ * Admin dashboard body. Data comes from Admin\DashboardController.
+ *
+ * @var array{categories: int, courses: int, revenue: int, users: int} $stats
+ * @var array<int, array{title: string, count: int}>                    $popular
+ * @var array<int, array{title: string, user: string, date: string, total: string}> $payments
+ */
+?>
             <!-- Sale & Revenue Start -->
             <div class="container-fluid pt-4 px-4">
                 <div class="row g-4">
@@ -7,7 +15,7 @@
                             <i class="fas fa-th-large fa-3x " style='color:#F28500'></i>
                             <div class="ms-3">
                                 <p class="mb-2">Categories</p>
-                                <h6 class="mb-0"><?=count(getCategories())?></h6>
+                                <h6 class="mb-0"><?= (int) $stats['categories'] ?></h6>
                             </div>
                         </div>
                     </div>
@@ -16,7 +24,7 @@
                         <i class="fas fa-book fa-3x " style='color:#F28500'></i>
                             <div class="ms-3">
                                 <p class="mb-2">Courses</p>
-                                <h6 class="mb-0"><?=count(getCouses())?></h6>
+                                <h6 class="mb-0"><?= (int) $stats['courses'] ?></h6>
                             </div>
                         </div>
                     </div>
@@ -25,14 +33,7 @@
                         <i class="fas fa-chart-line fa-3x "style='color:#F28500'></i>
                             <div class="ms-3">
                                 <p class="mb-2">Revenue</p>
-                                <h6 class="mb-0"><?php 
-                                $money = 0;
-                                foreach (getRevenues() as $pay){
-                                    $money += intval($pay['total']);
-                                }
-                                echo '$'.$money;
-                            ?>
-                            </h6>
+                                <h6 class="mb-0">$<?= (int) $stats['revenue'] ?></h6>
                             </div>
                         </div>
                     </div>
@@ -41,7 +42,7 @@
                             <i class="bi bi-people fa-2x" style='color:#F28500'></i>
                             <div class="ms-3">
                                 <p class="mb-2">Users</p>
-                                <h6 class="mb-0"><?=count(students())?></h6>
+                                <h6 class="mb-0"><?= (int) $stats['users'] ?></h6>
                             </div>
                         </div>
                     </div>
@@ -64,24 +65,12 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php 
-                                $courseCounts = array_count_values(array_column(getRevenues(), 'course_id'));
-
-                                // Sort the counts in descending order
-                                arsort($courseCounts);
-                                // Print the course_ids and their counts
-                                foreach ($courseCounts as $courseId => $count) :
-
-                                ?>
+                                <?php foreach ($popular as $row) : ?>
                                 <tr>
-                                    <td><?=getCousesSold($courseId)['title']?></td>
-                                    <td><?=$count?>
-                                
-                                </td>
+                                    <td><?= e($row['title']) ?></td>
+                                    <td><?= (int) $row['count'] ?></td>
                                 </tr>
-                                    <?php 
-                                    endforeach;
-                                     ?>
+                                <?php endforeach; ?>
                             </tbody>
                         </table>
                     </div>
@@ -106,18 +95,14 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php 
-                                foreach (getRevenues() as $cou):
-                                ?>
+                                <?php foreach ($payments as $pay) : ?>
                                 <tr>
-                                    <td><?=getCousesSold($cou['course_id'])['title']?></td>
-                                    <td><?=getUsers($cou['user_id'])['name']?></td>
-                                    <td><?=$cou['date']?></td>
-                                    <td><?='$'.$cou['total']?></td>
+                                    <td><?= e($pay['title']) ?></td>
+                                    <td><?= e($pay['user']) ?></td>
+                                    <td><?= e($pay['date']) ?></td>
+                                    <td>$<?= e($pay['total']) ?></td>
                                 </tr>
-                                    <?php 
-                                    endforeach;
-                                     ?>
+                                <?php endforeach; ?>
                             </tbody>
                         </table>
                     </div>

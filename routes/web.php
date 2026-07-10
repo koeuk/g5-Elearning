@@ -12,6 +12,10 @@
 
 use App\Core\Router;
 use App\Controllers\HomeController;
+use App\Controllers\Admin\AuthController;
+use App\Controllers\Admin\DashboardController;
+use App\Controllers\Student\AuthController as StudentAuthController;
+use App\Controllers\Student\HomeController as StudentHomeController;
 use App\Controllers\Student\OrderController;
 
 $router = new Router();
@@ -24,8 +28,26 @@ $router->get('/', [HomeController::class, 'index']);
 /* -------------------------------------------------------------------------- */
 /* Students                                                                   */
 /* -------------------------------------------------------------------------- */
+/* Authentication. */
+$router->get('/signin', [StudentAuthController::class, 'showLogin']);      // sign-in form
+$router->post('/access', [StudentAuthController::class, 'login']);         // credential check
+$router->get('/signup', [StudentAuthController::class, 'showRegister']);   // registration form
+$router->post('/create_student', [StudentAuthController::class, 'register']); // create account
+$router->get('/logout', [StudentAuthController::class, 'logout']);         // clear session
+
+/* Authenticated area. */
+$router->get('/student', [StudentHomeController::class, 'index']);         // dashboard landing
+
 /* Ordering/checkout screen — self-submits, so it handles GET and POST. */
 $router->any('/orders', [OrderController::class, 'index']);
+
+/* -------------------------------------------------------------------------- */
+/* Admin                                                                      */
+/* -------------------------------------------------------------------------- */
+$router->get('/admin', [AuthController::class, 'start']);          // welcome / logout landing
+$router->get('/admin_signin', [AuthController::class, 'showLogin']); // sign-in form
+$router->post('/admin_access', [AuthController::class, 'login']);    // credential check
+$router->get('/admin_home', [DashboardController::class, 'index']);  // dashboard
 
 /*
  * The remaining areas (admin, students, trainers, courses) are migrated

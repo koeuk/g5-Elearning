@@ -42,70 +42,58 @@
                     <div class="d-flex align-items-center justify-content-between mb-1">
                         <h3 class="text-white">Create Account</h3>
                     </div>
-                    <?php
-
-                    $input =false;
-                    if($_SERVER['REQUEST_METHOD'] == 'POST'){
-                        $input = true;
-                        $require = requireInformation($_POST['name'], $_POST['email'], $_POST['password'], $_POST['phone'],$_POST['password_comfirm']);  
-                    }
-                    ?>
-                    <form action="/create_student" method="post" class='bd bd-white' enctype="multipart/form-data">     
-                        <label for="floatingInput" class="text-white" <?php if($input){if(strlen($require['name'])>0){echo 'hidden';}}?>>Name</label>                     
+                    <form action="/create_student" method="post" class='bd bd-white' enctype="multipart/form-data">
+                        <label for="floatingInput" class="text-white" <?php if($submitted && $errors['name'] !== ''){echo 'hidden';}?>>Name</label>
                         <div class="form-floating mb-2 border-info rounded">
                             <input type="text" name='refrash' hidden>
                             <small class="form-text text-danger">
-                                <?php if($input==true){echo $require['name'];} ?>
+                                <?= e($errors['name']) ?>
                             </small>
-                            <input type="name" class="form-control bd-primary form-control-lg text-white" id="floatingInput" placeholder="Name" style="background-color: rgba(0,0,0,0.3); <?php if($input==true){if(strlen($require['name'])>0){echo 'border: 1px solid lightcoral;'; }}?>" name='name' value='<?php if($input==true){echo $_POST['name'];} ?>'>
+                            <input type="name" class="form-control bd-primary form-control-lg text-white" id="floatingInput" placeholder="Name" style="background-color: rgba(0,0,0,0.3); <?php if($submitted && $errors['name'] !== ''){echo 'border: 1px solid lightcoral;'; }?>" name='name' value='<?= e($old['name']) ?>'>
                         </div>
-                        <label for="floatingInput" class="text-white" <?php if($input){if(strlen($require['phone'])>0){echo 'hidden';}}?>>Phone</label>
+                        <label for="floatingInput" class="text-white" <?php if($submitted && $errors['phone'] !== ''){echo 'hidden';}?>>Phone</label>
                         <div class="form-floating mb-2 border-white rounded">
                             <small class="form-text text-danger">
-                                <?php if($input){echo $require['phone'];} ?>
+                                <?= e($errors['phone']) ?>
                             </small>
-                            <input type="text" class="form-control form-control-lg text-white" id="floatingInput" placeholder="Phone" style="background-color: rgba(0, 0, 0, 0.3);<?php if($input){ if(strlen($require['phone'])>0){echo 'border: 1px solid lightcoral;';}}?>" name='phone' value="<?php if($input){echo $_POST['phone'];} ?>">
+                            <input type="text" class="form-control form-control-lg text-white" id="floatingInput" placeholder="Phone" style="background-color: rgba(0, 0, 0, 0.3);<?php if($submitted && $errors['phone'] !== ''){echo 'border: 1px solid lightcoral;';}?>" name='phone' value="<?= e($old['phone']) ?>">
                         </div>
-                        <label for="floatingInput" class="text-white" <?php if($input){if(strlen($require['email'])>0){echo 'hidden';}}?>>Email address</label>
+                        <label for="floatingInput" class="text-white" <?php if($submitted && $errors['email'] !== ''){echo 'hidden';}?>>Email address</label>
                         <div class="form-floating mb-2 border-white rounded">
                             <small class="form-text text-danger">
-                                <?php if($input){echo $require['email'];} ?>
+                                <?= e($errors['email']) ?>
                             </small>
-                            <input type="email" class="form-control form-control-lg text-white" id="floatingInput" placeholder="name@example.com" style="background-color: rgba(0, 0, 0, 0.3);<?php if($input){if(strlen($require['email'])>0){echo 'border: 1px solid lightcoral;';}}?>" name='email' value=' <?php if($input){echo $_POST['email'];} ?>'>
+                            <input type="email" class="form-control form-control-lg text-white" id="floatingInput" placeholder="name@example.com" style="background-color: rgba(0, 0, 0, 0.3);<?php if($submitted && $errors['email'] !== ''){echo 'border: 1px solid lightcoral;';}?>" name='email' value='<?= e($old['email']) ?>'>
                         </div>
-                        <label for="passwordInput" class="text-white " <?php if ($input) {if (strlen($require['password']) > 0) {echo 'hidden';}} ?>>Password</label>
+                        <label for="passwordInput" class="text-white " <?php if ($submitted && $errors['password'] !== '') {echo 'hidden';} ?>>Password</label>
                         <div class="form-floating mb-2 border-white rounded">
                             <small class="form-text text-danger">
-                                <?php if ($input == true) {
-                                    echo $require['password'];
-                                } ?>
+                                <?= e($errors['password']) ?>
                             </small>
-                            
+
                             <div class="input-group">
-                                <input type="password" class="form-control form-control-lg bd-white text-white" id="passwrodcomfirm" style="background-color: rgba(0, 0, 0, 0.1);<?php if ($input) { if (strlen($require['password']) > 0) { echo 'border: 1px solid lightcoral;'; } } ?>" name='password' value="<?php if ($input) { echo $_POST['password']; } ?>">
+                                <input type="password" class="form-control form-control-lg bd-white text-white" id="passwrodcomfirm" style="background-color: rgba(0, 0, 0, 0.1);<?php if ($submitted && $errors['password'] !== '') { echo 'border: 1px solid lightcoral;'; } ?>" name='password' value="">
                                 <button type="button" class="btn btn-light" id="showPasswordBtn"  style="background-color: rgba(0, 0, 0, 0.1);"><i class="bi bi-eye"></i></button>
                             </div>
                         </div>
-                        <label for="passwordConfirmInput" class="text-white " <?php if ($input) {if (strlen($require['password_comfirm']) > 0) {echo 'hidden';}} ?>>Password comfirm</label>
+                        <label for="passwordConfirmInput" class="text-white " <?php if ($submitted && $errors['password_comfirm'] !== '') {echo 'hidden';} ?>>Password comfirm</label>
                         <div class="form-floating mb-2 border-white rounded">
                             <small class="form-text text-danger">
-                                <?php if ($input == true) {
-                                    echo $require['password_comfirm'];
-                                } ?>
+                                <?= e($errors['password_comfirm']) ?>
                             </small>
-                            
+
                             <div class="input-group">
-                                <input type="password_comfirm" class="form-control form-control-lg bd-white text-white" id="comfirmpassword" style="background-color: rgba(0, 0, 0, 0.1);<?php if ($input) { if (strlen($require['password']) > 0) { echo 'border: 1px solid lightcoral;'; } } ?>" name='password_comfirm' value="<?php if ($input) { echo $_POST['password']; } ?>">
+                                <input type="password_comfirm" class="form-control form-control-lg bd-white text-white" id="comfirmpassword" style="background-color: rgba(0, 0, 0, 0.1);<?php if ($submitted && $errors['password_comfirm'] !== '') { echo 'border: 1px solid lightcoral;'; } ?>" name='password_comfirm' value="">
                                 <button type="button" class="btn btn-light" id="showConfirmPasswordBtn"  style="background-color: rgba(0, 0, 0, 0.1);"><i class="bi bi-eye"></i></button>
                             </div>
                         </div>
                         <div class="d-flex align-items-center mb-2 gab-1">
                             <div class="form-check me-4">
-                                <input type="radio" class="form-check-input border-white" id="maleRadio" name='gender' value='Male' style="background-color: rgba(0, 0, 0, 0.3);" <?php if($input){if(isset($_POST['gender']) && $_POST['gender']=='Male'){echo 'checked';}} ?> >
+                                <input type="radio" class="form-check-input border-white" id="maleRadio" name='gender' value='Male' style="background-color: rgba(0, 0, 0, 0.3);" <?php if($old['gender'] === 'Male'){echo 'checked';} ?> >
                                 <label class="form-check-label text-white" for="maleRadio">Male</label>
                             </div>
                             <div class="form-check">
-                                <input type="radio" class="form-check-input border-white" id="femaleRadio" name='gender' value='Female' style="background-color: rgba(0, 0, 0, 0.3);" <?php if($input){if(isset($_POST['gender']) && $_POST['gender']=='Female'){echo 'checked';}} ?>>
+                                <input type="radio" class="form-check-input border-white" id="femaleRadio" name='gender' value='Female' style="background-color: rgba(0, 0, 0, 0.3);" <?php if($old['gender'] === 'Female'){echo 'checked';} ?>>
                                 <label class="form-check-label text-white" for="femaleRadio">Female</label>
                             </div>
                         </div>
