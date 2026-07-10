@@ -50,3 +50,20 @@ if (!function_exists('dd')) {
         exit;
     }
 }
+
+if (!function_exists('uploadedImage')) {
+    /**
+     * Resolve an image stored under public/uploading to a usable src, falling
+     * back to a bundled placeholder when the file is missing or the name empty.
+     * Prevents the broken-image 404s the admin lists produced for users/courses
+     * whose stored file no longer exists on disk.
+     */
+    function uploadedImage(string $file, string $fallback = 'assets/images/avatar/01.jpg'): string
+    {
+        $file = trim($file);
+        if ($file !== '' && is_file(dirname(__DIR__, 2) . '/public/uploading/' . $file)) {
+            return 'uploading/' . $file;
+        }
+        return $fallback;
+    }
+}

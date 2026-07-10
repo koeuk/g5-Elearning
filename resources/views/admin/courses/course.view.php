@@ -214,9 +214,8 @@
 
                          <td class="text-start ">
                               <div class="position-relative">
-                                   <img class="rounded-circle" src="uploading/<?= e($course['image_courses']) ?>" alt=""
-                                        style="width: 40px; height: 40px; object-fit: cover;"
-                                        onerror="this.onerror=null;this.src='assets/images/avatar/01.jpg'">
+                                   <img class="rounded-circle" src="<?= e(uploadedImage((string) $course['image_courses'])) ?>" alt=""
+                                        style="width: 40px; height: 40px; object-fit: cover;">
                               </div>
                          </td>
                          <td class="text-start"><?= $course['price'] ?></td>
@@ -287,8 +286,7 @@
                          <!-- Media -->
                          <div class="cd-media">
                               <span class="cd-cat"><?= e($course['category_title']) ?></span>
-                              <img src="uploading/<?= e($course['image_courses']) ?>" alt="<?= e($course['title']) ?>"
-                                   onerror="this.style.display='none'">
+                              <img src="<?= e(uploadedImage((string) $course['image_courses'])) ?>" alt="<?= e($course['title']) ?>">
                          </div>
                          <!-- Info -->
                          <div class="cd-info">

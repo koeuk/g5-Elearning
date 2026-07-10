@@ -71,7 +71,7 @@
                     <td><?= e($trainer['phone']) ?></td>
                     <td><?= e($trainer['gender']) ?></td>
                     <td>
-                        <img src="uploading/<?= e($trainer['profile_image']) ?>" class="avatar" onerror="this.onerror=null;this.src='assets/images/avatar/01.jpg'">
+                        <img src="<?= e(uploadedImage((string) $trainer['profile_image'])) ?>" class="avatar">
                     </td>
                     <td>
                         <form action="/trainer_home" method="post" style="display: inline;">

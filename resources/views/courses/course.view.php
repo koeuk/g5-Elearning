@@ -21,62 +21,78 @@ echo View::partial('layouts/public/header');
 
 <!-- **************** MAIN CONTENT START **************** -->
 <main>
+<style>
+	.min-w-0 { min-width: 0; }
+	.course-card { transition: transform .25s ease, box-shadow .25s ease; }
+	.course-card:hover { transform: translateY(-4px); box-shadow: 0 1rem 2rem rgba(0,0,0,.12) !important; }
+	.course-card .card-title a { overflow-wrap: break-word; }
+	.course-card__img { position: relative; }
+	.icon-lg { width: 60px; height: 60px; display: grid; place-items: center; font-size: 1.4rem; }
+</style>
 <!-- Inner part START -->
-<section style='height: 300px;background-image: url("assets/images/bg/abstract-1264071_1280.jpg");'>
-	<div class="mt-0">
-		<a href="/student" class="btn btn-orange btn-sm">
+<section class="position-relative d-flex align-items-center"
+	style="min-height: 320px; background-image: linear-gradient(rgba(255,255,255,.55), rgba(255,255,255,.9)), url('assets/images/bg/abstract-1264071_1280.jpg'); background-size: cover; background-position: center;">
+	<div class="container py-5">
+		<a href="/student" class="btn btn-orange btn-sm mb-4">
 			<i class="bi bi-arrow-left-circle-fill"></i> Back
 		</a>
-	</div>
-	<div class="row mb-4">
-		<div class="col-lg-8 text-center mx-auto">
-			<h2 class="fs-1">Welcome to the <span class='text-orange'><?= e($category['title'] ?? '') ?></span> Category</h2>
-			<p class="mb-0">Information Technology Courses to expand your skills and boost your career &amp; salary</p>
+		<div class="row">
+			<div class="col-lg-9 mx-auto text-center">
+				<h1 class="fs-1 fw-bold mb-2">Welcome to the <span class='text-orange'><?= e($category['title'] ?? '') ?></span> Category</h1>
+				<p class="lead text-secondary mb-0">Information Technology Courses to expand your skills and boost your career &amp; salary</p>
+			</div>
 		</div>
 	</div>
 </section>
-<section class="pt-4" id='c' style="background-color: rgba(0, 0, 0,0.05);">
+<section class="py-5" id='c' style="background-color: rgba(0, 0, 0,0.04);">
 	<div class="container">
 		<!-- Course list START -->
-		<div class="row g-4 justify-content-center">
 		<?php if (count($courses) < 1): ?>
-			<h3 class="text-center text-orange">The Course did not add yet!</h3>
+			<div class="text-center py-5">
+				<div class="icon-lg bg-orange bg-opacity-10 text-orange rounded-circle mx-auto mb-3"><i class="fas fa-book-open"></i></div>
+				<h3 class="text-orange">No courses here yet</h3>
+				<p class="text-muted mb-0">Check back soon — new courses are added to this category regularly.</p>
+			</div>
 		<?php endif; ?>
+		<div class="row g-4 justify-content-center">
 		<?php foreach ($courses as $course): ?>
 			<!-- Card item START -->
-			<div class="col-lg-10 col-xl-6">
-				<div class="card shadow p-2">
-					<div class="row g-0">
+			<div class="col-12 col-lg-6">
+				<div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden course-card">
+					<div class="row g-0 h-100">
 						<!-- Image -->
-						<div class="col-md-4 rounded-4" style="background-image: url('uploading/<?= e($course['image_courses']) ?>'); background-size: cover;">
+						<div class="col-4 bg-light course-card__img"
+							style="min-height: 190px; background-image: url('uploading/<?= e($course['image_courses']) ?>'); background-size: cover; background-position: center;">
 						</div>
 						<!-- Card body -->
-						<div class="col-md-8">
-							<div class="card-body">
-								<!-- Title -->
-								<div class="d-sm-flex justify-content-sm-between mb-2 mb-sm-3">
-									<div>
-										<h5 class="card-title mb-0"><a href="/trainer-classroom"><?= e($course['title']) ?></a></h5>
-										<p class="small mb-2 mb-sm-0">Professor at Sigma College</p>
+						<div class="col-8">
+							<div class="card-body d-flex flex-column h-100 p-3 p-lg-4">
+								<!-- Title + price -->
+								<div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+									<div class="min-w-0">
+										<h5 class="card-title mb-1 lh-sm"><a href="/trainer-classroom" class="text-dark text-decoration-none"><?= e($course['title']) ?></a></h5>
+										<p class="small text-muted mb-0"><i class="fas fa-chalkboard-teacher text-orange me-1"></i>Professor at Sigma College</p>
 									</div>
-									<h5 class="text-orange mb-0" <?php if ($course['paid']) { echo 'hidden'; } ?>><?= e($course['price']) ?></h5>
-									<form action="/blog_learning" method='post' <?php if (!$course['paid']) { echo 'hidden'; } ?>>
+									<h5 class="text-orange fw-bold mb-0 flex-shrink-0" <?php if ($course['paid']) { echo 'hidden'; } ?>>$<?= e($course['price']) ?></h5>
+									<form action="/blog_learning" method='post' class="flex-shrink-0" <?php if (!$course['paid']) { echo 'hidden'; } ?>>
 										<input type="text" value='<?= e($email) ?>' name='email' hidden>
 										<input type="text" value='<?= e($course['course_id']) ?>' name='course_id' hidden>
 										<input type="text" value='<?= e($categoryId) ?>' name='id' hidden>
-										<button type="submit" class="btn btn-primary">Join course</button>
+										<button type="submit" class="btn btn-primary btn-sm">Join course</button>
 									</form>
 								</div>
 								<!-- Content -->
-								<p class="text-truncate-2 mb-3"><?= e($course['description']) ?></p>
-								<!-- Info -->
-								<div class="d-sm-flex justify-content-sm-between align-items-center">
-									<h6 class="text-info mb-0">Digital Marketing</h6>
-									<li class="list-inline-item d-flex justify-content-center align-items-center">
-										<div class="icon-md bg-orange bg-opacity-10 text-orange rounded-circle"><i class="fas fa-user-graduate"></i></div>
-										<span class="h6 fw-light mb-0 ms-2">9.1k</span>
-									</li>
-									<button class="icon-md bg-white rounded-circle border border-orange text-orange show-popup" data-bs-toggle="modal" data-bs-target="#paymentModal" data-user='<?= e($email) ?>' data-course='<?= e($course['course_id']) ?>' data-title="<?= e($course['title']) ?>" data-id="<?= e($categoryId) ?>" data-price="<?= e($course['price']) ?>" data-imgs='<?= e($course['image_courses']) ?>' <?php if ($course['paid'] || $course['in_cart']) { echo 'hidden'; } ?>><i class="fas fa-shopping-cart text-danger"></i></button>
+								<p class="text-truncate-2 small text-muted mb-3"><?= e($course['description']) ?></p>
+								<!-- Info footer (pinned to bottom for equal cards) -->
+								<div class="d-flex justify-content-between align-items-center mt-auto pt-3 border-top">
+									<span class="badge rounded-pill bg-info bg-opacity-10 text-info fw-semibold px-3 py-2">Digital Marketing</span>
+									<div class="d-flex align-items-center gap-3">
+										<span class="d-flex align-items-center" title="Enrolled students">
+											<span class="icon-md bg-orange bg-opacity-10 text-orange rounded-circle"><i class="fas fa-user-graduate"></i></span>
+											<span class="h6 fw-light mb-0 ms-2">9.1k</span>
+										</span>
+										<button class="icon-md bg-white rounded-circle border border-orange text-orange show-popup" data-bs-toggle="modal" data-bs-target="#paymentModal" data-user='<?= e($email) ?>' data-course='<?= e($course['course_id']) ?>' data-title="<?= e($course['title']) ?>" data-id="<?= e($categoryId) ?>" data-price="<?= e($course['price']) ?>" data-imgs='<?= e($course['image_courses']) ?>' title="Add to cart" <?php if ($course['paid'] || $course['in_cart']) { echo 'hidden'; } ?>><i class="fas fa-shopping-cart text-danger"></i></button>
+									</div>
 								</div>
 							</div>
 						</div>
