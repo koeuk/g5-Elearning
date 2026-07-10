@@ -18,6 +18,11 @@ use App\Models\User;
  * the view needs (categories, course cards with enrolment/purchase flags,
  * most-popular courses and the cart count) so the template only renders. A POST
  * carrying a course_id adds that course to the student's cart.
+ *
+ * All the page's data is loaded with a fixed handful of queries regardless of
+ * how many courses or categories exist — the trainer/enrolment/purchase details
+ * that used to be looked up per course (an N+1) now come from batched queries
+ * and in-memory set lookups.
  */
 final class HomeController extends Controller
 {
@@ -34,12 +39,18 @@ final class HomeController extends Controller
             $this->addToCart($studentId);
         }
 
+        // Shared lookups — one query each, no per-course/per-category fan-out.
+        $allCourses = Course::allWithTrainer();
+        $paidIds    = $this->indexByCourse(Payment::forUser($studentId));
+        $cartOrders = Order::pendingFor($studentId);
+        $cartIds    = $this->indexByCourse($cartOrders);
+
         $this->view('students/home', [
             'student'    => $student,
-            'categories' => $this->categories(),
-            'courses'    => $this->courses($studentId),
-            'topCourses' => $this->topCourses(),
-            'cartCount'  => count(Order::pendingFor($studentId)),
+            'categories' => $this->categories($allCourses),
+            'courses'    => $this->courses($allCourses, $paidIds, $cartIds),
+            'topCourses' => $this->topCourses($allCourses),
+            'cartCount'  => count($cartOrders),
         ]);
     }
 
@@ -53,69 +64,94 @@ final class HomeController extends Controller
     }
 
     /**
-     * Categories enriched with their course count and the courses they contain
-     * (for the navbar dropdown).
+     * Categories enriched with their course count (from the query) and the
+     * courses they contain, grouped in memory from the already-loaded list.
      *
+     * @param array<int, array> $allCourses
      * @return array<int, array>
      */
-    private function categories(): array
+    private function categories(array $allCourses): array
     {
+        $byCategory = [];
+        foreach ($allCourses as $course) {
+            $byCategory[(int) $course['category_id']][] = $course;
+        }
+
         $rows = [];
-        foreach (Category::all() as $category) {
+        foreach (Category::allWithCourseCount() as $category) {
             $id     = (int) $category['category_id'];
-            $rows[] = $category + [
-                'course_count' => Course::countInCategory($id),
-                'courses'      => Course::byCategory($id),
-            ];
+            $rows[] = $category + ['courses' => $byCategory[$id] ?? []];
         }
         return $rows;
     }
 
     /**
-     * Every course with its trainer, enrolment count and this student's
-     * purchase/cart state.
+     * Every course (already carrying trainer_name/trainer_image/enrolled from
+     * the batched query) plus this student's purchase/cart state, resolved by
+     * set lookup rather than a query per course.
      *
+     * @param array<int, array>  $allCourses
+     * @param array<int, true>   $paidIds
+     * @param array<int, true>   $cartIds
      * @return array<int, array>
      */
-    private function courses(int $studentId): array
+    private function courses(array $allCourses, array $paidIds, array $cartIds): array
     {
         $rows = [];
-        foreach (Course::all() as $course) {
+        foreach ($allCourses as $course) {
             $courseId = (int) $course['course_id'];
-            $trainer  = User::find((int) $course['user_id']);
             $rows[]   = $course + [
-                'trainer_name'  => $trainer['name'] ?? '',
-                'trainer_image' => $trainer['profile_image'] ?? '',
-                'enrolled'      => Order::joinCount($courseId),
-                'paid'          => Payment::exists($studentId, $courseId) !== [],
-                'in_cart'       => Order::pending($studentId, $courseId) !== [],
+                'paid'    => isset($paidIds[$courseId]),
+                'in_cart' => isset($cartIds[$courseId]),
             ];
         }
         return $rows;
     }
 
     /**
-     * Courses ranked by number of payments, most popular first.
+     * Courses ranked by number of payments, most popular first. Titles/images
+     * come from the already-loaded course list instead of a lookup per row.
      *
+     * @param array<int, array> $allCourses
      * @return array<int, array{title: string, image_courses: string, count: int}>
      */
-    private function topCourses(): array
+    private function topCourses(array $allCourses): array
     {
-        $counts = array_count_values(array_column(Payment::all(), 'course_id'));
+        $byId = [];
+        foreach ($allCourses as $course) {
+            $byId[(int) $course['course_id']] = $course;
+        }
+
+        $counts = array_count_values(array_map('intval', array_column(Payment::all(), 'course_id')));
         arsort($counts);
 
         $rows = [];
         foreach ($counts as $courseId => $count) {
-            $course = Course::find((int) $courseId);
-            if ($course === false) {
+            if (!isset($byId[$courseId])) {
                 continue;
             }
             $rows[] = [
-                'title'         => (string) $course['title'],
-                'image_courses' => (string) $course['image_courses'],
+                'title'         => (string) $byId[$courseId]['title'],
+                'image_courses' => (string) $byId[$courseId]['image_courses'],
                 'count'         => $count,
             ];
         }
         return $rows;
+    }
+
+    /**
+     * Build a course_id => true set from rows that each have a `course_id`,
+     * for O(1) membership tests.
+     *
+     * @param array<int, array> $rows
+     * @return array<int, true>
+     */
+    private function indexByCourse(array $rows): array
+    {
+        $ids = [];
+        foreach ($rows as $row) {
+            $ids[(int) $row['course_id']] = true;
+        }
+        return $ids;
     }
 }

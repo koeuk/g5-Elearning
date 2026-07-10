@@ -1,6 +1,12 @@
 <!-- Sidebar Start -->
 
-<?php $admin = \App\Models\User::admin() ?: ['profile_image' => '', 'name' => 'Admin']; ?>
+<?php
+$admin = \App\Models\User::admin() ?: ['profile_image' => '', 'name' => 'Admin'];
+// Fall back to a bundled avatar when the admin has no uploaded image.
+$adminAvatar = trim((string) ($admin['profile_image'] ?? '')) !== ''
+    ? 'uploading/' . $admin['profile_image']
+    : 'uploading/admin.png';
+?>
 <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-secondary navbar-dark">
                 <a href="index.html" class="navbar-brand mx-4 mb-3">
@@ -8,7 +14,7 @@
                 </a>
                 <div class="d-flex align-items-center ms-4 mb-4">
                     <div class="position-relative">
-                        <img class="rounded-circle" src="uploading/<?=$admin['profile_image']?>" alt="" style="width: 40px; height: 40px;">
+                        <img class="rounded-circle" src="<?= e($adminAvatar) ?>" alt="" style="width: 40px; height: 40px;">
                         <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
                     </div>
                     <div class="ms-3">
@@ -44,7 +50,7 @@
                 <div class="navbar-nav align-items-center ms-auto">
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <img class="rounded-circle me-lg-2" src="uploading/<?=$admin['profile_image']?>" alt="" style="width: 40px; height: 40px;">
+                            <img class="rounded-circle me-lg-2" src="<?= e($adminAvatar) ?>" alt="" style="width: 40px; height: 40px;">
                             <span class="d-none d-lg-inline-flex"><?=$admin['name']?></span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">

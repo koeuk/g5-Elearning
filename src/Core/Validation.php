@@ -16,16 +16,15 @@ use App\Models\User;
 final class Validation
 {
     /**
-     * Strong-password policy: at least 8 characters and at least one letter,
-     * one digit and one special (non-alphanumeric) character. This rejects
-     * common weak passwords such as "12345678" (no letter, no special) or
-     * "password" (no digit, no special).
+     * Password policy: no strength requirement — any non-empty password is
+     * accepted (so simple values like "12345678" are allowed). Sign-up and
+     * password-change still require the field to be filled in and to match its
+     * confirmation; they just don't impose character/length rules.
      */
-    public const PASSWORD_PATTERN = '/^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/';
+    public const PASSWORD_PATTERN = '/^.+$/';
 
-    /** Shared message for a password that fails PASSWORD_PATTERN. */
-    private const WEAK_PASSWORD =
-        'Password must be at least 8 characters and include a letter, a number and a special character.';
+    /** Shared message shown when a password field is left empty. */
+    private const WEAK_PASSWORD = 'Password is required.';
 
     /** Validate a student/trainer sign-in by email. */
     public static function signin(string $email, string $password, int $role = User::ROLE_STUDENT): array
