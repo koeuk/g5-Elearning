@@ -50,6 +50,17 @@
 :root[data-theme="light"] .card,
 :root[data-theme="light"] .modal-content { background-color: var(--admin-surface); color: var(--admin-ink); }
 
+/* On the default DARK admin, Bootstrap's white .card is wrong — give page cards
+   the dark panel surface. Cards inside modals keep their own styling. */
+:root[data-theme="dark"] .card {
+    background-color: #191C24;
+    color: #dfe3ec;
+    border-color: rgba(255, 255, 255, .06);
+}
+:root[data-theme="dark"] .card .form-label,
+:root[data-theme="dark"] .card .col-form-label { color: #aab2c4; }
+:root[data-theme="dark"] .modal .card { background-color: transparent; color: inherit; border-color: transparent; }
+
 /* ---- Text ---- */
 :root[data-theme="light"] .text-white,
 :root[data-theme="light"] .navbar-dark .navbar-brand,

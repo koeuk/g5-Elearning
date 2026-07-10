@@ -33,7 +33,33 @@ final class DashboardController extends Controller
             // Chart data: courses by purchases, and students by courses bought.
             'coursesBought' => $popular,
             'topStudents'   => $this->studentPurchases($payments),
+            // Acquisition tracking: the date each student became a paying student
+            // (their first-ever purchase). The view buckets these by week/month/
+            // year/all on the client.
+            'newStudentDates' => $this->firstPurchaseDates($payments),
         ]);
+    }
+
+    /**
+     * The date each distinct student first bought a course (their acquisition
+     * date), as 'Y-m-d' strings — one per paying student.
+     *
+     * @return array<int, string>
+     */
+    private function firstPurchaseDates(array $payments): array
+    {
+        $first = [];
+        foreach ($payments as $pay) {
+            $uid  = (int) $pay['user_id'];
+            $date = substr((string) $pay['date'], 0, 10);
+            if ($date === '') {
+                continue;
+            }
+            if (!isset($first[$uid]) || $date < $first[$uid]) {
+                $first[$uid] = $date;
+            }
+        }
+        return array_values($first);
     }
 
     /**

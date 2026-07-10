@@ -41,7 +41,7 @@
                 <th scope="col">Title</th>
                 <th scope="col">Description</th>
                 <th scope="col">Image</th>
-                <th scope="col">Action</th>
+                <th scope="col" class="text-end">Action</th>
             </tr>
         </thead>
 
@@ -60,7 +60,7 @@
                             <img class="rounded-circle" src="uploading/<?= $category['image'] ?>" alt="" style="width: 40px; height: 40px;">
                         </div>
                     </td>
-                    <td>
+                    <td class="text-end">
                         <button type='button' class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#edit-modal<?= $category['category_id'] ?>"><i class="fas fa-edit"></i>Edit</button>
                         <a class="btn btn-sm btn-primary" href="" data-bs-toggle="modal" data-bs-target="#deleteCategory<?= $category['category_id'] ?>"><i class="fas fa-trash"></i> Delete</a>
                     </td>

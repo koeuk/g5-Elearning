@@ -92,10 +92,8 @@ foreach ($lessons as $l) {
                             <?php endforeach; ?>
                         </td>
                         <td>
-                            <form action="/admin_quizzes_delete" method="post" onsubmit="return confirm('Delete this question?');">
-                                <input type="hidden" name="id" value="<?= (int) $q['quiz_id'] ?>">
-                                <button class="btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</button>
-                            </form>
+                            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#delQuizModal"
+                                    data-id="<?= (int) $q['quiz_id'] ?>" data-q="<?= e($q['question']) ?>"><i class="fa fa-trash"></i> Delete</button>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -103,3 +101,39 @@ foreach ($lessons as $l) {
         </table>
     </div>
 </div>
+
+<!-- Delete confirmation modal -->
+<div class="modal fade" id="delQuizModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border:none;border-radius:16px;overflow:hidden;">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title"><i class="fas fa-triangle-exclamation me-2"></i>Delete question</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="/admin_quizzes_delete" method="post">
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="delQuizId">
+                    <p class="mb-2">Are you sure you want to delete this question? This cannot be undone.</p>
+                    <p class="fw-semibold mb-0" id="delQuizText" style="color:#dc3545;"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger"><i class="fa fa-trash me-1"></i> Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Populate the shared delete-confirm modal from the clicked row's data-*.
+    (function () {
+        var modal = document.getElementById('delQuizModal');
+        if (!modal) return;
+        modal.addEventListener('show.bs.modal', function (event) {
+            var btn = event.relatedTarget;
+            document.getElementById('delQuizId').value = btn.getAttribute('data-id');
+            document.getElementById('delQuizText').textContent = btn.getAttribute('data-q') || '';
+        });
+    })();
+</script>
