@@ -1,6 +1,6 @@
 <!-- Sidebar Start -->
 
-<?php require_once 'models/admin.access.php'; ?>
+<?php $admin = \App\Models\User::admin() ?: ['profile_image' => '', 'name' => 'Admin']; ?>
 <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-secondary navbar-dark">
                 <a href="index.html" class="navbar-brand mx-4 mb-3">
@@ -8,11 +8,11 @@
                 </a>
                 <div class="d-flex align-items-center ms-4 mb-4">
                     <div class="position-relative">
-                        <img class="rounded-circle" src="uploading/<?=getAdmin()['profile_image']?>" alt="" style="width: 40px; height: 40px;">
+                        <img class="rounded-circle" src="uploading/<?=$admin['profile_image']?>" alt="" style="width: 40px; height: 40px;">
                         <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
                     </div>
                     <div class="ms-3">
-                        <h6 class="mb-0"><?=getAdmin()['name']?></h6>
+                        <h6 class="mb-0"><?=$admin['name']?></h6>
                         <span>Admin</span>
                     </div>
                 </div>
@@ -44,8 +44,8 @@
                 <div class="navbar-nav align-items-center ms-auto">
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <img class="rounded-circle me-lg-2" src="uploading/<?=getAdmin()['profile_image']?>" alt="" style="width: 40px; height: 40px;">
-                            <span class="d-none d-lg-inline-flex"><?=getAdmin()['name']?></span>
+                            <img class="rounded-circle me-lg-2" src="uploading/<?=$admin['profile_image']?>" alt="" style="width: 40px; height: 40px;">
+                            <span class="d-none d-lg-inline-flex"><?=$admin['name']?></span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
                             <a href="admin_password" class="dropdown-item">Change password</a>
