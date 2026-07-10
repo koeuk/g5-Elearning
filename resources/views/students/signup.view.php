@@ -1,166 +1,137 @@
+<?php
+/**
+ * Student registration. Standalone page.
+ *
+ * @var bool                 $submitted true after a POST attempt
+ * @var array<string,string> $errors    name/email/password/password_comfirm/phone messages
+ * @var array<string,string> $old        repopulation values (name/email/phone/gender)
+ */
+?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8">
-    <title>DarkPan - Bootstrap 5 Admin Template</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="" name="keywords">
-    <meta content="" name="description">
-
-    <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
-
-    <!-- Google Web Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Roboto:wght@500;700&display=swap" rel="stylesheet"> 
-    
-    <!-- Icon Font Stylesheet -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-
-    <!-- Libraries Stylesheet -->
-    <link href="vendor/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link href="vendor/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
-
-    <!-- Customized Bootstrap Stylesheet -->
-    <link href="vendor/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Template Stylesheet -->
-    <link href="vendor/css/admin.css" rel="stylesheet">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create account — E‑Learning</title>
+  <script>(function(){try{var s=localStorage.getItem('eLearnTheme');document.documentElement.setAttribute('data-theme',s||((window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light'));}catch(e){document.documentElement.setAttribute('data-theme','light');}})();</script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,400;9..144,0,600;9..144,1,500;9..144,1,600&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="assets/student-ui.css" rel="stylesheet">
 </head>
+<body class="ui-scope">
+  <div class="auth">
 
-<body style="background-image: url('assets/images/bg/02.jpg'); background-size: cover; background-repeat: no-repeat;">
-<div class="container-fluid position-relative d-flex p-0">
+    <!-- Brand / pitch -->
+    <aside class="auth__aside">
+      <div class="auth__brand"><span class="auth__dot"><i class="bi bi-mortarboard-fill"></i></span> E‑Learning</div>
+      <div class="auth__pitch">
+        <h2>Start something <em>worth learning.</em></h2>
+        <p>Create your free account and join thousands of learners levelling up every day.</p>
+        <ul class="auth__feats">
+          <li><i class="bi bi-stars"></i> Hand‑picked courses across every field</li>
+          <li><i class="bi bi-award-fill"></i> Earn certificates as you finish</li>
+          <li><i class="bi bi-lightning-charge-fill"></i> Get started in under a minute</li>
+        </ul>
+      </div>
+      <div class="auth__note">© <?= date('Y') ?> E‑Learning. Grow your skills.</div>
+    </aside>
 
-    <!-- Sign In Start -->
-    <div class="container-fluid ">
-        <div class="row h-100 align-items-center justify-content-center " style="min-height: 90vh;">
-            <div class="col-12 col-sm-8 col-md-6 col-lg-5 col-lg-4 ">
-                <div class="rounded p-2 p-sm-5 my-4 mx-3 shadhow-lgbd" style="background-color: rgba(0, 0, 0,0.4);">
-                    <div class="d-flex align-items-center justify-content-between mb-1">
-                        <h3 class="text-white">Create Account</h3>
-                    </div>
-                    <form action="/create_student" method="post" class='bd bd-white' enctype="multipart/form-data">
-                        <label for="floatingInput" class="text-white" <?php if($submitted && $errors['name'] !== ''){echo 'hidden';}?>>Name</label>
-                        <div class="form-floating mb-2 border-info rounded">
-                            <input type="text" name='refrash' hidden>
-                            <small class="form-text text-danger">
-                                <?= e($errors['name']) ?>
-                            </small>
-                            <input type="name" class="form-control bd-primary form-control-lg text-white" id="floatingInput" placeholder="Name" style="background-color: rgba(0,0,0,0.3); <?php if($submitted && $errors['name'] !== ''){echo 'border: 1px solid lightcoral;'; }?>" name='name' value='<?= e($old['name']) ?>'>
-                        </div>
-                        <label for="floatingInput" class="text-white" <?php if($submitted && $errors['phone'] !== ''){echo 'hidden';}?>>Phone</label>
-                        <div class="form-floating mb-2 border-white rounded">
-                            <small class="form-text text-danger">
-                                <?= e($errors['phone']) ?>
-                            </small>
-                            <input type="text" class="form-control form-control-lg text-white" id="floatingInput" placeholder="Phone" style="background-color: rgba(0, 0, 0, 0.3);<?php if($submitted && $errors['phone'] !== ''){echo 'border: 1px solid lightcoral;';}?>" name='phone' value="<?= e($old['phone']) ?>">
-                        </div>
-                        <label for="floatingInput" class="text-white" <?php if($submitted && $errors['email'] !== ''){echo 'hidden';}?>>Email address</label>
-                        <div class="form-floating mb-2 border-white rounded">
-                            <small class="form-text text-danger">
-                                <?= e($errors['email']) ?>
-                            </small>
-                            <input type="email" class="form-control form-control-lg text-white" id="floatingInput" placeholder="name@example.com" style="background-color: rgba(0, 0, 0, 0.3);<?php if($submitted && $errors['email'] !== ''){echo 'border: 1px solid lightcoral;';}?>" name='email' value='<?= e($old['email']) ?>'>
-                        </div>
-                        <label for="passwordInput" class="text-white " <?php if ($submitted && $errors['password'] !== '') {echo 'hidden';} ?>>Password</label>
-                        <div class="form-floating mb-2 border-white rounded">
-                            <small class="form-text text-danger">
-                                <?= e($errors['password']) ?>
-                            </small>
+    <!-- Form -->
+    <main class="auth__main">
+      <div class="auth__top">
+        <div class="auth__mobilebrand"><span class="auth__dot"><i class="bi bi-mortarboard-fill"></i></span> E‑Learning</div>
+        <span></span>
+        <button class="theme-toggle" data-theme-toggle aria-label="Toggle dark mode">
+          <i class="bi bi-sun-fill ico-sun"></i><i class="bi bi-moon-stars-fill ico-moon"></i>
+        </button>
+      </div>
 
-                            <div class="input-group">
-                                <input type="password" class="form-control form-control-lg bd-white text-white" id="passwrodcomfirm" style="background-color: rgba(0, 0, 0, 0.1);<?php if ($submitted && $errors['password'] !== '') { echo 'border: 1px solid lightcoral;'; } ?>" name='password' value="">
-                                <button type="button" class="btn btn-light" id="showPasswordBtn"  style="background-color: rgba(0, 0, 0, 0.1);"><i class="bi bi-eye"></i></button>
-                            </div>
-                        </div>
-                        <label for="passwordConfirmInput" class="text-white " <?php if ($submitted && $errors['password_comfirm'] !== '') {echo 'hidden';} ?>>Password comfirm</label>
-                        <div class="form-floating mb-2 border-white rounded">
-                            <small class="form-text text-danger">
-                                <?= e($errors['password_comfirm']) ?>
-                            </small>
+      <form class="auth__form" action="/create_student" method="post" enctype="multipart/form-data" novalidate style="max-width:440px">
+        <p class="auth__eyebrow">Join us</p>
+        <h1 class="auth__title">Create your account</h1>
+        <p class="auth__sub">It’s free — start learning today.</p>
 
-                            <div class="input-group">
-                                <input type="password_comfirm" class="form-control form-control-lg bd-white text-white" id="comfirmpassword" style="background-color: rgba(0, 0, 0, 0.1);<?php if ($submitted && $errors['password_comfirm'] !== '') { echo 'border: 1px solid lightcoral;'; } ?>" name='password_comfirm' value="">
-                                <button type="button" class="btn btn-light" id="showConfirmPasswordBtn"  style="background-color: rgba(0, 0, 0, 0.1);"><i class="bi bi-eye"></i></button>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center mb-2 gab-1">
-                            <div class="form-check me-4">
-                                <input type="radio" class="form-check-input border-white" id="maleRadio" name='gender' value='Male' style="background-color: rgba(0, 0, 0, 0.3);" <?php if($old['gender'] === 'Male'){echo 'checked';} ?> >
-                                <label class="form-check-label text-white" for="maleRadio">Male</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="radio" class="form-check-input border-white" id="femaleRadio" name='gender' value='Female' style="background-color: rgba(0, 0, 0, 0.3);" <?php if($old['gender'] === 'Female'){echo 'checked';} ?>>
-                                <label class="form-check-label text-white" for="femaleRadio">Female</label>
-                            </div>
-                        </div>
-                        <div class="mb-2">
-                            <label class="form-check-label text-white " for="exampleCheck1">Add profile image</label>
-                            <input type="file" name='image' class="form-control" aria-label="file example" style="background-color: rgba(0, 0, 0, 0.1);">
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <div class='btn h-10 w-20 mb-2 border-white' style="background-color: rgba(0, 0, 0, 0.5);"><a href="/signin" style="color: white;" >Sign in Account</a></div>
-                            <button type="submit" class="btn h-10 w-20 mb-2 border-white text-orange" style="background-color: rgba(0, 0, 0, 0.5);color: orange;">Create Account</button>
-                        </div>
-                    </form>
-
-                </div>
-            </div>
+        <div class="ui-field">
+          <label class="ui-label" for="name">Full name</label>
+          <input class="ui-input <?= ($submitted && $errors['name'] !== '') ? 'is-invalid' : '' ?>"
+                 type="text" id="name" name="name" placeholder="Jane Doe" value="<?= e($old['name']) ?>">
+          <span class="ui-err"><?= e($errors['name']) ?></span>
         </div>
-    </div>
-    <!-- Sign In End -->
-</div>
 
-    <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="vendor/chart/chart.min.js"></script>
-    <script src="vendor/easing/easing.min.js"></script>
-    <script src="vendor/waypoints/waypoints.min.js"></script>
-    <script src="vendor/owlcarousel/owl.carousel.min.js"></script>
-    <script src="vendor/tempusdominus/js/moment.min.js"></script>
-    <script src="vendor/tempusdominus/js/moment-timezone.min.js"></script>
-    <script src="vendor/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+        <div class="ui-field">
+          <label class="ui-label" for="phone">Phone</label>
+          <input class="ui-input <?= ($submitted && $errors['phone'] !== '') ? 'is-invalid' : '' ?>"
+                 type="text" id="phone" name="phone" placeholder="0XX XXX XXX" value="<?= e($old['phone']) ?>">
+          <span class="ui-err"><?= e($errors['phone']) ?></span>
+        </div>
 
-    <!-- Template Javascript -->
-    <script src="vendor/js/main.js"></script>
+        <div class="ui-field">
+          <label class="ui-label" for="email">Email address</label>
+          <input class="ui-input <?= ($submitted && $errors['email'] !== '') ? 'is-invalid' : '' ?>"
+                 type="email" id="email" name="email" placeholder="name@example.com" value="<?= e($old['email']) ?>">
+          <span class="ui-err"><?= e($errors['email']) ?></span>
+        </div>
 
-    <script>
-    $(document).ready(function() {
-        $("#showPasswordBtn").click(function() {
-            var passwordInput = $("#passwrodcomfirm");
-            var icon = $(this).find("i");
+        <div class="ui-field">
+          <label class="ui-label" for="password">Password</label>
+          <div class="ui-inputwrap">
+            <input class="ui-input <?= ($submitted && $errors['password'] !== '') ? 'is-invalid' : '' ?>"
+                   type="password" id="password" name="password" placeholder="••••••••">
+            <button class="ui-eye" type="button" data-eye="password" aria-label="Show password"><i class="bi bi-eye"></i></button>
+          </div>
+          <span class="ui-err"><?= $errors['password'] !== '' ? e($errors['password']) : '8+ chars with a letter, number &amp; symbol.' ?></span>
+        </div>
 
-            if (passwordInput.attr("type") === "password") {
-                passwordInput.attr("type", "text");
-                icon.removeClass("bi-eye").addClass("bi-eye-slash");
-            } else {
-                passwordInput.attr("type", "password");
-                icon.removeClass("bi-eye-slash").addClass("bi-eye");
-            }
-        });
+        <div class="ui-field">
+          <label class="ui-label" for="password_comfirm">Confirm password</label>
+          <div class="ui-inputwrap">
+            <input class="ui-input <?= ($submitted && $errors['password_comfirm'] !== '') ? 'is-invalid' : '' ?>"
+                   type="password" id="password_comfirm" name="password_comfirm" placeholder="••••••••">
+            <button class="ui-eye" type="button" data-eye="password_comfirm" aria-label="Show password"><i class="bi bi-eye"></i></button>
+          </div>
+          <span class="ui-err"><?= e($errors['password_comfirm']) ?></span>
+        </div>
 
-        $("#showConfirmPasswordBtn").click(function() {
-            var passwordConfirmInput = $("#comfirmpassword");
-            var icon = $(this).find("i");
+        <div class="ui-field">
+          <label class="ui-label">Gender</label>
+          <div class="ui-radio-row">
+            <div class="ui-radio">
+              <input type="radio" id="g-male" name="gender" value="Male" <?= ($old['gender'] === 'Male') ? 'checked' : '' ?>>
+              <label for="g-male"><i class="bi bi-gender-male"></i> Male</label>
+            </div>
+            <div class="ui-radio">
+              <input type="radio" id="g-female" name="gender" value="Female" <?= ($old['gender'] !== 'Male') ? 'checked' : '' ?>>
+              <label for="g-female"><i class="bi bi-gender-female"></i> Female</label>
+            </div>
+          </div>
+        </div>
 
-            if (passwordConfirmInput.attr("type") === "password") {
-                passwordConfirmInput.attr("type", "text");
-                icon.removeClass("bi-eye").addClass("bi-eye-slash");
-            } else {
-                passwordConfirmInput.attr("type", "password");
-                icon.removeClass("bi-eye-slash").addClass("bi-eye");
-            }
-        });
+        <div class="ui-field">
+          <label class="ui-label" for="image">Profile photo <span class="ui-muted" style="font-weight:400">(optional)</span></label>
+          <input class="ui-input" type="file" id="image" name="image" accept="image/*" style="padding:.6rem 1rem">
+        </div>
+
+        <button class="ui-btn ui-btn--primary ui-btn--block" type="submit" style="margin-top:.4rem">
+          <i class="bi bi-person-plus-fill"></i> Create account
+        </button>
+
+        <p class="auth__alt">Already have an account? <a href="/signin">Sign in</a></p>
+      </form>
+    </main>
+  </div>
+
+  <script src="assets/theme.js"></script>
+  <script>
+    document.querySelectorAll('[data-eye]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var inp = document.getElementById(btn.dataset.eye);
+        var show = inp.type === 'password';
+        inp.type = show ? 'text' : 'password';
+        btn.querySelector('i').className = show ? 'bi bi-eye-slash' : 'bi bi-eye';
+      });
     });
-</script>
-
-
-
-
+  </script>
 </body>
-
 </html>

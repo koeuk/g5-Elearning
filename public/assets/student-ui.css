@@ -1,0 +1,161 @@
+/* ============================================================================
+   Student UI — shared design system (light + dark themes)
+   Reused across the student-facing pages (auth, dashboard, checkout, …) so the
+   whole logged-in experience feels like one product. Theme is switched by the
+   [data-theme] attribute on <html>; see assets/theme.js.
+   ============================================================================ */
+
+:root{
+  --serif:"Fraunces",Georgia,serif;
+  --sans:"Hanken Grotesk",system-ui,-apple-system,sans-serif;
+
+  /* Light theme (default) */
+  --bg:#f6f4ee;
+  --bg-tint-1:rgba(245,165,36,.10);
+  --bg-tint-2:rgba(46,190,166,.08);
+  --surface:#ffffff;
+  --surface-2:#f3f0e8;
+  --surface-3:#ebe7dd;
+  --line:rgba(24,20,12,.10);
+  --line-2:rgba(24,20,12,.16);
+  --text:#1c1e24;
+  --muted:#6c7280;
+  --faint:#9aa0ac;
+  --accent:#e6890c;
+  --accent-2:#f5a524;
+  --accent-ink:#2a1c05;
+  --emerald:#16a97a;
+  --rose:#e5484d;
+  --shadow:0 20px 45px -22px rgba(30,25,15,.35);
+  --ring:rgba(230,137,12,.20);
+}
+
+:root[data-theme="dark"]{
+  --bg:#0c0d11;
+  --bg-tint-1:rgba(245,165,36,.16);
+  --bg-tint-2:rgba(46,230,166,.09);
+  --surface:#14161d;
+  --surface-2:#1b1e28;
+  --surface-3:#222733;
+  --line:rgba(255,255,255,.08);
+  --line-2:rgba(255,255,255,.15);
+  --text:#f4f1ea;
+  --muted:#9aa0ad;
+  --faint:#6b7280;
+  --accent:#f5a524;
+  --accent-2:#ffce6b;
+  --accent-ink:#1a1204;
+  --emerald:#2ee6a6;
+  --rose:#ff6b6b;
+  --shadow:0 24px 60px -20px rgba(0,0,0,.7);
+  --ring:rgba(245,165,36,.20);
+}
+
+*{box-sizing:border-box}
+.ui-scope{
+  margin:0; min-height:100vh; color:var(--text); background:var(--bg);
+  font-family:var(--sans); -webkit-font-smoothing:antialiased; line-height:1.5;
+  background-image:
+    radial-gradient(1100px 560px at 88% -10%, var(--bg-tint-1), transparent 58%),
+    radial-gradient(820px 480px at -10% 20%, var(--bg-tint-2), transparent 55%);
+  background-attachment:fixed;
+  transition:background-color .4s ease, color .4s ease;
+}
+.ui-serif{font-family:var(--serif)}
+.ui-muted{color:var(--muted)}
+
+/* ---- Theme toggle button ---- */
+.theme-toggle{
+  width:44px;height:44px;border-radius:13px;display:grid;place-items:center;cursor:pointer;
+  border:1px solid var(--line-2); background:var(--surface); color:var(--text);
+  transition:.25s; position:relative; overflow:hidden
+}
+.theme-toggle:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:var(--accent)}
+.theme-toggle i{font-size:1.15rem;line-height:1}
+.theme-toggle .ico-sun{display:none;color:var(--accent-2)}
+.theme-toggle .ico-moon{display:inline;color:var(--accent)}
+:root[data-theme="dark"] .theme-toggle .ico-sun{display:inline}
+:root[data-theme="dark"] .theme-toggle .ico-moon{display:none}
+
+/* ---- Buttons ---- */
+.ui-btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:.5rem;cursor:pointer;
+  font-family:var(--sans);font-weight:700;font-size:1rem;border-radius:13px;padding:.9rem 1.4rem;
+  border:1px solid transparent;transition:.22s;text-decoration:none
+}
+.ui-btn--primary{background:linear-gradient(120deg,var(--accent-2),var(--accent));color:var(--accent-ink);
+  box-shadow:0 14px 30px -14px var(--accent)}
+.ui-btn--primary:hover{transform:translateY(-2px);box-shadow:0 20px 40px -14px var(--accent)}
+.ui-btn--ghost{background:transparent;border-color:var(--line-2);color:var(--text)}
+.ui-btn--ghost:hover{border-color:var(--accent);color:var(--accent)}
+.ui-btn--block{width:100%}
+
+/* ---- Fields ---- */
+.ui-field{margin-bottom:1.05rem}
+.ui-label{display:block;font-size:.82rem;font-weight:600;color:var(--muted);margin-bottom:.4rem}
+.ui-input{
+  width:100%;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;
+  padding:.85rem 1rem;color:var(--text);font-family:var(--sans);font-size:.97rem;transition:.2s
+}
+.ui-input::placeholder{color:var(--faint)}
+.ui-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 4px var(--ring);background:var(--surface)}
+.ui-input.is-invalid{border-color:var(--rose)}
+.ui-err{color:var(--rose);font-size:.8rem;font-weight:600;margin-top:.35rem;min-height:1em;display:block}
+.ui-inputwrap{position:relative;display:flex;align-items:stretch}
+.ui-inputwrap .ui-input{padding-right:3rem}
+.ui-eye{
+  position:absolute;right:.4rem;top:50%;transform:translateY(-50%);width:2.2rem;height:2.2rem;border-radius:9px;
+  border:none;background:transparent;color:var(--muted);cursor:pointer;display:grid;place-items:center;transition:.2s
+}
+.ui-eye:hover{color:var(--accent)}
+
+/* ---- Auth split layout ---- */
+.auth{display:grid;grid-template-columns:1.05fr 1fr;min-height:100vh}
+@media(max-width:860px){.auth{grid-template-columns:1fr}}
+.auth__aside{
+  position:relative;overflow:hidden;padding:3rem;display:flex;flex-direction:column;justify-content:space-between;
+  color:#fff;background:
+    radial-gradient(600px 500px at 80% 10%, rgba(255,255,255,.14), transparent 60%),
+    linear-gradient(150deg,#3a2a0e,#1a1204 55%, #10131a);
+}
+@media(max-width:860px){.auth__aside{display:none}}
+.auth__aside::after{ /* grain */
+  content:"";position:absolute;inset:0;opacity:.05;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")
+}
+.auth__brand{display:flex;align-items:center;gap:.7rem;font-weight:800;position:relative;z-index:1}
+.auth__dot{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;
+  background:linear-gradient(140deg,var(--accent-2),#e07b1a);color:#1a1204;font-size:1.2rem}
+.auth__pitch{position:relative;z-index:1}
+.auth__pitch h2{font-family:var(--serif);font-weight:500;font-size:clamp(2rem,3.4vw,2.9rem);line-height:1.04;letter-spacing:-.02em}
+.auth__pitch h2 em{font-style:italic;color:var(--accent-2)}
+.auth__pitch p{color:rgba(255,255,255,.72);margin-top:1rem;max-width:38ch}
+.auth__feats{list-style:none;padding:0;margin:1.6rem 0 0;display:flex;flex-direction:column;gap:.7rem;
+  position:relative;z-index:1}
+.auth__feats li{display:flex;align-items:center;gap:.7rem;color:rgba(255,255,255,.85);font-size:.95rem}
+.auth__feats i{color:var(--accent-2)}
+.auth__note{position:relative;z-index:1;color:rgba(255,255,255,.5);font-size:.82rem}
+
+.auth__main{position:relative;display:flex;flex-direction:column;padding:2rem clamp(1.4rem,5vw,4rem)}
+.auth__top{display:flex;align-items:center;justify-content:space-between}
+.auth__mobilebrand{display:none;align-items:center;gap:.6rem;font-weight:800}
+@media(max-width:860px){.auth__mobilebrand{display:flex}}
+.auth__mobilebrand .auth__dot{width:32px;height:32px;font-size:1rem}
+.auth__form{flex:1;display:flex;flex-direction:column;justify-content:center;max-width:400px;
+  width:100%;margin:0 auto;padding:2.5rem 0;animation:ui-fadeup .6s cubic-bezier(.2,.7,.3,1) both}
+.auth__eyebrow{color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:.16em;font-size:.72rem;margin-bottom:.6rem}
+.auth__title{font-family:var(--serif);font-weight:600;font-size:clamp(2rem,4.4vw,2.6rem);letter-spacing:-.02em;line-height:1.05}
+.auth__sub{color:var(--muted);margin:.6rem 0 1.8rem}
+.auth__alt{color:var(--muted);text-align:center;margin-top:1.6rem;font-size:.95rem}
+.auth__alt a{color:var(--accent);font-weight:700;text-decoration:none}
+.auth__alt a:hover{text-decoration:underline}
+
+.ui-radio-row{display:flex;gap:.6rem}
+.ui-radio{flex:1;position:relative}
+.ui-radio input{position:absolute;opacity:0}
+.ui-radio label{display:flex;align-items:center;justify-content:center;gap:.5rem;padding:.7rem;border-radius:12px;
+  border:1px solid var(--line);background:var(--surface-2);color:var(--muted);font-weight:600;cursor:pointer;transition:.2s}
+.ui-radio input:checked + label{border-color:var(--accent);background:var(--accent);color:var(--accent-ink)}
+
+@keyframes ui-fadeup{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}

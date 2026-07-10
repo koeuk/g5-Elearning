@@ -74,11 +74,7 @@
                         <img src="<?= e(uploadedImage((string) $trainer['profile_image'])) ?>" class="avatar">
                     </td>
                     <td>
-                        <form action="/trainer_home" method="post" style="display: inline;">
-                            <input type="text" name="email" value="<?= $trainer['email'] ?>" hidden>
-                            <input type="text" name="admin" value="" hidden>
-                            <button type="submit" class="btn btn-sm btn-success"><i class="fas fa-eye"></i> Detail</button>
-                        </form>
+                        <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#trainerDetail<?= $trainer['user_id'] ?>"><i class="fas fa-eye"></i> Detail</button>
                         <form id="delete-form-<?= $trainer['user_id'] ?>" action="/delete_trainer" method="post" style="display: inline;">
                             <input type="text" name="id" value="<?= $trainer['user_id'] ?>" hidden>
                             <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#delete-modal<?= $trainer['user_id'] ?>"><i class="fas fa-trash"></i>Delete</button>
@@ -99,6 +95,29 @@
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancel</button>
                                         <button type="submit" form="delete-form-<?= $trainer['user_id'] ?>" class="btn btn-primary">Delete</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Trainer Detail Modal -->
+                        <div class="modal fade" id="trainerDetail<?= $trainer['user_id'] ?>" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-lg">
+                                <div class="modal-content" style="border: none; border-radius: 18px; overflow: hidden;">
+                                    <div class="modal-header" style="background: linear-gradient(135deg, #ffb454, #F28500); color: #1a1206;">
+                                        <h5 class="modal-title" style="font-weight: 800;"><i class="fas fa-user-tie me-2"></i>Trainer Details</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body d-flex flex-wrap gap-4 p-4" style="background: #1d1810; color: #f4ede0;">
+                                        <img src="<?= e(uploadedImage((string) $trainer['profile_image'])) ?>" alt="<?= e($trainer['name']) ?>"
+                                             style="width: 150px; height: 150px; object-fit: cover; border-radius: 14px; box-shadow: 0 12px 26px -10px rgba(0,0,0,.7);">
+                                        <div class="flex-grow-1" style="min-width: 220px;">
+                                            <h4 style="font-weight: 800; color: #fff;"><?= e($trainer['name']) ?></h4>
+                                            <p class="mb-2"><span style="color:#a99e8b;">Role :</span> Trainer</p>
+                                            <p class="mb-2"><span style="color:#a99e8b;">Email :</span> <?= e($trainer['email']) ?></p>
+                                            <p class="mb-2"><span style="color:#a99e8b;">Phone :</span> <?= e($trainer['phone']) ?></p>
+                                            <p class="mb-0"><span style="color:#a99e8b;">Gender :</span> <?= e($trainer['gender']) ?></p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

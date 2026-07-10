@@ -55,21 +55,24 @@ final class OrderController extends Controller
     /**
      * Record a payment for each selected, not-yet-paid course.
      *
-     * Works for both card and cash checkout. Card supplies an expiration date;
-     * cash has none, so the payment is dated today. Either way only the
-     * selection and total are required — card details are not collected here.
+     * The payment is dated with the purchase date (today). The card's expiry
+     * field is a form-only detail and is deliberately NOT written to the
+     * payments.date column — doing so stored a wrong/future date and crashed
+     * when the value was not a full YYYY-MM-DD date.
      *
-     * @return bool true when this request carried a complete, valid payment
+     * @return bool true only when at least one payment was actually recorded
      */
     private function processPayment(int $studentId): bool
     {
         $selection = $this->input('selectioned');
         $total     = $this->input('totals');
-        $date      = $this->input('expiration-date') ?: date('Y-m-d');
 
         if ($selection === '' || $total === '') {
             return false;
         }
+
+        $today    = date('Y-m-d');
+        $recorded = 0;
 
         foreach (array_map('intval', explode(',', $selection)) as $courseId) {
             if ($courseId <= 0 || Payment::exists($studentId, $courseId) !== []) {
@@ -77,10 +80,11 @@ final class OrderController extends Controller
             }
             $course = Course::find($courseId);
             if ($course !== false) {
-                Payment::add($courseId, $studentId, $date, (string) $course['price']);
+                Payment::add($courseId, $studentId, $today, (string) $course['price']);
+                $recorded++;
             }
         }
 
-        return true;
+        return $recorded > 0;
     }
 }

@@ -22,6 +22,7 @@ use App\Controllers\Admin\PasswordController as AdminPasswordController;
 use App\Controllers\Student\AuthController as StudentAuthController;
 use App\Controllers\Student\HomeController as StudentHomeController;
 use App\Controllers\Student\CourseController as StudentCourseController;
+use App\Controllers\Student\ClassroomController as StudentClassroomController;
 use App\Controllers\Student\ProfileController as StudentProfileController;
 use App\Controllers\Student\PasswordController as StudentPasswordController;
 use App\Controllers\Student\OrderController;
@@ -52,6 +53,9 @@ $router->any('/student', [StudentHomeController::class, 'index']);         // co
 
 /* Courses within a category (posted from the home category cards/dropdown). */
 $router->any('/course', [StudentCourseController::class, 'index']);
+
+/* Classroom for a purchased course (lessons, quizzes, trainer). */
+$router->any('/blog_learning', [StudentClassroomController::class, 'show']);
 
 /* Profile + edit + change password. */
 $router->any('/student_profile', [StudentProfileController::class, 'show']);
