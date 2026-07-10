@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class AuthTest extends TestCase
 {
-    public function test_hash_is_not_plaintext_and_verifies(): void
+    public function testHashIsNotPlaintextAndVerifies(): void
     {
         $hash = Auth::hash('secret1');
 
@@ -21,7 +21,7 @@ final class AuthTest extends TestCase
         $this->assertFalse(Auth::verify('wrong', $hash));
     }
 
-    public function test_legacy_plaintext_password_still_verifies(): void
+    public function testLegacyPlaintextPasswordStillVerifies(): void
     {
         // A row that predates the fix stores the password in plaintext.
         $stored = 'plainpass1';
@@ -32,7 +32,7 @@ final class AuthTest extends TestCase
         $this->assertTrue(Auth::needsRehash($stored));
     }
 
-    public function test_proper_hash_does_not_need_rehash(): void
+    public function testProperHashDoesNotNeedRehash(): void
     {
         $this->assertFalse(Auth::needsRehash(Auth::hash('secret1')));
     }

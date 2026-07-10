@@ -34,7 +34,9 @@ final class Post
 
     public static function update(int $id, string $title, string $description): bool
     {
-        $stmt = Database::connection()->prepare('UPDATE posts SET title = :title, description = :description WHERE id = :id');
+        $stmt = Database::connection()->prepare(
+            'UPDATE posts SET title = :title, description = :description WHERE id = :id'
+        );
         $stmt->execute([':title' => $title, ':description' => $description, ':id' => $id]);
         return $stmt->rowCount() > 0;
     }

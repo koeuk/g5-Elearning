@@ -6,9 +6,9 @@ use App\Models\User;
 
 /**
  * Form-validation + credential checks, reimplemented from the assorted
- * apply/require validation functions in the old models. Sign-in and
- * password-change now
- * use App\Core\Auth for real verification instead of the old re-hash trick.
+ * apply/require validation functions in the old models. Sign-in and password
+ * change now use App\Core\Auth for real verification instead of the old
+ * re-hash trick.
  *
  * Each method returns an array of field => message; an all-empty array means
  * "valid" (matching the original convention the views check against).
@@ -17,6 +17,10 @@ final class Validation
 {
     /** A letter, a digit, min 5 chars (the app's original rule). */
     public const PASSWORD_PATTERN = '/^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9@$!%*?&]{5,}$/i';
+
+    /** Shared message for a password that fails PASSWORD_PATTERN. */
+    private const WEAK_PASSWORD =
+        'Password must contain at least one letter and one digit, and be at least 5 characters long.';
 
     /** Validate a student/trainer sign-in by email. */
     public static function signin(string $email, string $password, int $role = User::ROLE_STUDENT): array
@@ -103,14 +107,16 @@ final class Validation
 
         $strong = $password !== '' && preg_match(self::PASSWORD_PATTERN, $password);
 
-        if ($name !== '' && $email !== '' && $password !== '' && $phone !== '' && $confirmPassword !== ''
-            && $strong && $password === $confirmPassword) {
+        if (
+            $name !== '' && $email !== '' && $password !== '' && $phone !== '' && $confirmPassword !== ''
+            && $strong && $password === $confirmPassword
+        ) {
             // All fields valid — the only remaining reason to reject is a taken email.
             if (count(User::findByEmail($email)) > 0) {
                 $info['email'] = 'This email already exists!';
             }
         } elseif (!$strong && $password !== '') {
-            $info['password'] = 'Password must contain at least one letter and one digit, and be at least 5 characters long.';
+            $info['password'] = self::WEAK_PASSWORD;
         }
 
         return $info;
@@ -136,7 +142,7 @@ final class Validation
         }
 
         if (!preg_match(self::PASSWORD_PATTERN, $new)) {
-            $info['newPassword'] = 'Password must contain at least one letter and one digit, and be at least 5 characters long.';
+            $info['newPassword'] = self::WEAK_PASSWORD;
         }
 
         return $info;
@@ -146,7 +152,7 @@ final class Validation
     {
         $result = ['password' => ''];
         if ($password !== '' && !preg_match(self::PASSWORD_PATTERN, $password)) {
-            $result['password'] = 'Password must contain at least one letter and one digit, and be at least 5 characters long.';
+            $result['password'] = self::WEAK_PASSWORD;
         }
         return $result;
     }
