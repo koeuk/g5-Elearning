@@ -154,7 +154,8 @@ CREATE TABLE `users` (
   `gender` varchar(50) NOT NULL,
   `roles_id` int(11) DEFAULT NULL,
   `phone` varchar(200) NOT NULL,
-  `profile_image` varchar(300) DEFAULT NULL
+  `profile_image` varchar(300) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --

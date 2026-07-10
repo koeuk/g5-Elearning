@@ -89,9 +89,9 @@ $topStudents   = $topStudents ?? [];
                 .period-btn.active{background:#F28500;color:#fff}
             </style>
             <div class="container-fluid pt-4 px-4">
-                <div class="bg-secondary rounded p-4">
+                <div class="bg-secondary rounded p-4" id="new-users-card">
                     <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
-                        <h5 class="mb-0 fw-bold text-start" style="color:#F28500;"><i class="fas fa-user-plus me-2"></i>New Students <span class="text-muted small">(first purchase)</span></h5>
+                        <h5 class="mb-0 fw-bold text-start" style="color:#F28500;"><i class="fas fa-user-plus me-2"></i>New Users <span class="text-muted small">(sign-ups)</span></h5>
                         <div id="periodToggle" role="group" aria-label="Time range" class="d-flex gap-2">
                             <button type="button" class="period-btn" data-period="week">Week</button>
                             <button type="button" class="period-btn" data-period="month">Month</button>
@@ -99,10 +99,10 @@ $topStudents   = $topStudents ?? [];
                             <button type="button" class="period-btn" data-period="all">All</button>
                         </div>
                     </div>
-                    <?php if (empty($newStudentDates)) : ?>
-                        <p class="text-muted mb-0">No students have signed up (bought a course) yet.</p>
+                    <?php if (empty($newUserDates)) : ?>
+                        <p class="text-muted mb-0">No user sign-ups recorded yet.</p>
                     <?php else : ?>
-                        <div style="height:320px"><canvas id="newStudentsChart"></canvas></div>
+                        <div style="height:320px"><canvas id="newUsersChart"></canvas></div>
                     <?php endif; ?>
                 </div>
             </div>
@@ -240,7 +240,7 @@ window.addEventListener('load', function () {
     }
 
     /* ---- New students over time (Week / Month / Year / All) ---- */
-    var newStudentDates = <?= json_encode(array_values($newStudentDates ?? []), JSON_UNESCAPED_UNICODE) ?>;
+    var newUserDates = <?= json_encode(array_values($newUserDates ?? []), JSON_UNESCAPED_UNICODE) ?>;
     var currentPeriod = 'year';
 
     var valueLabelsY = {
@@ -274,12 +274,12 @@ window.addEventListener('load', function () {
             for (i = 11; i >= 0; i--) { d = new Date(now.getFullYear(), now.getMonth() - i, 1); keys.push(ymd(d).slice(0, 7)); labels.push(d.toLocaleDateString(undefined, { month: 'short' })); }
         } else {
             byMonth = true;
-            var min = newStudentDates.length ? newStudentDates.reduce(function (a, b) { return a < b ? a : b; }) : ymd(now);
+            var min = newUserDates.length ? newUserDates.reduce(function (a, b) { return a < b ? a : b; }) : ymd(now);
             var cur = new Date(Number(min.slice(0, 4)), Number(min.slice(5, 7)) - 1, 1);
             var end = new Date(now.getFullYear(), now.getMonth(), 1);
             while (cur <= end) { keys.push(ymd(cur).slice(0, 7)); labels.push(cur.toLocaleDateString(undefined, { month: 'short', year: '2-digit' })); cur.setMonth(cur.getMonth() + 1); }
         }
-        var counts = keys.map(function (k) { return newStudentDates.filter(function (dt) { return byMonth ? dt.slice(0, 7) === k : dt === k; }).length; });
+        var counts = keys.map(function (k) { return newUserDates.filter(function (dt) { return byMonth ? dt.slice(0, 7) === k : dt === k; }).length; });
         return { labels: labels, counts: counts };
     }
 
@@ -295,7 +295,7 @@ window.addEventListener('load', function () {
                 responsive: true, maintainAspectRatio: false, layout: { padding: { top: 16 } },
                 plugins: {
                     legend: { display: false },
-                    tooltip: { callbacks: { label: function (x) { return ' ' + x.parsed.y + ' new student' + (x.parsed.y === 1 ? '' : 's'); } } }
+                    tooltip: { callbacks: { label: function (x) { return ' ' + x.parsed.y + ' new user' + (x.parsed.y === 1 ? '' : 's'); } } }
                 },
                 scales: {
                     x: { ticks: { color: c.ink, maxRotation: 0, autoSkip: true, maxTicksLimit: 16 }, grid: { display: false, drawBorder: false } },
@@ -308,7 +308,7 @@ window.addEventListener('load', function () {
 
     function renderNewStudents() {
         var b = buildBuckets(currentPeriod);
-        makeTimeBar('newStudentsChart', b.labels, b.counts);
+        makeTimeBar('newUsersChart', b.labels, b.counts);
     }
 
     document.querySelectorAll('#periodToggle .period-btn').forEach(function (btn) {

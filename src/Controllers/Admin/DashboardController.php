@@ -4,6 +4,7 @@ namespace App\Controllers\Admin;
 
 use App\Core\Auth;
 use App\Core\Controller;
+use App\Core\Database;
 use App\Models\Category;
 use App\Models\Course;
 use App\Models\Payment;
@@ -33,33 +34,25 @@ final class DashboardController extends Controller
             // Chart data: courses by purchases, and students by courses bought.
             'coursesBought' => $popular,
             'topStudents'   => $this->studentPurchases($payments),
-            // Acquisition tracking: the date each student became a paying student
-            // (their first-ever purchase). The view buckets these by week/month/
-            // year/all on the client.
-            'newStudentDates' => $this->firstPurchaseDates($payments),
+            // Growth tracking: the sign-up date of every user account. The view
+            // buckets these by week/month/year/all on the client.
+            'newUserDates' => $this->signupDates(),
         ]);
     }
 
     /**
-     * The date each distinct student first bought a course (their acquisition
-     * date), as 'Y-m-d' strings — one per paying student.
+     * Every user's account-creation date as 'Y-m-d' strings (all roles), for the
+     * "new users over time" chart.
      *
      * @return array<int, string>
      */
-    private function firstPurchaseDates(array $payments): array
+    private function signupDates(): array
     {
-        $first = [];
-        foreach ($payments as $pay) {
-            $uid  = (int) $pay['user_id'];
-            $date = substr((string) $pay['date'], 0, 10);
-            if ($date === '') {
-                continue;
-            }
-            if (!isset($first[$uid]) || $date < $first[$uid]) {
-                $first[$uid] = $date;
-            }
-        }
-        return array_values($first);
+        $rows = Database::connection()
+            ->query('SELECT created_at FROM users WHERE created_at IS NOT NULL ORDER BY created_at')
+            ->fetchAll();
+
+        return array_map(static fn ($r) => substr((string) $r['created_at'], 0, 10), $rows);
     }
 
     /**

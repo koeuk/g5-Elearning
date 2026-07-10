@@ -100,8 +100,8 @@ final class User
         int $role = self::ROLE_STUDENT
     ): bool {
         $stmt = Database::connection()->prepare(
-            'INSERT INTO users (name, email, password, gender, roles_id, phone, profile_image)
-             VALUES (:name, :email, :password, :gender, :role, :phone, :image)'
+            'INSERT INTO users (name, email, password, gender, roles_id, phone, profile_image, created_at)
+             VALUES (:name, :email, :password, :gender, :role, :phone, :image, NOW())'
         );
         $stmt->execute([
             ':name'     => $name,
