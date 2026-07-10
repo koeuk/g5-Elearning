@@ -4,6 +4,7 @@ namespace App\Controllers\Admin;
 
 use App\Core\Auth;
 use App\Core\Controller;
+use App\Core\Session;
 use App\Core\Validation;
 use App\Models\User;
 
@@ -57,6 +58,7 @@ final class AuthController extends Controller
         }
 
         Auth::login($admin);
+        Session::flash('success', 'Login successful. Welcome, ' . ($admin['name'] ?? 'Admin') . '!');
         $this->redirect('/admin_home');
     }
 }

@@ -8,5 +8,6 @@ use App\Core\View;
 
 echo View::partial('layouts/public/header');
 echo View::partial('layouts/public/navbar');
+echo View::partial('layouts/partials/flash');
 echo $content ?? '';
 echo View::partial('layouts/public/footer');

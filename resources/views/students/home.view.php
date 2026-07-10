@@ -112,6 +112,8 @@ echo View::partial('layouts/public/header');
   </header>
 <!-- Header END -->
 
+<?= View::partial('layouts/partials/flash') ?>
+
 <!-- **************** MAIN CONTENT START **************** -->
 <main>
 <!-- =======================

@@ -4,6 +4,7 @@ namespace App\Controllers\Student;
 
 use App\Core\Auth;
 use App\Core\Controller;
+use App\Core\Session;
 use App\Core\Validation;
 use App\Models\User;
 
@@ -60,6 +61,7 @@ final class AuthController extends Controller
         }
 
         Auth::login($user);
+        Session::flash('success', 'Login successful. Welcome, ' . ($user['name'] ?? '') . '!');
         $this->redirect('/student');
     }
 
