@@ -1,20 +1,14 @@
-<?php 
-    require 'models/payment.model.php';
-    require 'database/database.php';
-
-    if($_SERVER['REQUEST_METHOD'] == 'POST'){
-      if(isset($_POST['email']) && isset($_POST['selectioned']) && isset($_POST['expiration-date']) && isset($_POST['totals'])){
-        if($_POST['email']!='' && $_POST['selectioned']!='' && $_POST['expiration-date']!='' && $_POST['totals']!=''){
-          $text = $_POST['selectioned'];
-          $numbers = array_map('intval', explode(',', $text));
-          foreach ($numbers as $number){
-            if(count(getPaymentExist(students($_POST['email'])['user_id'],$number))<1){
-              addPayments($number,students($_POST['email'])['user_id'], $_POST['expiration-date'], courses($number)['price']);
-            }
-          }
-        }
-      }
-    }
+<?php
+/**
+ * Student ordering / checkout screen. Standalone page (own <head>/<body>).
+ *
+ * Request handling (recording payments) now lives in
+ * App\Controllers\Student\OrderController; this template only renders.
+ *
+ * @var string             $email  acting student's email (for the hidden form fields)
+ * @var array<int, array>  $orders pending cart rows, each joined with course title/price/image
+ * @var bool               $paid   true when a payment was just completed (shows the banner)
+ */
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -100,20 +94,9 @@
 </head>
 <body style="background-color: rgba(0, 0, 0,0.05);">
 <section id='testing_blog' style='height: 200px;background-image: url("assets/images/bg/abstract-1264071_1280.jpg");'>
-<div class="container p-3" <?php 
-      if(isset($_POST['email']) && isset($_POST['selectioned']) && isset($_POST['expiration-date']) && isset($_POST['totals'])){
-        if($_POST['email']!='' && $_POST['selectioned']!='' && $_POST['expiration-date']!='' && $_POST['totals']!=''){
-              echo '';
-        }else{
-              echo 'hidden';
-        }
-      }else{
-        echo 'hidden';
-  }
-
-?>>
+<div class="container p-3" <?= $paid ? '' : 'hidden' ?>>
   <div class="alert alert-success">
-    <strong>Your paid successfully!  <img src="studentprofile/check.png" alt="Profile Image" class="rounded-circle mb-3" style="width: 30px; height: 30px; object-fit: cover;"></strong>  
+    <strong>Your paid successfully!  <img src="studentprofile/check.png" alt="Profile Image" class="rounded-circle mb-3" style="width: 30px; height: 30px; object-fit: cover;"></strong>
     <span id="icon-cross" class="icon-cross">X</span>
   </div>
 </div>
@@ -129,15 +112,17 @@
   const iconCross = document.getElementById('icon-cross');
   const alertBox = document.querySelector('.alert');
 
-  iconCross.addEventListener('click', function() {
-    alertBox.style.display = 'none';
-  });
+  if (iconCross && alertBox) {
+    iconCross.addEventListener('click', function() {
+      alertBox.style.display = 'none';
+    });
+  }
 </script>
- 
+
     <div class="row  mt-0">
     <div class="container">
       <form class="container-fluid justify-content-start" action='/student' method='post'>
-          <input type="text" name='email' value='<?= $_POST['email']?>' hidden>  
+          <input type="text" name='email' value='<?= e($email) ?>' hidden>
         <button type="submit" class="btn btn-orange btn-sm">Back</button>
       </form>
     </div>
@@ -152,22 +137,19 @@
       <!-- Product Card -->
       <div class="col-md-4" style="height: 300px; overflow-y: auto;">
         <div data-spy="scroll" data-target="#navbar-example2" data-offset="0" class="scrollspy-example">
-          <?php 
-          $orders = getTheorder(students($_POST['email'])['user_id']);
-          foreach ($orders as $order):
-          ?>
-          <div class="card card-body shadow rounded-3 m-2" data-course-id="<?= $order['course_id'] ?>">
+          <?php foreach (($orders ?? []) as $order): ?>
+          <div class="card card-body shadow rounded-3 m-2" data-course-id="<?= (int) $order['course_id'] ?>">
             <div class="d-flex align-items-center justify-content-between">
               <div class="d-flex align-items-center">
-                <img class="me-lg-2" src="uploading/<?= courses($order['course_id'])['image_courses']?>" alt="" style="width: 70px; height: 70px;">
+                <img class="me-lg-2" src="uploading/<?= e($order['image_courses']) ?>" alt="" style="width: 70px; height: 70px;">
                 <div class="ms-3">
                   <input type="text" name='email' value='' hidden>
                   <input type="text" name='id' value='' hidden>
-                  <h5 class="mb-0"><?= courses($order['course_id'])['title']?></h5>
-                  <span><?= courses($order['course_id'])['price']?></span>
+                  <h5 class="mb-0"><?= e($order['title']) ?></h5>
+                  <span><?= e($order['price']) ?></span>
                 </div>
               </div>
-              <button class="btn btn-primary add-to-cart-btn" data-price="<?= courses($order['course_id'])['price'] ?>"><i class="bi bi-cart-plus"></i>Add</button>
+              <button class="btn btn-primary add-to-cart-btn" data-price="<?= e($order['price']) ?>"><i class="bi bi-cart-plus"></i>Add</button>
             </div>
           </div>
           <?php endforeach ?>
@@ -201,7 +183,7 @@
           <div class="modal-dialog modal-lg"> <!-- Increased size -->
                <div class="modal-content">
                     <div class="modal-body border p-4 m-4"> <!-- Changed border color to orange -->
-                    <div class="text-center"> 
+                    <div class="text-center">
                         <img src="studentprofile/download.png" alt="Profile Image" class="rounded-circle mb-3" style="width: 130px; height: 130px; object-fit: cover;">
                     </div>
                     <h5 class="text-center">Here is Bill</h5>
@@ -214,7 +196,7 @@
                     <div class="d-flex justify-content-end mt-2">Total:<h5 class="text-warning" id="modalPrice"></h5></div> <!-- Changed text color to orange -->
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <input type="text" id="modalUser" value='<?=$_POST['email']?>' name='email' hidden>
+                            <input type="text" id="modalUser" value='<?= e($email) ?>' name='email' hidden>
                             <button type='button' class="btn btn-warning pays">Pay</button> <!-- Changed button color to orange -->
                     </div>
                     </div>
@@ -254,7 +236,7 @@
                 <input type="text" class="form-control form-control-lg focus-orange" id="cvv" name="cvv" required>
               </div>
             </div>
-            <input type="text" name='email' value='<?= $_POST['email']?>' hidden>  
+            <input type="text" name='email' value='<?= e($email) ?>' hidden>
             <input type="text" id="modalCourse" name="selectioned" hidden>
             <input type="text" id="totals" name="totals" hidden>
             <button type="submit" class="btn btn-warning btn-lg paid">Pay Now</button>

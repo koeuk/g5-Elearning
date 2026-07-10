@@ -12,6 +12,7 @@
 
 use App\Core\Router;
 use App\Controllers\HomeController;
+use App\Controllers\Student\OrderController;
 
 $router = new Router();
 
@@ -19,6 +20,12 @@ $router = new Router();
 /* Public site                                                                */
 /* -------------------------------------------------------------------------- */
 $router->get('/', [HomeController::class, 'index']);
+
+/* -------------------------------------------------------------------------- */
+/* Students                                                                   */
+/* -------------------------------------------------------------------------- */
+/* Ordering/checkout screen — self-submits, so it handles GET and POST. */
+$router->any('/orders', [OrderController::class, 'index']);
 
 /*
  * The remaining areas (admin, students, trainers, courses) are migrated

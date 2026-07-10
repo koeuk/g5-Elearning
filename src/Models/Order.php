@@ -26,6 +26,25 @@ final class Order
         return $stmt->fetchAll();
     }
 
+    /**
+     * Unpaid orders (cart) for a user, joined with each course's title, price
+     * and image in one query. Replaces the per-item courses() lookups the order
+     * view used to run four times per row.
+     *
+     * @return array<int, array> rows include `title`, `price`, `image_courses`
+     */
+    public static function pendingForWithCourse(int $userId): array
+    {
+        $stmt = Database::connection()->prepare(
+            'SELECT o.*, c.title, c.price, c.image_courses
+             FROM orders o
+             INNER JOIN courses c ON o.course_id = c.course_id
+             WHERE o.user_id = :id AND o.action = :action'
+        );
+        $stmt->execute([':id' => $userId, ':action' => 'No']);
+        return $stmt->fetchAll();
+    }
+
     /** A specific pending (unpaid) order. Returns [] when absent. */
     public static function pending(int $userId, int $courseId): array
     {
