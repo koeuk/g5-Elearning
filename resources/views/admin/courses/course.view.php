@@ -196,7 +196,7 @@
                          <th class="text-center">Price</th>
 
                          <!-- th class="text-center">Role ID</th> -->
-                         <th class="text-center">Action</th>
+                         <th class="text-end">Action</th>
                     </tr>
                </thead>
                <tbody>
@@ -219,7 +219,7 @@
                               </div>
                          </td>
                          <td class="text-start"><?= $course['price'] ?></td>
-                         <td class="text-start d-sm-flex gap-1 align-items-center p-3 ">
+                         <td class="text-start d-sm-flex gap-1 align-items-center justify-content-end p-3 ">
                               <form action="/courseEdit" method="post">
                                    <input type="text" name='id' value='<?= $course['course_id'] ?>' hidden>
                                    <button class="btn btn-sm btn-success" >
