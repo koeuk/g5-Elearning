@@ -90,7 +90,10 @@ echo View::partial('layouts/public/header');
       <!-- Right header content START -->
       <div class="nav-item dropdown ">
         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-        <img class="rounded-circle me-lg-2" src="../../uploading/<?= e($student['profile_image'] ?? '') ?>" alt="" style="width: 50px; height:50px;">
+        <?php $studentAvatar = trim((string) ($student['profile_image'] ?? '')) !== ''
+            ? 'uploading/' . $student['profile_image']
+            : 'assets/images/avatar/01.jpg'; ?>
+        <img class="rounded-circle me-lg-2" src="<?= e($studentAvatar) ?>" alt="" style="width: 50px; height:50px;">
         <span class="d-none d-lg-inline-flex"><?= e($student['name'] ?? '') ?></span>
         </a>
         <div class="dropdown-menu dropdown-menu-end border-0 rounded-0 rounded-bottom m-0">

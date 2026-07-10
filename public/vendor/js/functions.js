@@ -462,7 +462,7 @@ var e = {
     // START: 10 GLightbox
     lightBox: function () {
         var light = e.select('[data-glightbox]');
-        if (e.isVariableDefined(light)) {
+        if (e.isVariableDefined(light) && typeof GLightbox !== 'undefined') {
             var lb = GLightbox({
                 selector: '*[data-glightbox]',
                 openEffect: 'fade',
