@@ -158,6 +158,17 @@
                                                         <input type="text" class="form-control" name="phone" value="<?= e($trainer['phone']) ?>">
                                                     </div>
                                                     <div class="mb-3">
+                                                        <label class="form-label d-block">Gender</label>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="radio" name="gender" id="tgMale<?= (int) $trainer['user_id'] ?>" value="Male" <?= ($trainer['gender'] ?? '') === 'Male' ? 'checked' : '' ?>>
+                                                            <label class="form-check-label" for="tgMale<?= (int) $trainer['user_id'] ?>">Male</label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="radio" name="gender" id="tgFemale<?= (int) $trainer['user_id'] ?>" value="Female" <?= ($trainer['gender'] ?? '') === 'Female' ? 'checked' : '' ?>>
+                                                            <label class="form-check-label" for="tgFemale<?= (int) $trainer['user_id'] ?>">Female</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="mb-3">
                                                         <label class="form-label">Profile photo <span class="text-muted small">(leave empty to keep)</span></label>
                                                         <input type="file" class="form-control" name="image" accept="image/*">
                                                     </div>

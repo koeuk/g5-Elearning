@@ -69,6 +69,9 @@ $usersActive = $isActive('/list_trainer', '/list_student');
                     <i class="fa fa-bars "style='color:#F28500'></i>
                 </a>
                 <div class="navbar-nav align-items-center ms-auto">
+                    <button type="button" class="admin-theme-toggle me-3" data-theme-toggle aria-label="Toggle dark mode">
+                        <i class="bi bi-sun-fill ico-sun"></i><i class="bi bi-moon-stars-fill ico-moon"></i>
+                    </button>
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                             <img class="rounded-circle me-lg-2" src="<?= e($adminAvatar) ?>" alt="" style="width: 40px; height: 40px;">

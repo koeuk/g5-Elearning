@@ -1,0 +1,109 @@
+/* ==========================================================================
+   Admin dark/light theming.
+
+   The vendor admin template (vendor/css/admin.css + bootstrap) is hard-dark.
+   Dark mode = the template's original look (no overrides needed). Light mode
+   is applied when <html data-theme="light">, flipping the template's surface
+   variables (--dark / --secondary / --light) AND the Bootstrap utility classes
+   the views use directly (.text-white, .table-dark, .bg-secondary, .bg-dark).
+   Toggle + persistence come from the shared assets/theme.js (key eLearnTheme).
+   ========================================================================== */
+
+:root[data-theme="light"] {
+    /* Repaint the template's own surface variables. */
+    --dark: #eef1f6;       /* page / content / sidebar background */
+    --secondary: #ffffff;  /* sidebar + navbar + card surface     */
+    --light: #5b6472;      /* nav-link text                       */
+
+    --admin-ink: #1f2430;
+    --admin-muted: #5b6472;
+    --admin-line: #e4e8f0;
+    --admin-surface: #ffffff;
+    --admin-bg: #eef1f6;
+    --admin-brand: #F28500;
+}
+
+/* ---- Page + shell surfaces ---- */
+:root[data-theme="light"] body { background: var(--admin-bg); color: var(--admin-ink); }
+:root[data-theme="light"] .content,
+:root[data-theme="light"] .sidebar { background: var(--admin-bg) !important; }
+
+:root[data-theme="light"] .sidebar .navbar,
+:root[data-theme="light"] .content > .navbar {
+    background: var(--admin-surface) !important;
+    box-shadow: 0 1px 0 var(--admin-line), 0 8px 24px -18px rgba(20, 25, 40, .35);
+}
+
+/* Bootstrap surface utilities used across the admin views. */
+:root[data-theme="light"] .bg-secondary { background-color: var(--admin-surface) !important; }
+:root[data-theme="light"] .bg-dark { background-color: #f4f6fb !important; }
+:root[data-theme="light"] .card,
+:root[data-theme="light"] .modal-content { background-color: var(--admin-surface); color: var(--admin-ink); }
+
+/* ---- Text ---- */
+:root[data-theme="light"] .text-white,
+:root[data-theme="light"] .navbar-dark .navbar-brand,
+:root[data-theme="light"] .navbar-dark .navbar-nav .nav-link,
+:root[data-theme="light"] tr.text-white,
+:root[data-theme="light"] tr.text-white > * { color: var(--admin-ink) !important; }
+
+:root[data-theme="light"] .sidebar .navbar .navbar-nav .nav-link { color: var(--admin-muted); }
+:root[data-theme="light"] .sidebar .navbar .navbar-nav .nav-link:hover,
+:root[data-theme="light"] .sidebar .navbar .navbar-nav .nav-link.active { color: var(--admin-brand); }
+:root[data-theme="light"] .navbar-dark .navbar-toggler-icon,
+:root[data-theme="light"] .sidebar-toggler i,
+:root[data-theme="light"] .fa-bars { color: var(--admin-brand) !important; }
+
+/* ---- Tables (.table-dark used by category/course/student/trainer lists) ---- */
+:root[data-theme="light"] .table-dark {
+    --bs-table-bg: #ffffff;
+    --bs-table-color: var(--admin-ink);
+    --bs-table-border-color: var(--admin-line);
+    --bs-table-striped-bg: #f6f8fc;
+    --bs-table-striped-color: var(--admin-ink);
+    --bs-table-hover-bg: #f0f4fb;
+    --bs-table-hover-color: var(--admin-ink);
+    color: var(--admin-ink);
+}
+:root[data-theme="light"] .table-dark > :not(caption) > * > * { color: var(--admin-ink); }
+:root[data-theme="light"] .table-bordered,
+:root[data-theme="light"] .table-bordered > :not(caption) > * > * { border-color: var(--admin-line) !important; }
+
+/* ---- Inputs (dark-themed in the views) ---- */
+:root[data-theme="light"] .form-control,
+:root[data-theme="light"] .form-select {
+    background-color: #fff; color: var(--admin-ink); border-color: var(--admin-line);
+}
+:root[data-theme="light"] .form-control.bg-dark,
+:root[data-theme="light"] .form-control.bg-secondary { background-color: #fff !important; color: var(--admin-ink) !important; }
+:root[data-theme="light"] .form-control::placeholder { color: #9aa3b2; }
+:root[data-theme="light"] .form-control:focus,
+:root[data-theme="light"] .form-select:focus {
+    border-color: var(--admin-brand); box-shadow: 0 0 0 .2rem rgba(242, 133, 0, .18);
+}
+
+/* ---- Misc ---- */
+:root[data-theme="light"] hr { border-color: var(--admin-line); opacity: 1; }
+:root[data-theme="light"] .dropdown-menu {
+    background: var(--admin-surface); border: 1px solid var(--admin-line);
+    box-shadow: 0 16px 40px -16px rgba(20, 25, 40, .3);
+}
+:root[data-theme="light"] .dropdown-item { color: var(--admin-ink); }
+:root[data-theme="light"] .dropdown-item:hover { background: #f2f5fb; color: var(--admin-brand); }
+:root[data-theme="light"] .border,
+:root[data-theme="light"] .border-top,
+:root[data-theme="light"] .border-bottom { border-color: var(--admin-line) !important; }
+
+/* ---- Theme toggle button (in the top navbar) ---- */
+.admin-theme-toggle {
+    width: 40px; height: 40px; border-radius: 11px;
+    display: inline-grid; place-items: center;
+    border: 1px solid rgba(242, 133, 0, .35);
+    background: rgba(242, 133, 0, .12); color: #F28500;
+    cursor: pointer; font-size: 1.05rem; transition: background .2s, transform .2s;
+}
+.admin-theme-toggle:hover { background: rgba(242, 133, 0, .22); transform: translateY(-1px); }
+.admin-theme-toggle .ico-sun { display: none; }
+.admin-theme-toggle .ico-moon { display: inline; }
+:root[data-theme="light"] .admin-theme-toggle .ico-sun { display: inline; }
+:root[data-theme="light"] .admin-theme-toggle .ico-moon { display: none; }

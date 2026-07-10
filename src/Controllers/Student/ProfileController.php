@@ -60,7 +60,13 @@ final class ProfileController extends Controller
             $email = (string) ($current['email'] ?? '');
         }
 
-        User::update($id, $name, $email, $phone, (string) ($current['gender'] ?? 'Male'), $image);
+        // Use the posted gender when present (the admin edit form sends it);
+        // otherwise keep the existing value (the self-edit form has no field).
+        $gender = in_array($this->input('gender'), ['Male', 'Female'], true)
+            ? $this->input('gender')
+            : (string) ($current['gender'] ?? 'Male');
+
+        User::update($id, $name, $email, $phone, $gender, $image);
 
         // Keep the session copy in sync when a student edits their own profile.
         if (!$isAdmin) {

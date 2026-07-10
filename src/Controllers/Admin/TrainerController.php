@@ -73,7 +73,11 @@ final class TrainerController extends Controller
             $email = (string) ($current['email'] ?? '');
         }
 
-        User::update($id, $name, $email, $phone, (string) ($current['gender'] ?? 'Male'), $image);
+        $gender = in_array($this->input('gender'), ['Male', 'Female'], true)
+            ? $this->input('gender')
+            : (string) ($current['gender'] ?? 'Male');
+
+        User::update($id, $name, $email, $phone, $gender, $image);
         Session::flash('trainer_pw', ['type' => 'success', 'message' => 'Trainer details updated.']);
         $this->redirect('/list_trainer');
     }

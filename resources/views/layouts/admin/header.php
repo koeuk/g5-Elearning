@@ -8,6 +8,9 @@
     <meta content="" name="keywords">
     <meta content="" name="description">
 
+    <!-- Theme: set data-theme before paint to avoid a flash (shared key with the student UI). -->
+    <script>(function(){try{var s=localStorage.getItem('eLearnTheme');document.documentElement.setAttribute('data-theme',s||((window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light'));}catch(e){document.documentElement.setAttribute('data-theme','dark');}})();</script>
+
     <!-- Favicon -->
     <link href="img/favicon.ico" rel="icon">
 
@@ -29,6 +32,9 @@
 
     <!-- Template Stylesheet -->
     <link href="vendor/css/admin.css" rel="stylesheet">
+
+    <!-- Dark/light theming layer (must come after admin.css to override it) -->
+    <link href="assets/admin-theme.css" rel="stylesheet">
 
     <!--
         Shared admin-modal form styling. The dark admin theme styles

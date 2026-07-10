@@ -18,6 +18,9 @@
 
     <!-- Template Javascript -->
     <script src="vendor/js/main.js"></script>
+
+    <!-- Dark/light theme toggle wiring (shared with the student UI) -->
+    <script src="assets/theme.js"></script>
 </body>
 
 </html>
