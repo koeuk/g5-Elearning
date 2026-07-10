@@ -1,8 +1,8 @@
 <?php
-require 'database/database.php';
-require 'models/admin.model.php';
-require 'models/category.model.php';
-require 'models/payment.model.php';
+use App\Models\Category;
+use App\Models\Course;
+use App\Models\Order;
+use App\Models\User;
 
 ?>
 <section class="bg-light">
@@ -83,7 +83,7 @@ Category START -->
 	<div class="container">
 		<div class="row g-4">
 			<?php
-			$categorys = getCategories();
+			$categorys = Category::all();
 			foreach ($categorys as $cate) :
 			?>
 				<!-- Category item -->
@@ -93,7 +93,7 @@ Category START -->
 							<img class="rounded-circle me-lg-2" src="uploading/<?= $cate['image'] ?>" alt="" style="width: 70px; height: 70px;">
 							<div class="ms-3">
 								<h5 class="mb-0"><a href="/signin" class="stretched-link"><?= $cate['title'] ?></a></h5>
-								<span><?= getNumberOfCourseInCategory($cate['category_id']) ?> Courses</span>
+								<span><?= Course::countInCategory($cate['category_id']) ?> Courses</span>
 							</div>
 						</div>
 					</div>
@@ -116,7 +116,7 @@ Featured course START -->
 		</div>
 		<div class="row g-4">
 			<?php
-				$courses = getCourses();
+				$courses = Course::all();
 				foreach ($courses as $course) :
 									
 			?>
@@ -147,13 +147,13 @@ Featured course START -->
 								<li class="list-inline-item d-flex justify-content-center align-items-center">
 								
 									<div class="icon-md bg-orange bg-opacity-10 text-orange rounded-circle"><i class="fas fa-user-graduate"></i></div>
-									<span class="h6 fw-light mb-0 ms-2"><?=getTheJoinercourse($course['course_id'])?></span>
+									<span class="h6 fw-light mb-0 ms-2"><?=Order::joinCount($course['course_id'])?></span>
 								
 								</li>
 							</ul>
 							<!-- Avatar -->
 							<div class="avatar avatar-sm">
-								<img class="avatar-img rounded-circle" src="uploading/<?php $haha= getTeacher($course['user_id']);
+								<img class="avatar-img rounded-circle" src="uploading/<?php $haha= User::find($course['user_id']);
 									echo $haha['profile_image'];
 								?>" alt="avatar">
 							</div>
@@ -165,7 +165,7 @@ Featured course START -->
 						<!-- Badge and Price -->
 						<div class="d-flex justify-content-between align-items-center mb-0">
 							<div>
-								<a href="#" class="badge bg-info bg-opacity-10 text-info me-2"><i class="fas fa-circle small fw-bold"></i> Trainer: <?php $haha= getTeacher($course['user_id']);
+								<a href="#" class="badge bg-info bg-opacity-10 text-info me-2"><i class="fas fa-circle small fw-bold"></i> Trainer: <?php $haha= User::find($course['user_id']);
 										echo $haha['name'];
 									?>
 								</a>

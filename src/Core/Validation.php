@@ -6,7 +6,8 @@ use App\Models\User;
 
 /**
  * Form-validation + credential checks, reimplemented from the assorted
- * apply*/require* functions in the old models. Sign-in and password-change now
+ * apply/require validation functions in the old models. Sign-in and
+ * password-change now
  * use App\Core\Auth for real verification instead of the old re-hash trick.
  *
  * Each method returns an array of field => message; an all-empty array means
