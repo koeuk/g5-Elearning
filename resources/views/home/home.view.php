@@ -1,9 +1,10 @@
 <?php
-use App\Models\Category;
-use App\Models\Course;
-use App\Models\Order;
-use App\Models\User;
-
+/**
+ * Public landing page.
+ *
+ * @var array<int, array> $categories categories with a `course_count` column
+ * @var array<int, array> $courses    courses with trainer_name/trainer_image/enrolled
+ */
 ?>
 <section class="bg-light">
 	<div class="container p-6 mt-0 mt-lg-5">
@@ -83,17 +84,16 @@ Category START -->
 	<div class="container">
 		<div class="row g-4">
 			<?php
-			$categorys = Category::all();
-			foreach ($categorys as $cate) :
+			foreach (($categories ?? []) as $cate) :
 			?>
 				<!-- Category item -->
 				<div class="col-sm-6 col-lg-4 col-xl-3 shadow" >
 					<div class="card card-body shadow rounded-3">
 						<div class="d-flex align-items-center">
-							<img class="rounded-circle me-lg-2" src="uploading/<?= $cate['image'] ?>" alt="" style="width: 70px; height: 70px;">
+							<img class="rounded-circle me-lg-2" src="uploading/<?= e($cate['image']) ?>" alt="" style="width: 70px; height: 70px;">
 							<div class="ms-3">
-								<h5 class="mb-0"><a href="/signin" class="stretched-link"><?= $cate['title'] ?></a></h5>
-								<span><?= Course::countInCategory($cate['category_id']) ?> Courses</span>
+								<h5 class="mb-0"><a href="/signin" class="stretched-link"><?= e($cate['title']) ?></a></h5>
+								<span><?= (int) $cate['course_count'] ?> Courses</span>
 							</div>
 						</div>
 					</div>
@@ -116,8 +116,7 @@ Featured course START -->
 		</div>
 		<div class="row g-4">
 			<?php
-				$courses = Course::all();
-				foreach ($courses as $course) :
+				foreach (($courses ?? []) as $course) :
 									
 			?>
 			<!-- Card Item START -->
@@ -126,7 +125,7 @@ Featured course START -->
 					<div class="rounded-top overflow-hidden">
 						<div class="card-overlay-hover">
 							<!-- Image -->
-							<img src="../uploading/<?=$course['image_courses'] ?>" class="card-img-top" alt="course image">
+							<img src="uploading/<?= e($course['image_courses']) ?>" class="card-img-top" alt="course image">
 						</div>
 						<!-- Hover element -->
 						<div class="card-img-overlay">
@@ -147,31 +146,27 @@ Featured course START -->
 								<li class="list-inline-item d-flex justify-content-center align-items-center">
 								
 									<div class="icon-md bg-orange bg-opacity-10 text-orange rounded-circle"><i class="fas fa-user-graduate"></i></div>
-									<span class="h6 fw-light mb-0 ms-2"><?=Order::joinCount($course['course_id'])?></span>
+									<span class="h6 fw-light mb-0 ms-2"><?= (int) $course['enrolled'] ?></span>
 								
 								</li>
 							</ul>
 							<!-- Avatar -->
 							<div class="avatar avatar-sm">
-								<img class="avatar-img rounded-circle" src="uploading/<?php $haha= User::find($course['user_id']);
-									echo $haha['profile_image'];
-								?>" alt="avatar">
+								<img class="avatar-img rounded-circle" src="uploading/<?= e($course['trainer_image']) ?>" alt="avatar">
 							</div>
 						</div>
 						<!-- Divider -->
 						<hr>
 						<!-- Title -->
-						<h6 class="card-title"><a href="/signin"><?=$course['title'] ?></a></h6>
+						<h6 class="card-title"><a href="/signin"><?= e($course['title']) ?></a></h6>
 						<!-- Badge and Price -->
 						<div class="d-flex justify-content-between align-items-center mb-0">
 							<div>
-								<a href="#" class="badge bg-info bg-opacity-10 text-info me-2"><i class="fas fa-circle small fw-bold"></i> Trainer: <?php $haha= User::find($course['user_id']);
-										echo $haha['name'];
-									?>
+								<a href="#" class="badge bg-info bg-opacity-10 text-info me-2"><i class="fas fa-circle small fw-bold"></i> Trainer: <?= e($course['trainer_name']) ?>
 								</a>
 							</div>
 							<!-- Price -->
-							<h5 class="text-success mb-0"><?=$course['price'] ?></h5>
+							<h5 class="text-success mb-0"><?= e($course['price']) ?></h5>
 						</div>
 					</div>
 				</div>
@@ -438,6 +433,3 @@ Action box START -->
 </section>
 <!-- =======================
 Action box END -->
-
-</main>
-<!-- **************** MAIN CONTENT END **************** -->

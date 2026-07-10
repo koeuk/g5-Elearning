@@ -33,6 +33,23 @@ final class Category
         return $stmt->fetchAll();
     }
 
+    /**
+     * All categories with their course count in a single query, avoiding a
+     * per-category Course::countInCategory() call in the view.
+     *
+     * @return array<int, array> each row includes a `course_count` column
+     */
+    public static function allWithCourseCount(): array
+    {
+        $stmt = Database::connection()->prepare(
+            'SELECT cat.*,
+                    (SELECT COUNT(*) FROM courses c WHERE c.category_id = cat.category_id) AS course_count
+             FROM categories cat'
+        );
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
     /** Resolve a category id from its title. */
     public static function findByTitle(string $title): array|false
     {

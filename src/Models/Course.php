@@ -49,6 +49,28 @@ final class Course
         return $stmt->fetchAll();
     }
 
+    /**
+     * All courses enriched with their trainer's name/image and paid-enrollment
+     * count, in one query. Replaces the per-course User::find() (called twice)
+     * and Order::joinCount() lookups the home view used to do in a loop.
+     *
+     * @return array<int, array> rows include `trainer_name`, `trainer_image`, `enrolled`
+     */
+    public static function allWithTrainer(): array
+    {
+        $stmt = Database::connection()->prepare(
+            'SELECT c.*,
+                    u.name          AS trainer_name,
+                    u.profile_image AS trainer_image,
+                    (SELECT COUNT(*) FROM orders o
+                     WHERE o.course_id = c.course_id AND o.action = :paid) AS enrolled
+             FROM courses c
+             LEFT JOIN users u ON c.user_id = u.user_id'
+        );
+        $stmt->execute([':paid' => 'Yes']);
+        return $stmt->fetchAll();
+    }
+
     /** Courses owned by a given trainer (user_id). */
     public static function byTrainer(int $userId): array
     {

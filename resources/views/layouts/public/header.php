@@ -25,8 +25,6 @@
 
 	<!-- Theme CSS -->
 	<link id="style-switch" rel="stylesheet" type="text/css" href="vendor/css/style.css">
-
-	<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 
 <body style="background-color: rgba(0, 0, 0,0.01);">
