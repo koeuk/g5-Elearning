@@ -1,3 +1,3 @@
 <?php 
 
-require 'views/student/profile.view.php';
+require 'views/students/profile.view.php';

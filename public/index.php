@@ -73,7 +73,6 @@ $standalonePages = [
     '/get_edit'                => 'controllers/students/edit/get.edit.controller.php',
     '/student_password'        => 'controllers/students/passwords/passwrod.controller.php',
     '/student_password_comfirm'=> 'controllers/students/passwords/getnew.controller.php',
-    '/formChangeNumber'        => 'controllers/students/forgetPassword/formChangePassword.controller.php',
     '/orders'                  => 'controllers/students/payments/order.controller.php',
 
     // Courses (student-facing)
@@ -81,8 +80,6 @@ $standalonePages = [
     '/blog_learning' => 'controllers/courses/blog_learning.controller.php',
 
     // Trainer authentication, home & management
-    '/trainerLogin'            => 'controllers/trainer/trainerLogin.controller.php',
-    '/trainerAccess'           => 'controllers/trainer/trainerLoginProcess.controller.php',
     '/trainer'                 => 'controllers/trainers/signin/login.controller.php',
     '/trainer_access'          => 'controllers/trainers/signin/access.controller.php',
     '/trainer_home'            => 'controllers/trainers/hom.controller.php',
