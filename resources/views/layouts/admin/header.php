@@ -33,8 +33,9 @@
     <!-- Template Stylesheet -->
     <link href="vendor/css/admin.css" rel="stylesheet">
 
-    <!-- Dark/light theming layer (must come after admin.css to override it) -->
-    <link href="assets/admin-theme.css" rel="stylesheet">
+    <!-- Dark/light theming layer (must come after admin.css to override it).
+         Cache-busted by file mtime so edits always reach the browser. -->
+    <link href="assets/admin-theme.css?v=<?= @filemtime(BASE_PATH . '/public/assets/admin-theme.css') ?: '1' ?>" rel="stylesheet">
 
     <!--
         Shared admin-modal form styling. The dark admin theme styles

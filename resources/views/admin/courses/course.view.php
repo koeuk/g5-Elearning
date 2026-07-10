@@ -3,7 +3,7 @@
 
 
 <!-- ........................\ -->
-<div class="container p-0">
+<div class="container-fluid p-0">
      <!-- CSS style -->
      <style>
      /* Center modal vertically */
