@@ -38,7 +38,7 @@ final class PasswordController extends Controller
         );
 
         if (Validation::passes($errors)) {
-            User::setPassword($id, (string) $_POST['newPassword']);
+            User::setPassword($id, (string) ($_POST['newPassword'] ?? ''));
             $this->redirect('/student_profile');
         }
 

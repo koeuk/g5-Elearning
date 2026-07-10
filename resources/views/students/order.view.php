@@ -16,19 +16,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Checkout — E-Learning</title>
+  <script>(function(){try{var s=localStorage.getItem('eLearnTheme');document.documentElement.setAttribute('data-theme',s||((window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light'));}catch(e){document.documentElement.setAttribute('data-theme','light');}})();</script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,800&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="assets/student-ui.css" rel="stylesheet">
   <style>
-    :root{
-      --bg:#0c0d11; --surface:#14161d; --surface-2:#1b1e28; --surface-3:#222733;
-      --line:rgba(255,255,255,.08); --line-2:rgba(255,255,255,.14);
-      --text:#f4f1ea; --muted:#9aa0ad; --faint:#6b7280;
-      --accent:#f5a524; --accent-2:#ffcf6b; --emerald:#2ee6a6; --rose:#ff6b6b;
-      --shadow:0 24px 60px -20px rgba(0,0,0,.7);
-      --serif:"Fraunces",Georgia,serif; --sans:"Hanken Grotesk",system-ui,sans-serif;
-    }
+    /* Tokens (light + dark) come from student-ui.css; --accent-ink added for buttons. */
+    :root{--accent-ink:#2a1c05}
+    :root[data-theme="dark"]{--accent-ink:#1a1204}
     *{box-sizing:border-box;margin:0;padding:0}
     html,body{min-height:100%}
     body{
@@ -231,7 +228,12 @@
     <!-- Top bar -->
     <header class="topbar">
       <div class="brand"><span class="brand__dot"><i class="bi bi-mortarboard-fill"></i></span> E‑Learning</div>
-      <a class="back" href="/student"><i class="bi bi-arrow-left"></i> Back to courses</a>
+      <div style="display:flex;align-items:center;gap:.7rem">
+        <button class="theme-toggle" data-theme-toggle aria-label="Toggle dark mode">
+          <i class="bi bi-sun-fill ico-sun"></i><i class="bi bi-moon-stars-fill ico-moon"></i>
+        </button>
+        <a class="back" href="/student"><i class="bi bi-arrow-left"></i> Back to courses</a>
+      </div>
     </header>
 
     <!-- Hero -->
@@ -467,5 +469,6 @@
       render();
     })();
   </script>
+  <script src="assets/theme.js"></script>
 </body>
 </html>
