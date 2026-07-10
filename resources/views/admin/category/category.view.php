@@ -20,8 +20,8 @@
     }
 </style>
 
-<div class="table-responsive pt-3 pb-5 px-0">
-    <div class="mt-3 mb-3 px-5 d-flex justify-content-between align-items-center">
+<div class="table-responsive pt-3 pb-5 px-5">
+    <div class="mt-3 mb-3 d-flex justify-content-between align-items-center">
         <h3>Categories List</h3>
 
         <!-- input search -->
