@@ -11,7 +11,7 @@
                require 'models/admin.model.php';
                require 'models/category.model.php';
                if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-                    $course = getCourse($_POST['id']);
+                    $course = $course ?? [];
                }
                ?>
                <input type="number" placeholder="course_id" class="form-control w-100 bg-white  p-2  " name="course_id" value="<?= $course['course_id'] ?>" hidden>
@@ -27,10 +27,10 @@
                     <label for="#">Category </label>
                     <select class="form-select bg-white" id="sell1" name="category_id" aria-label="Default select example">
                          <?php
-                         $categories = getCategories();
+                         $categories = $categories ?? [];
                          foreach ($categories as $categiry) :
                          ?>
-                              <option><?= getCategoryName($categiry['category_id'])['title'] ?></option>
+                              <option><?= $categiry['title'] ?></option>
                          <?php endforeach ?>
                     </select>
                </div>
@@ -39,12 +39,12 @@
                     <select class="form-select bg-white" id="sell1" name="user_id" aria-label="Default select example">
                          <?php
                          require 'models/user.model.php';
-                         $trainers = getTrainer();
+                         $trainers = $trainers ?? [];
                          // $trainers = getTrainerWithUserName(); 
                          foreach ($trainers as $trainer) :
                          ?>
                               <!-- $displayValue = isset($connection) ? $trainer['user_id'] : $trainer['name']; -->
-                              <option><?= getTrainerName($trainer['user_id'])['name'] ?></option>
+                              <option><?= $trainer['name'] ?></option>
                          <?php endforeach ?>
                     </select>
                </div>

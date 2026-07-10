@@ -92,7 +92,7 @@
             require 'database/database.php';
             require 'models/student.model.php';
 
-            $students = getStudents();
+            $students = $students ?? [];
             foreach ($students as $key => $student) :
             ?>
                 <tr>

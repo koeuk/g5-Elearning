@@ -64,7 +64,7 @@
             require 'database/database.php';
             require 'models/user.model.php';
 
-            $trainers = getTrainer();
+            $trainers = $trainers ?? [];
             foreach ($trainers as $key => $trainer) :
             ?>
                 <tr>

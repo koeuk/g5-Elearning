@@ -49,7 +49,7 @@ require "models/admin.model.php";
         <!-- ==================Edit Category ============== -->
         <tbody>
             <?php
-            $categories = getCategories();
+            $categories = $categories ?? [];
             foreach ($categories as $key => $category) :
             ?>
                 <tr>

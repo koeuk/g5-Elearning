@@ -84,10 +84,10 @@
                                                   require 'database/database.php';
                                                   require 'models/category.model.php';
                                                   // require 'models/category.model.php';
-                                                  $categories = getCategories();
+                                                  $categories = $categories ?? [];
                                                   foreach ($categories as $categiry) :
                                                   ?>
-                                                  <option><?= getCategoryName($categiry['category_id'])['title'] ?>
+                                                  <option><?= $categiry['title'] ?>
                                                   </option>
                                                   <?php endforeach ?>
                                              </select>
@@ -107,7 +107,7 @@
                                                   require 'database/database.php';
                                                   require 'models/admin.model.php';
                                                   require 'models/user.model.php';
-                                                  $trainers = getTrainer();
+                                                  $trainers = $trainers ?? [];
                                                   // $trainers = getTrainerWithUserName(); 
                                                   foreach ($trainers as $trainer) : ?>
                                                   <!-- $displayValue = isset($connection) ? $trainer['user_id'] : $trainer['name']; -->
@@ -165,15 +165,15 @@
                <tbody>
 
                     <?php
-                    $getCourses = getCourses();
+                    $getCourses = $courses ?? [];
                     foreach ($getCourses as $key => $course) : ?>
 
                     <tr>
                          <td scope="row" class="text-start "><?= $key + 1 ?></td>
                          <td class="text-start"><?= $course['title'] ?></td>
                          <!-- <td class="text-center"><?= $course["description"] ?></td> -->
-                         <td class="text-start"><?= getCategoryName($course['category_id'])['title'] ?></td>
-                         <td class="text-start"><?= getTrainerName($course['user_id'])['name'] ?></td>
+                         <td class="text-start"><?= $course['category_title'] ?></td>
+                         <td class="text-start"><?= $course['trainer_name'] ?></td>
 
                          <td class="text-start ">
                               <div class="position-relative">
@@ -271,11 +271,11 @@
                                              <!-- <ul class="list-group list-group-flush"> -->
                                              <a href="">
                                                   <p class="modal-title text-3 text-dark ">Trainer :
-                                                       <?= getTrainerName($course['user_id'])['name']; ?></p>
+                                                       <?= $course['trainer_name']; ?></p>
                                              </a>
                                              <a href="#">
                                                   <p class="modal-title mt-2 p-0 btn text-start">Category :
-                                                       <?= getCategoryName($course['category_id'])['title'] ?></p>
+                                                       <?= $course['category_title'] ?></p>
                                              </a>
                                              <br>
                                              <a href="#">
@@ -290,7 +290,7 @@
                                                  
 
                                              <!-- <p class="modal-title mt-2 text-start">Gender :
-                                             <?= getTrainerName($course['user_id'])['gender'] ?>
+                                             <?= '' ?>
                                         </p> -->
                                              <!-- <div class="date text-start "> -->
                                              <!-- <small class="text-muted">Asign since: -->

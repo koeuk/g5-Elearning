@@ -1,4 +1,13 @@
-<?php require_once 'models/addmin.password.model.php'; ?>
+<?php
+/**
+ * Admin change-password screen (standalone).
+ *
+ * @var bool  $input   whether the form was submitted (show validation state)
+ * @var array $require field => error message (currentPassword/newPassword/confirmPassword)
+ */
+$input   = $input ?? false;
+$require = $require ?? ['currentPassword' => '', 'newPassword' => '', 'confirmPassword' => ''];
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,24 +40,14 @@
 </head>
 
 <body style="background-image: url('assets/images/bg/books-2596809_1280.jpg'); background-size: cover; background-repeat: no-repeat;">
-<?php
-  $input =false;
-  if($_SERVER['REQUEST_METHOD'] == 'POST'){
-      if(isset($_POST['currentPassword'])&& isset($_POST['newPassword'] )  && isset($_POST['confirmPassword'])){
-        $input = true;
-        $require = requirePasswordChanges($_POST['currentPassword'],$_POST['newPassword'],$_POST['confirmPassword']); 
-      }
-  }
-?>
 <div class="container">
 <div class="container">
     <div class="row justify-content-center mt-5">
-        <form class="container-fluid justify-content-start" action='/admin_home' method='post'>
-            <input type="text" name='email' value='<?=$_POST['email']?>' hidden>
-            <button type="submit" class="btn btn-orange btn-sm">
+        <div class="container-fluid justify-content-start">
+            <a href="/admin_home" class="btn btn-orange btn-sm">
             <i class="bi bi-arrow-left-circle-fill"></i> Back
-            </button>
-        </form>  
+            </a>
+        </div>
         <div class="col-lg-5 d-flex">
             <div class="modal-body border p-4 mt-4 ml-0"  style="background-color: rgba(0, 0, 0,0.4);">
                 <h5 class="mb-4 text-white text-center">👨🏼‍💻 Change password</h5>
@@ -89,8 +88,6 @@
                             </button>
                         </div>
                     </div>
-                    <input type="text" name='email' value='<?=$_POST['email']?>' hidden>
-					<input type="text" name='user_id' value='<?= $_POST['user_id'] ?>' hidden>
                     <button type="submit" class="btn btn-orange d-block mx-auto">Change Password</button>
                          
                 </form>
