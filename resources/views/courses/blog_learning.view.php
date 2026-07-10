@@ -182,6 +182,13 @@ foreach ($lessons as $li => $ll) {
           <span class="lesson__num"><i class="bi bi-play-circle-fill"></i> Now playing · Lesson <span id="mainNum"><?= $firstIndex !== null ? $firstIndex + 1 : '—' ?></span></span>
           <h3 id="mainTitle"><?= e($first['title'] ?? 'Locked content') ?></h3>
           <p id="mainDesc"><?= e($first['description'] ?? 'Purchase this course to watch its lessons.') ?></p>
+          <?php if (!$owned): ?>
+            <form method="post" action="/blog_learning" style="margin-top:1.1rem">
+              <input type="hidden" name="course_id" value="<?= (int) $courseId ?>">
+              <input type="hidden" name="buy" value="1">
+              <button type="submit" class="ui-btn ui-btn--primary"><i class="bi bi-cart-plus"></i> Buy this course</button>
+            </form>
+          <?php endif; ?>
         </div>
       </div>
 

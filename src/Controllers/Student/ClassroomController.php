@@ -6,6 +6,7 @@ use App\Core\Auth;
 use App\Core\Controller;
 use App\Models\Course;
 use App\Models\Lesson;
+use App\Models\Order;
 use App\Models\Payment;
 use App\Models\Quiz;
 use App\Models\QuizSubmission;
@@ -42,6 +43,14 @@ final class ClassroomController extends Controller
 
         // Owners see every lesson; non-owners only the ones marked free.
         $owned = $studentId > 0 && $courseId > 0 && Payment::exists($studentId, $courseId) !== [];
+
+        // "Buy course" button: add the course to the cart and go to checkout.
+        if ($this->isPost() && $this->input('buy') === '1' && !$owned && $courseId > 0 && $studentId > 0) {
+            if (Order::exists($studentId, $courseId) === []) {
+                Order::add($courseId, $studentId);
+            }
+            $this->redirect('/orders');
+        }
 
         $this->view('courses/blog_learning', [
             'student'    => $student,
