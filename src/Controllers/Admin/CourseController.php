@@ -6,6 +6,7 @@ use App\Core\Auth;
 use App\Core\Controller;
 use App\Models\Category;
 use App\Models\Course;
+use App\Models\Payment;
 use App\Models\User;
 
 /**
@@ -116,11 +117,19 @@ final class CourseController extends Controller
             $trainerName[(int) $trainer['user_id']] = $trainer['name'];
         }
 
+        // Enrolled = number of payments recorded per course.
+        $enrolled = [];
+        foreach (Payment::all() as $payment) {
+            $cid = (int) $payment['course_id'];
+            $enrolled[$cid] = ($enrolled[$cid] ?? 0) + 1;
+        }
+
         $rows = [];
         foreach (Course::all() as $course) {
             $rows[] = $course + [
                 'category_title' => $categoryTitle[(int) $course['category_id']] ?? '',
                 'trainer_name'   => $trainerName[(int) $course['user_id']] ?? '',
+                'enrolled'       => $enrolled[(int) $course['course_id']] ?? 0,
             ];
         }
         return $rows;

@@ -19,9 +19,13 @@ use App\Models\User;
  */
 final class AuthController extends Controller
 {
-    /** GET /trainer_signin — show the sign-in form. */
+    /** GET /trainer_signin — show the sign-in form (or skip it if already signed in). */
     public function showLogin(): void
     {
+        if (Auth::role() === User::ROLE_TRAINER) {
+            $this->redirect('/trainer');
+        }
+
         $this->view('trainers/login', [
             'errors' => ['email' => '', 'password' => ''],
             'old'    => ['email' => ''],

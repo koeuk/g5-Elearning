@@ -7,11 +7,28 @@ namespace App\Core;
  */
 final class Session
 {
+    /** Keep a signed-in user for this long (seconds) — ~7 days. */
+    private const LIFETIME = 60 * 60 * 24 * 7;
+
     public static function start(): void
     {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
+        if (session_status() !== PHP_SESSION_NONE) {
+            return;
         }
+
+        // Persist the login cookie across browser restarts so returning users
+        // stay signed in, and keep the server-side session alive to match.
+        ini_set('session.gc_maxlifetime', (string) self::LIFETIME);
+        if (PHP_SAPI !== 'cli') {
+            session_set_cookie_params([
+                'lifetime' => self::LIFETIME,
+                'path'     => '/',
+                'httponly' => true,
+                'samesite' => 'Lax',
+            ]);
+        }
+
+        session_start();
     }
 
     public static function get(string $key, mixed $default = null): mixed

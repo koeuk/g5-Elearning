@@ -25,9 +25,13 @@ final class AuthController extends Controller
         $this->view('admin/start_admin');
     }
 
-    /** GET /admin_signin — show the sign-in form. */
+    /** GET /admin_signin — show the sign-in form (or skip it if already signed in). */
     public function showLogin(): void
     {
+        if (Auth::role() === User::ROLE_ADMIN) {
+            $this->redirect('/admin_home');
+        }
+
         $this->view('admin/login', [
             'errors' => ['name' => '', 'password' => ''],
             'old'    => ['name' => ''],

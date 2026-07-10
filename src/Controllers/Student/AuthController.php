@@ -22,9 +22,13 @@ use App\Models\User;
  */
 final class AuthController extends Controller
 {
-    /** GET /signin — show the sign-in form. */
+    /** GET /signin — show the sign-in form (or skip it if already signed in). */
     public function showLogin(): void
     {
+        if (Auth::role() === User::ROLE_STUDENT) {
+            $this->redirect('/student');
+        }
+
         $this->view('students/signin', [
             'submitted' => false,
             'errors'    => ['email' => '', 'password' => ''],
@@ -65,9 +69,13 @@ final class AuthController extends Controller
         $this->redirect('/student');
     }
 
-    /** GET /signup — show the registration form. */
+    /** GET /signup — show the registration form (or skip it if already signed in). */
     public function showRegister(): void
     {
+        if (Auth::role() === User::ROLE_STUDENT) {
+            $this->redirect('/student');
+        }
+
         $this->view('students/signup', [
             'submitted' => false,
             'errors'    => $this->blankRegistrationErrors(),

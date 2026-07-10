@@ -26,6 +26,49 @@
           border: 1px solid #6c757d;
           padding: 0.375rem 0.75rem;
      }
+
+     /* ===== Course details modal (refined dark + amber) ===== */
+     .cd-modal .modal-content {
+          border: none; border-radius: 22px; overflow: hidden;
+          background: #1d1810; color: #f4ede0;
+          box-shadow: 0 40px 90px -30px rgba(0, 0, 0, .85);
+     }
+     .cd-head {
+          display: flex; align-items: center; justify-content: space-between;
+          padding: 1rem 1.4rem; color: #1a1206;
+          background: linear-gradient(135deg, #ffb454, #F28500);
+     }
+     .cd-head h5 { margin: 0; font-weight: 800; letter-spacing: -.01em; display: flex; align-items: center; gap: .55rem; }
+     .cd-body { display: flex; gap: 1.6rem; padding: 1.6rem; }
+     .cd-media {
+          position: relative; flex: 0 0 38%; border-radius: 16px; overflow: hidden; min-height: 300px;
+          background: linear-gradient(135deg, #3a2f1c, #241d12);
+          box-shadow: 0 20px 40px -18px rgba(0, 0, 0, .7);
+     }
+     .cd-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+     .cd-media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 58%, rgba(0, 0, 0, .5)); }
+     .cd-cat {
+          position: absolute; top: 12px; left: 12px; z-index: 2;
+          background: rgba(242, 133, 0, .95); color: #1a1206;
+          font-size: .72rem; font-weight: 700; letter-spacing: .04em;
+          padding: .32rem .72rem; border-radius: 999px;
+     }
+     .cd-info { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+     .cd-title { font-size: 1.5rem; font-weight: 800; letter-spacing: -.02em; margin: 0 0 1rem; line-height: 1.15; color: #fff; }
+     .cd-stats { display: flex; gap: .7rem; margin-bottom: 1.1rem; flex-wrap: wrap; }
+     .cd-stat { background: rgba(255, 255, 255, .04); border: 1px solid rgba(242, 133, 0, .18); border-radius: 12px; padding: .55rem .9rem; }
+     .cd-stat .k { font-size: .66rem; text-transform: uppercase; letter-spacing: .08em; color: #a99e8b; }
+     .cd-stat .v { font-size: 1.15rem; font-weight: 800; color: #ffb454; line-height: 1.2; }
+     .cd-rows { display: flex; flex-direction: column; gap: .55rem; margin-bottom: 1.2rem; }
+     .cd-row { display: flex; align-items: center; gap: .65rem; font-size: .92rem; }
+     .cd-row .ic { width: 30px; height: 30px; flex: none; display: grid; place-items: center; border-radius: 9px; background: rgba(242, 133, 0, .12); color: #ffb454; }
+     .cd-row .ic svg { width: 15px; height: 15px; }
+     .cd-row .lbl { color: #a99e8b; min-width: 74px; }
+     .cd-row .val { font-weight: 600; color: #f4ede0; }
+     .cd-about { margin-top: auto; }
+     .cd-about .h { font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; color: #a99e8b; margin-bottom: .35rem; }
+     .cd-about p { color: #cfc6b6; font-size: .9rem; line-height: 1.55; margin: 0; }
+     @media (max-width: 680px) { .cd-body { flex-direction: column; } .cd-media { flex: none; min-height: 200px; } }
      </style>
 
 
@@ -229,85 +272,57 @@
      </div>
 
 
-     <div class="modal fade mt-3 " id="detailModal<?= $course['course_id'] ?>" tabindex="-1"
+     <div class="modal fade cd-modal" id="detailModal<?= $course['course_id'] ?>" tabindex="-1"
           aria-labelledby="detailModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered " style=" max-width: 1000px;">
-               <div class="modal-content w-100 p-3 bg-muted  w-100 ">
-                    <!-- Modal body for course details -->
-                    <div class="modal-body ">
-                         <!-- Display course details here -->
-                         <div class="card d-flex " style="border: none;">
+          <div class="modal-dialog modal-dialog-centered" style="max-width: 900px;">
+               <div class="modal-content">
+                    <div class="cd-head">
+                         <h5>
+                              <i class="fas fa-graduation-cap"></i> Course Details
+                         </h5>
+                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="cd-body">
+                         <!-- Media -->
+                         <div class="cd-media">
+                              <span class="cd-cat"><?= e($course['category_title']) ?></span>
+                              <img src="uploading/<?= e($course['image_courses']) ?>" alt="<?= e($course['title']) ?>"
+                                   onerror="this.style.display='none'">
+                         </div>
+                         <!-- Info -->
+                         <div class="cd-info">
+                              <h3 class="cd-title"><?= e($course['title']) ?></h3>
 
-                              <div class="modal-header p-1 bg-warning ">
-                                   <h5 class="modal-title p-2 text-dark" id="exampleModalLabel">
-                                        Details </h5>
-                                   <button type="button" class="btn-close p-3 " data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
+                              <div class="cd-stats">
+                                   <div class="cd-stat">
+                                        <div class="k">Price</div>
+                                        <div class="v">$<?= e((string) $course['price']) ?></div>
+                                   </div>
+                                   <div class="cd-stat">
+                                        <div class="k">Enrolled</div>
+                                        <div class="v"><?= (int) ($course['enrolled'] ?? 0) ?></div>
+                                   </div>
                               </div>
-                              <div class="d-flex p-3 w-100  gap-5 border-0 ">
 
-                                   <div class="image d-flex justify-content-center align-items-center  " style="width: 35% ;
-">
-                                        <div
-                                             class="text-start  rounded p-2  d-flex shadow justify-content-center align-items-center">
-                                             <img src="uploading/<?= $course['image_courses'] ?>" alt="Profile Image"
-                                                  class="rounded  "
-                                                  style="width: 250px; height: 300px; object-fit: cover;">
-
-                                             </p></a>
-                                        </div>
-
+                              <div class="cd-rows">
+                                   <div class="cd-row">
+                                        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg></span>
+                                        <span class="lbl">Trainer</span>
+                                        <span class="val"><?= e($course['trainer_name']) ?></span>
                                    </div>
-                                   <!-- <p class="modal-footer"></p> -->
-                                   <div class="text-start rounded shadow p-3   d-flex row h-auto"
-                                        style=" border:none; width :65%; ">
-                                        <div class="text h-auto p-2  gap-1">
-                                             <!-- <ul class="list-group list-group-flush"> -->
-                                             <a href="">
-                                                  <p class="modal-title text-3 text-dark ">Trainer :
-                                                       <?= $course['trainer_name']; ?></p>
-                                             </a>
-                                             <a href="#">
-                                                  <p class="modal-title mt-2 p-0 btn text-start">Category :
-                                                       <?= $course['category_title'] ?></p>
-                                             </a>
-                                             <br>
-                                             <a href="#">
-                                                  <p class="modal-title mt-2 p-0 btn text-start"> Course :
-                                                       <?= $course['title'] ?></p>
-                                             </a>
-                                             <p class="modal-title mt-2 text-start">Price :
-                                                  <?= $course['price'] . " $" ?></p>
-
-
-                                             <p class="modal-title mt-2 text-start">Joined :23 students </p>
-                                                 
-
-                                             <!-- <p class="modal-title mt-2 text-start">Gender :
-                                             <?= '' ?>
-                                        </p> -->
-                                             <!-- <div class="date text-start "> -->
-                                             <!-- <small class="text-muted">Asign since: -->
-                                             <!-- <?= $date = date('Y-m-d') ?>  -->
-                                             <!-- <br> -->
-                                             <!-- <p class="text-dark">Create Since : <?= $course['date']; ?></p> -->
-
-
-                                             <!-- </small> -->
-
-                                             <!-- </div> -->
-                                             <p class="modal-title mt-3  text-start ">About Course :
-                                                  <?= $course['description'] ?></p>
-                                             <!-- </ul> -->
-
-                                        </div>
+                                   <div class="cd-row">
+                                        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span>
+                                        <span class="lbl">Category</span>
+                                        <span class="val"><?= e($course['category_title']) ?></span>
                                    </div>
+                              </div>
+
+                              <div class="cd-about">
+                                   <div class="h">About this course</div>
+                                   <p><?= e($course['description']) ?></p>
                               </div>
                          </div>
-
-                         <!-- ... Add other details as needed ... -->
                     </div>
-
                </div>
           </div>
      </div>
