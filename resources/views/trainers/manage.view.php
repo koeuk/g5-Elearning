@@ -16,41 +16,44 @@ $courseId = (int) ($course['course_id'] ?? 0);
     <meta charset="utf-8">
     <title>Manage · <?= e($course['title'] ?? 'Course') ?></title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <link rel="shortcut icon" href="assets/images/favicon.ico">
+    <script>(function(){try{var s=localStorage.getItem('eLearnTheme');var t=s||((window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light');document.documentElement.setAttribute('data-theme',t);document.documentElement.setAttribute('data-bs-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','light');document.documentElement.setAttribute('data-bs-theme','light');}})();</script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,400;9..144,0,600;9..144,1,600&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="assets/student-ui.css" rel="stylesheet">
     <style>
-        :root { --brand: #F28500; --brand-lt: #ffb454; }
-        body { font-family: 'Sora', sans-serif; background: #f4f5f7; color: #23282f; }
-        .text-orange { color: var(--brand) !important; }
-        .btn-orange { background: var(--brand); border-color: var(--brand); color: #fff; }
-        .btn-orange:hover { background: #d9760a; color: #fff; }
-        .btn-outline-orange { border: 1px solid var(--brand); color: var(--brand); }
-        .btn-outline-orange:hover { background: var(--brand); color: #fff; }
-        .mgr-hero {
-            background: linear-gradient(135deg, var(--brand-lt), var(--brand)); color: #1a1206;
-            padding: 2rem 1.5rem; border-radius: 0 0 22px 22px; margin-bottom: 1.5rem;
-        }
-        .mgr-hero h1 { font-weight: 800; letter-spacing: -.02em; }
-        .nav-pills .nav-link.active { background: var(--brand); }
-        .nav-pills .nav-link { color: var(--brand); font-weight: 600; }
-        .card-panel { background: #fff; border-radius: 16px; box-shadow: 0 8px 26px -18px rgba(0,0,0,.25); }
-        table thead th { color: var(--brand); border-bottom: 2px solid #eee; }
-        .modal-title { color: var(--brand); font-weight: 700; }
+        body.ui-scope { font-family: var(--sans); }
+        .d-none-sm{display:inline}@media(max-width:520px){.d-none-sm{display:none}}
+        .text-orange { color: var(--accent) !important; }
+        .btn-orange { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 700; }
+        .btn-orange:hover { background: var(--accent-2); border-color: var(--accent-2); color: var(--accent-ink); }
+        .btn-outline-orange { border: 1px solid var(--accent); color: var(--accent); }
+        .btn-outline-orange:hover { background: var(--accent); color: var(--accent-ink); }
+        .mgr-hero { max-width: 1140px; margin: 1.6rem auto 1.4rem; padding: 0 1.5rem; }
+        .mgr-hero h1 { font-family: var(--serif); font-weight: 600; letter-spacing: -.01em; font-size: clamp(1.7rem,3.4vw,2.4rem); }
+        .mgr-hero h1 em { font-style: italic; color: var(--accent); }
+        .mgr-hero p { color: var(--muted); }
+        .nav-pills { background: var(--surface-2); border: 1px solid var(--line); border-radius: 999px; padding: .35rem; display: inline-flex; gap: .25rem; }
+        .nav-pills .nav-link { color: var(--muted); font-weight: 600; border-radius: 999px; }
+        .nav-pills .nav-link.active { background: var(--accent); color: var(--accent-ink); }
+        .card-panel { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); }
+        .card-panel h3 { font-family: var(--serif); font-weight: 600; }
+        table thead th { color: var(--accent); border-bottom: 2px solid var(--line); }
+        .modal-title { color: var(--accent); font-weight: 700; font-family: var(--serif); }
     </style>
 </head>
-<body>
-<?= \App\Core\View::partial('layouts/partials/flash') ?>
+<body class="ui-scope">
+<?= \App\Core\View::partial('layouts/trainer/topbar', ['trainer' => \App\Core\Auth::user() ?? []]) ?>
 
 <div class="mgr-hero">
-    <div class="container d-flex flex-wrap align-items-center justify-content-between gap-2">
-        <div>
-            <a href="/trainer" class="btn btn-light btn-sm mb-2"><i class="bi bi-arrow-left"></i><i class="fas fa-arrow-left me-1"></i> Back</a>
-            <h1 class="mb-0">Manage: <?= e($course['title'] ?? '') ?></h1>
-            <p class="mb-0 small">Lessons, quizzes, results and enrolled students</p>
-        </div>
-    </div>
+    <a href="/trainer" class="ui-btn ui-btn--ghost" style="padding:.5rem .95rem;font-size:.88rem"><i class="bi bi-arrow-left"></i> Back to dashboard</a>
+    <p style="color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:.14em;font-size:.72rem;margin:1.1rem 0 .3rem">Course studio</p>
+    <h1 class="mb-1">Managing <em><?= e($course['title'] ?? '') ?></em></h1>
+    <p class="mb-0">Lessons, quizzes, results and enrolled students — all in one place.</p>
+    <div class="mt-3"><?= \App\Core\View::partial('layouts/partials/flash') ?></div>
 </div>
 
 <div class="container pb-5">
@@ -368,6 +371,14 @@ $courseField = '<input type="hidden" name="course" value="' . $courseId . '">';
     ['viewVideoModal', 'viewQuizModal'].forEach(id =>
         document.getElementById(id).addEventListener('hidden.bs.modal', () =>
             document.querySelector('#' + id + ' iframe').src = ''));
+</script>
+<script src="assets/theme.js"></script>
+<script>
+  // Keep Bootstrap's own dark mode in sync with the shared theme toggle.
+  (function(){ var el = document.documentElement;
+    new MutationObserver(function(){ el.setAttribute('data-bs-theme', el.getAttribute('data-theme') || 'light'); })
+      .observe(el, { attributes: true, attributeFilter: ['data-theme'] });
+  })();
 </script>
 </body>
 </html>

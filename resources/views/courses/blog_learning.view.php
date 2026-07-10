@@ -148,6 +148,21 @@ foreach ($lessons as $li => $ll) {
     </div>
   </section>
 
+  <style>
+    /* Free / paid lesson access */
+    .stage-lock{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.6rem;
+      background:rgba(10,8,4,.82);color:#fff;text-align:center;padding:1rem}
+    .stage-lock i{font-size:2.4rem;color:var(--accent)}
+    .stage-lock p{margin:0;font-weight:600}
+    .lbadge{font-size:.62rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:.12rem .5rem;border-radius:999px;vertical-align:middle}
+    .lbadge--free{background:rgba(38,182,109,.16);color:#12805a}
+    .lbadge--paid{background:var(--bg-tint-1);color:var(--accent)}
+    .lrow--locked{opacity:1;cursor:not-allowed}
+    .lrow--locked .lrow__idx{background:var(--surface-3);color:var(--muted)}
+    .lrow--locked .lrow__play{color:var(--muted)}
+    .lrow--locked:hover{transform:none;border-color:var(--line)}
+    [data-theme="dark"] .lbadge--free{color:#46d199}
+  </style>
   <!-- Lessons -->
   <section class="page section cls-panel is-active" id="panel-lessons" style="padding-top:1.4rem">
     <div class="section__head" style="text-align:left;margin:0 0 1.4rem"><p class="k">Course content</p><h2>Lessons</h2></div>

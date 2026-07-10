@@ -1,235 +1,183 @@
 <?php
 /**
- * Trainer dashboard. Data comes from Trainer\HomeController.
+ * Trainer dashboard. Standalone page in the shared design system (light/dark).
  *
- * @var array $trainer                          the logged-in trainer's user row
- * @var array<int, array> $myCourses            courses owned by this trainer
- * @var array<int, array> $allCourses           every course
- * @var array<int, string> $trainerNames        user_id => trainer name (for All courses)
+ * @var array $trainer                the logged-in trainer's user row
+ * @var array<int, array> $myCourses  courses owned by this trainer
+ * @var array<int, array> $allCourses every course
+ * @var array<int, string> $trainerNames  user_id => trainer name (for All courses)
  */
-$trainerAvatar = trim((string) ($trainer['profile_image'] ?? '')) !== ''
-    ? 'uploading/' . $trainer['profile_image']
-    : 'assets/images/avatar/01.jpg';
-$title = strtolower((string) ($trainer['gender'] ?? '')) === 'male' ? 'Mr.' : 'Ms.';
+use App\Core\View;
+
+$trainer      = $trainer ?? [];
+$myCourses    = $myCourses ?? [];
+$allCourses   = $allCourses ?? [];
+$trainerNames = $trainerNames ?? [];
+$name         = $trainer['name'] ?? 'Trainer';
+$img          = $trainer['profile_image'] ?? '';
+$initial      = strtoupper(substr((string) $name, 0, 1)) ?: 'T';
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>E-Learning — Trainer</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <link rel="shortcut icon" href="assets/images/favicon.ico">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap">
-    <link rel="stylesheet" type="text/css" href="vendor/font-awesome/css/all.min.css">
-    <link rel="stylesheet" type="text/css" href="vendor/bootstrap-icons/bootstrap-icons.css">
-    <link rel="stylesheet" type="text/css" href="vendor/css/style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trainer dashboard — E‑Learning</title>
+  <script>(function(){try{var s=localStorage.getItem('eLearnTheme');document.documentElement.setAttribute('data-theme',s||((window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light'));}catch(e){document.documentElement.setAttribute('data-theme','light');}})();</script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,400;9..144,0,600;9..144,1,500;9..144,1,600&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="assets/student-ui.css" rel="stylesheet">
+  <style>
+    .d-none-sm{display:inline}@media(max-width:520px){.d-none-sm{display:none}}
+    .tr-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin:1.6rem 0 0}
+    .tr-stat{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:1.1rem 1.3rem;display:flex;align-items:center;gap:.9rem;box-shadow:var(--shadow)}
+    .tr-stat .ic{width:46px;height:46px;border-radius:13px;flex:none;display:grid;place-items:center;background:var(--bg-tint-1);color:var(--accent);font-size:1.3rem}
+    .tr-stat b{font-family:var(--serif);font-weight:700;font-size:1.5rem;display:block;line-height:1}
+    .tr-stat span{color:var(--muted);font-size:.85rem}
+    .tr-grid{display:grid;grid-template-columns:340px 1fr;gap:1.8rem;align-items:start}
+    @media(max-width:900px){.tr-grid{grid-template-columns:1fr}}
+    .prof-card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:2rem 1.6rem;text-align:center;box-shadow:var(--shadow)}
+    .prof-ava{width:120px;height:120px;border-radius:50%;object-fit:cover;margin:0 auto .9rem;display:grid;place-items:center;background:var(--surface-3);color:var(--accent);font-family:var(--serif);font-size:3rem;border:3px solid var(--surface-2)}
+    .prof-card h2{font-family:var(--serif);font-weight:600;font-size:1.5rem;margin:0}
+    .prof-card .role{color:var(--accent);font-weight:700;font-size:.78rem;text-transform:uppercase;letter-spacing:.12em;margin-top:.2rem}
+    .prof-rows{margin:1.4rem 0 0;text-align:left;display:flex;flex-direction:column}
+    .prof-row{display:flex;align-items:center;gap:.8rem;padding:.75rem .3rem;border-top:1px solid var(--line)}
+    .prof-row .ic{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:var(--bg-tint-1);color:var(--accent);flex:none}
+    .prof-row small{color:var(--muted);font-size:.74rem;text-transform:uppercase;letter-spacing:.06em;display:block}
+    .prof-row span{font-weight:600;word-break:break-word}
+    .toggle-form{display:none;margin-top:1rem;text-align:left}
+    .toggle-form.is-open{display:block;animation:ui-fadeup .25s both}
+    .crs__desc{color:var(--muted);font-size:.88rem;margin:0 0 .9rem;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+    .crs__manage{background:var(--accent);color:var(--accent-ink);border:none;border-radius:10px;padding:.5rem .9rem;font-weight:700;font-size:.85rem;cursor:pointer;font-family:var(--sans);text-decoration:none;display:inline-flex;align-items:center;gap:.35rem}
+  </style>
 </head>
-<body>
-<?= \App\Core\View::partial('layouts/partials/flash') ?>
+<body class="ui-scope">
+  <?= View::partial('layouts/trainer/topbar', ['trainer' => $trainer, 'active' => 'dashboard']) ?>
 
-<!-- **************** MAIN CONTENT START **************** -->
-<main>
-<section style='height: 200px;background-image: url("assets/images/bg/pastel-2571378_1280.jpg");'>
-    <div class="row mb-4">
-        <div class="col-lg-8 text-center mx-auto">
-            <h2 class="fs-1">Welcome <?= e($title) ?> <span class='text-orange'><?= e($trainer['name'] ?? '') ?></span> To E-learning</h2>
-            <p class="mb-0">Information Technology Courses to expand your skills and boost your career &amp; salary</p>
-        </div>
-        <div class='d-flex justify-content-end p-5'>
-            <a href="/trainer_logout"><button class="btn btn-danger mb-0"><i class="fas fa-sign-in-alt me-2"></i>Log Out</button></a>
-        </div>
+  <!-- Hero -->
+  <section class="page hero-home" style="text-align:left;padding:2.6rem 0 1rem">
+    <p class="k">Trainer studio</p>
+    <h1 style="margin:0">Welcome back, <em><?= e($name) ?></em>.</h1>
+    <p style="margin-left:0">Manage your courses, publish lessons and quizzes, and keep an eye on your learners.</p>
+    <div class="tr-stats">
+      <div class="tr-stat"><span class="ic"><i class="bi bi-journal-bookmark-fill"></i></span><span><b><?= count($myCourses) ?></b><span>Courses you teach</span></span></div>
+      <div class="tr-stat"><span class="ic"><i class="bi bi-collection-fill"></i></span><span><b><?= count($allCourses) ?></b><span>Courses on the platform</span></span></div>
+      <div class="tr-stat"><span class="ic"><i class="bi bi-patch-check-fill"></i></span><span><b>Active</b><span>Teaching status</span></span></div>
     </div>
-</section>
+  </section>
 
-<section class="pt-4" style="background-color: rgba(0, 0, 0,0.05);">
-    <div class="container">
-        <div class="mt-4">
-            <button type="button" id='personal' class="btn btn-outline-orange"><i class="bi bi-info-circle"></i> My Personal Information</button>
-            <button type="button" id='respone' class="btn btn-outline-orange"><i class="bi bi-person-check-fill"></i> My Courses</button>
-            <button type="button" id='courses' class="btn btn-outline-orange"><i class="bi bi-briefcase-fill"></i> All the Courses</button>
-        </div>
-    </div>
-</section>
+  <section class="page section" style="padding-top:1.6rem">
+    <div class="tr-grid">
+      <!-- Profile -->
+      <aside class="prof-card">
+        <?php if ($img !== ''): ?>
+          <img class="prof-ava" src="uploading/<?= e($img) ?>" alt="" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'prof-ava',textContent:'<?= e($initial) ?>'}))">
+        <?php else: ?>
+          <div class="prof-ava"><?= e($initial) ?></div>
+        <?php endif; ?>
+        <h2><?= e($name) ?></h2>
+        <div class="role">Trainer</div>
 
-<!-- Personal information -->
-<div class="d-flex justify-content-center" style="background-color: rgba(0, 0, 0,0.05);">
-    <section id="personals">
-        <div class="container">
-            <div class="row shadow align-items-center border rounded p-4" style="max-width:600px;margin-top: 24px;">
-                <div class="text-center">
-                    <img class="img-fluid rounded-circle mb-3" src="<?= e($trainerAvatar) ?>" alt="" style="width: 150px; height: 150px; object-fit: cover;">
-                    <h4 class="m-1"><?= e($trainer['name'] ?? '') ?></h4>
-                </div>
-                <div class="col-lg-7 py-4 px-3">
-                    <div class="d-flex align-items-center mb-4 gap-2">
-                        <span>Phone:</span><h6 class="m-0"><?= e($trainer['phone'] ?? '') ?></h6>
-                    </div>
-                    <div class="d-flex align-items-center mb-4 gap-2">
-                        <span>Email:</span><h6 class="m-0"><?= e($trainer['email'] ?? '') ?></h6>
-                    </div>
-                    <div class="d-flex align-items-center mb-4 gap-2">
-                        <span>Courses:</span><h6 class="m-0"><?= count($myCourses) ?> Courses</h6>
-                    </div>
-                    <div class="d-flex align-items-center mb-4 gap-2">
-                        <span>Experiences:</span><h6 class="m-0">1 year</h6>
-                    </div>
-                    <div class="d-flex gap-2">
-                        <button type="button" class="btn btn-outline-orange btn-sm" data-bs-toggle="modal" data-bs-target="#editProfileModal">
-                            <i class="fas fa-edit me-1"></i> Edit profile
-                        </button>
-                        <button type="button" class="btn btn-outline-orange btn-sm" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
-                            <i class="fas fa-key me-1"></i> Change password
-                        </button>
-                    </div>
-                </div>
-            </div>
+        <div class="prof-rows">
+          <div class="prof-row"><span class="ic"><i class="bi bi-envelope"></i></span><span><small>Email</small><?= e($trainer['email'] ?? '—') ?></span></div>
+          <div class="prof-row"><span class="ic"><i class="bi bi-telephone"></i></span><span><small>Phone</small><?= e($trainer['phone'] ?? '—') ?></span></div>
+          <div class="prof-row"><span class="ic"><i class="bi bi-mortarboard"></i></span><span><small>Courses</small><?= count($myCourses) ?> course<?= count($myCourses) === 1 ? '' : 's' ?></span></div>
         </div>
-    </section>
-</div>
 
-<!-- My courses -->
-<section id='responsible' class="pt-1" style="background-color: rgba(0, 0, 0,0.05); display:none;">
-    <div class="container">
-        <div class="row g-4 justify-content-center">
-            <div class="text-center mx-auto">
-                <h4 class="text-orange">My Courses</h4>
-                <p class="mb-0">Courses you teach</p>
-            </div>
-            <?php if (empty($myCourses)) : ?>
-                <p class="text-center">You have no courses yet.</p>
-            <?php else : ?>
-                <?php foreach ($myCourses as $course) : ?>
-                <div class="col-lg-10 col-xl-7">
-                    <div class="card shadow p-2">
-                        <div class="row g-0">
-                            <div class="col-md-4 d-flex align-items-center">
-                                <img src="uploading/<?= e($course['image_courses'] ?? '') ?>" class="rounded-3" alt="course">
-                            </div>
-                            <div class="col-md-8">
-                                <div class="card-body">
-                                    <h5 class="card-title mb-0"><?= e($course['title'] ?? '') ?></h5>
-                                    <p class="text-truncate-2 mb-3"><?= e($course['description'] ?? '') ?></p>
-                                    <a href="/trainer_manage?course=<?= (int) $course['course_id'] ?>" class="btn btn-sm btn-orange"><i class="fas fa-cog me-1"></i> Manage</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <?php endforeach; ?>
-            <?php endif; ?>
+        <div style="display:flex;gap:.5rem;margin-top:1.3rem">
+          <button class="ui-btn ui-btn--ghost" style="flex:1;padding:.6rem" id="btnEdit"><i class="bi bi-pencil-square"></i> Edit</button>
+          <button class="ui-btn ui-btn--ghost" style="flex:1;padding:.6rem" id="btnPw"><i class="bi bi-shield-lock"></i> Password</button>
         </div>
-    </div>
-</section>
 
-<!-- All courses -->
-<section id='allcourses' class="pt-1" style="background-color: rgba(0, 0, 0,0.05); display:none;">
-    <div class="container">
-        <div class="text-center mx-auto">
-            <h4 class="text-orange">All the Courses</h4>
-            <p class="mb-5">Every course on the platform</p>
-        </div>
-        <div class="row g-4 justify-content-center">
-            <?php foreach ($allCourses as $course) : ?>
-            <div class="col-lg-10 col-xl-6">
-                <div class="card shadow p-2">
-                    <div class="row g-0">
-                        <div class="col-md-4">
-                            <img src="uploading/<?= e($course['image_courses'] ?? '') ?>" class="rounded-3" alt="course">
-                        </div>
-                        <div class="col-md-8">
-                            <div class="card-body">
-                                <h5 class="card-title mb-0"><?= e($course['title'] ?? '') ?></h5>
-                                <p class="small mb-2">trainer : <span class='text-info'><?= e($trainerNames[(int) $course['user_id']] ?? '') ?></span></p>
-                                <p class="text-truncate-2 mb-3"><?= e($course['description'] ?? '') ?></p>
-                            </div>
-                        </div>
-                    </div>
+        <!-- Edit profile -->
+        <form class="toggle-form" id="editForm" action="/trainer_edits" method="post" enctype="multipart/form-data">
+          <div class="ui-field"><label class="ui-label" for="name">Name</label><input class="ui-input" id="name" name="name" value="<?= e($name) ?>" required></div>
+          <div class="ui-field"><label class="ui-label" for="phone">Phone</label><input class="ui-input" id="phone" name="phone" value="<?= e($trainer['phone'] ?? '') ?>"></div>
+          <div class="ui-field"><label class="ui-label" for="email">Email</label><input class="ui-input" id="email" name="email" type="email" value="<?= e($trainer['email'] ?? '') ?>" required></div>
+          <div class="ui-field"><label class="ui-label" for="image">Profile photo</label><input class="ui-input" type="file" id="image" name="image" accept="image/*" style="padding:.6rem 1rem"></div>
+          <button class="ui-btn ui-btn--primary ui-btn--block" type="submit"><i class="bi bi-check2"></i> Save profile</button>
+        </form>
+
+        <!-- Change password -->
+        <form class="toggle-form" id="pwForm" action="/trainer_password_comfirm" method="post">
+          <div class="ui-field"><label class="ui-label" for="currentPassword">Current password</label><input class="ui-input" type="password" id="currentPassword" name="currentPassword" required></div>
+          <div class="ui-field"><label class="ui-label" for="newPassword">New password</label><input class="ui-input" type="password" id="newPassword" name="newPassword" required></div>
+          <div class="ui-field"><label class="ui-label" for="confirmPassword">Confirm password</label><input class="ui-input" type="password" id="confirmPassword" name="confirmPassword" required></div>
+          <button class="ui-btn ui-btn--primary ui-btn--block" type="submit"><i class="bi bi-check2-circle"></i> Update password</button>
+        </form>
+      </aside>
+
+      <!-- My courses -->
+      <div>
+        <div class="section__head" style="text-align:left;margin:0 0 1.4rem"><p class="k">Teaching</p><h2>My courses</h2></div>
+        <?php if (empty($myCourses)): ?>
+          <div class="empty-block"><i class="bi bi-journal-plus"></i>You aren’t teaching any courses yet. An admin can assign courses to you.</div>
+        <?php else: ?>
+          <div class="course-grid">
+            <?php foreach ($myCourses as $course): ?>
+              <article class="crs">
+                <div class="crs__media">
+                  <img src="uploading/<?= e($course['image_courses'] ?? '') ?>" alt="" onerror="this.style.display='none'">
                 </div>
-            </div>
+                <div class="crs__body">
+                  <h3 class="crs__title"><?= e($course['title'] ?? '') ?></h3>
+                  <p class="crs__desc"><?= e($course['description'] ?? '') ?></p>
+                  <div class="crs__foot">
+                    <span class="crs__enroll"><span class="ic"><i class="bi bi-mortarboard-fill"></i></span> $<?= e($course['price'] ?? '0') ?></span>
+                    <a class="crs__manage" href="/trainer_manage?course=<?= (int) $course['course_id'] ?>"><i class="bi bi-sliders"></i> Manage</a>
+                  </div>
+                </div>
+              </article>
             <?php endforeach; ?>
-        </div>
-    </div>
-</section>
-</main>
-<!-- **************** MAIN CONTENT END **************** -->
+          </div>
+        <?php endif; ?>
 
-<!-- Edit Profile modal -->
-<div class="modal fade" id="editProfileModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-body border border-orange p-4 m-4" style="background-color: #f8f9fa;">
-                <h5 class="mb-4 text-orange">Edit Profile</h5>
-                <form action="/trainer_edits" method="post" enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <label class="form-label">Profile Image:</label>
-                        <input type="file" class="form-control" name="image" accept="image/*">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Name:</label>
-                        <input type="text" class="form-control" name="name" value="<?= e($trainer['name'] ?? '') ?>" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Phone:</label>
-                        <input type="text" class="form-control" name="phone" value="<?= e($trainer['phone'] ?? '') ?>">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Email:</label>
-                        <input type="email" class="form-control" name="email" value="<?= e($trainer['email'] ?? '') ?>" required>
-                    </div>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-orange">Update</button>
-                </form>
-            </div>
+        <!-- All courses -->
+        <?php if (!empty($allCourses)): ?>
+        <div class="section__head" style="text-align:left;margin:2.6rem 0 1.4rem"><p class="k">Catalogue</p><h2>All courses</h2></div>
+        <div class="course-grid">
+          <?php foreach ($allCourses as $course): ?>
+            <article class="crs">
+              <div class="crs__media">
+                <img src="uploading/<?= e($course['image_courses'] ?? '') ?>" alt="" onerror="this.style.display='none'">
+              </div>
+              <div class="crs__body">
+                <h3 class="crs__title"><?= e($course['title'] ?? '') ?></h3>
+                <div class="crs__meta"><i class="bi bi-person-badge" style="color:var(--accent)"></i> <span><?= e($trainerNames[$course['user_id'] ?? 0] ?? 'Trainer') ?></span></div>
+                <div class="crs__foot">
+                  <span class="crs__enroll"><span class="ic"><i class="bi bi-tag-fill"></i></span> $<?= e($course['price'] ?? '0') ?></span>
+                </div>
+              </div>
+            </article>
+          <?php endforeach; ?>
         </div>
+        <?php endif; ?>
+      </div>
     </div>
-</div>
+  </section>
 
-<!-- Change Password modal -->
-<div class="modal fade" id="changePasswordModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-body border border-orange p-4 m-4" style="background-color: #f8f9fa;">
-                <h5 class="mb-4 text-orange">Change password</h5>
-                <form action="/trainer_password_comfirm" method="post">
-                    <div class="mb-3">
-                        <label class="form-label">Current Password:</label>
-                        <input type="password" class="form-control" name="currentPassword" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">New Password:</label>
-                        <input type="password" class="form-control" name="newPassword" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Confirm New Password:</label>
-                        <input type="password" class="form-control" name="confirmPassword" required>
-                    </div>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-orange">Change Password</button>
-                </form>
-            </div>
-        </div>
+  <footer class="foot">
+    <div class="foot__wrap">
+      <span>© <?= date('Y') ?> E‑Learning — trainer studio.</span>
+      <a href="/trainer_logout" class="ui-btn ui-btn--ghost" style="padding:.45rem .9rem;font-size:.85rem"><i class="bi bi-box-arrow-right"></i> Sign out</a>
     </div>
-</div>
+  </footer>
 
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    // Tab switching between the three panels.
-    document.getElementById('personal').addEventListener('click', function () {
-        document.getElementById('responsible').style.display = 'none';
-        document.getElementById('allcourses').style.display = 'none';
-        document.getElementById('personals').style.display = 'block';
-    });
-    document.getElementById('respone').addEventListener('click', function () {
-        document.getElementById('responsible').style.display = 'block';
-        document.getElementById('allcourses').style.display = 'none';
-        document.getElementById('personals').style.display = 'none';
-    });
-    document.getElementById('courses').addEventListener('click', function () {
-        document.getElementById('responsible').style.display = 'none';
-        document.getElementById('allcourses').style.display = 'block';
-        document.getElementById('personals').style.display = 'none';
-    });
-</script>
+  <script src="assets/theme.js"></script>
+  <script>
+    (function(){
+      function toggle(btn, form, other){
+        btn.addEventListener('click', function(){
+          if (other.classList.contains('is-open')) other.classList.remove('is-open');
+          form.classList.toggle('is-open');
+        });
+      }
+      var ef = document.getElementById('editForm'), pf = document.getElementById('pwForm');
+      toggle(document.getElementById('btnEdit'), ef, pf);
+      toggle(document.getElementById('btnPw'), pf, ef);
+    })();
+  </script>
 </body>
 </html>
