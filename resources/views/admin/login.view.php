@@ -42,32 +42,23 @@
                         <h3 class="text-white">Sign In for 👨🏼‍💻 addmin</h3>
                     </div>
                     <?php
-                    $input = false;
-                    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-                        $input = true;
-                        $require = applySigninAdmin($_POST['name'], $_POST['password']);
-                    }
+                    /** @var array{name: string, password: string} $errors */
+                    /** @var array{name: string} $old */
+                    $errors = $errors ?? ['name' => '', 'password' => ''];
+                    $old    = $old ?? ['name' => ''];
                     ?>
-                    <form action="/admin_access" method='post'>                            
-                        <label for="floatingInput" class="text-white" <?php if ($input) { if (strlen($require['name']) > 0) { echo 'hidden'; } } ?>>name</label>
+                    <form action="/admin_access" method='post'>
+                        <label for="floatingInput" class="text-white" <?php if ($errors['name'] !== '') { echo 'hidden'; } ?>>name</label>
                         <div class="form-floating mb-2 border-info rounded">
-                            <small class="form-text text-danger">
-                                <?php if ($input == true) {
-                                    echo $require['name'];
-                                } ?>
-                            </small>
-                            <input type="name" class="form-control form-control-lg bd-info text-white" id="floatingInput" placeholder="name@example.com" style="background-color: rgba(0, 0, 0, 0.1);<?php if ($input) { if (strlen($require['name']) > 0) { echo 'border: 1px solid lightcoral;'; } } ?>" name='name' value="<?php if ($input) { echo $_POST['name']; } ?>">
+                            <small class="form-text text-danger"><?= e($errors['name']) ?></small>
+                            <input type="name" class="form-control form-control-lg bd-info text-white" id="floatingInput" placeholder="name@example.com" style="background-color: rgba(0, 0, 0, 0.1);<?php if ($errors['name'] !== '') { echo 'border: 1px solid lightcoral;'; } ?>" name='name' value="<?= e($old['name']) ?>">
                         </div>
-                        <label for="passwordInput" class="text-white " <?php if ($input) {if (strlen($require['password']) > 0) { echo 'hidden';}} ?>>Password</label>
+                        <label for="passwordInput" class="text-white " <?php if ($errors['password'] !== '') { echo 'hidden'; } ?>>Password</label>
                             <div class="form-floating mb-2 border-white rounded">
-                                <small class="form-text text-danger">
-                                    <?php if ($input == true) {
-                                        echo $require['password'];
-                                    } ?>
-                                </small>
-                                
+                                <small class="form-text text-danger"><?= e($errors['password']) ?></small>
+
                                 <div class="input-group">
-                                    <input type="Password" class="form-control form-control-lg bd-white text-white" id="passwordInput" style="background-color: rgba(0, 0, 0, 0.1);<?php if ($input) {if (strlen($require['password']) > 0) {echo 'border: 1px solid lightcoral;';}} ?>" name='password' value="<?php if ($input) {echo $_POST['password'];} ?>">
+                                    <input type="Password" class="form-control form-control-lg bd-white text-white" id="passwordInput" style="background-color: rgba(0, 0, 0, 0.1);<?php if ($errors['password'] !== '') { echo 'border: 1px solid lightcoral;'; } ?>" name='password' value="">
                                     <button type="button" class="btn btn-light" id="showPasswordBtn"  style="background-color: rgba(0, 0, 0, 0.1);"><i class="bi bi-eye"></i></button>
                                 </div>
                             </div>
