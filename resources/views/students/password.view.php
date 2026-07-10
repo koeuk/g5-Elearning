@@ -1,4 +1,13 @@
-<?php require_once 'models/student.password.model.php'; ?>
+<?php
+/**
+ * Student change-password screen (standalone).
+ *
+ * @var bool  $input   whether the form was submitted (show validation state)
+ * @var array $require field => error message (currentPassword/newPassword/confirmPassword)
+ */
+$input   = $input ?? false;
+$require = $require ?? ['currentPassword' => '', 'newPassword' => '', 'confirmPassword' => ''];
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,25 +40,14 @@
 </head>
 
 <body style="background-image: url('assets/images/bg/lg.jpg'); background-size: cover; background-repeat: no-repeat;">
-<?php
-  $input =false;
-  if($_SERVER['REQUEST_METHOD'] == 'POST'){
-      if(isset($_POST['currentPassword'])&& isset($_POST['newPassword'] )  && isset($_POST['confirmPassword'])){
-        $input = true;
-        $require = requirePasswordChange( $_POST['email'],$_POST['currentPassword'],$_POST['newPassword'],$_POST['confirmPassword']); 
-      }
-  }
-?>
 <div class="container">
 <div class="container">
     <div class="row justify-content-center mt-5">
-        <form class="container-fluid justify-content-start" action='/student_profile' method='post'>
-            <?php if(isset($_POST['admin'])){ echo "<input type='text' name='admin' value=''hidden >";}?>
-            <input type="text" name='id' value='<?=$_POST['id']?>' hidden>
-            <button type="submit" class="btn btn-orange btn-sm">
+        <div class="container-fluid justify-content-start">
+            <a href="/student_profile" class="btn btn-orange btn-sm">
             <i class="bi bi-arrow-left-circle-fill"></i> Back
-            </button>
-        </form>  
+            </a>
+        </div>
         <div class="col-lg-5 d-flex">
             <div class="modal-body border p-4 mt-4 ml-0" style="background-color: #f8f9fa;">
                 <h5 class="mb-4 text-orange text-center">Change password</h5>
@@ -90,9 +88,6 @@
                             </button>
                         </div>
                     </div>
-                    <?php if(isset($_POST['admin'])){ echo "<input type='text' name='admin' value=''hidden >";}?>
-					<input type="text" name='id' value='<?= $_POST['id'] ?>' hidden>
-					<input type="text" name='email' value='<?= $_POST['email'] ?>' hidden>
                     <button type="submit" class="btn btn-orange d-block mx-auto">Change Password</button>
                 </form>
             </div>

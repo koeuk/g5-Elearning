@@ -50,7 +50,6 @@
                 <th scope="col">ID</th>
                 <th scope="col">Name</th>
                 <th scope="col">Email</th>
-                <th scope="col">Password</th>
                 <th scope="col">Phone</th>
                 <th scope="col">Gender</th>
                 <th scope="col">Profile</th>
@@ -67,13 +66,12 @@
             ?>
                 <tr>
                     <td><?= $key + 1 ?></td>
-                    <td><?= $trainer['name'] ?></td>
-                    <td><?= $trainer['email'] ?></td>
-                    <td><?= $trainer['password'] ?></td>
-                    <td><?= $trainer['phone'] ?></td>
-                    <td><?= $trainer['gender'] ?></td>
+                    <td><?= e($trainer['name']) ?></td>
+                    <td><?= e($trainer['email']) ?></td>
+                    <td><?= e($trainer['phone']) ?></td>
+                    <td><?= e($trainer['gender']) ?></td>
                     <td>
-                        <img src="../../../uploading/<?= $trainer['profile_image'] ?>" class="avatar">
+                        <img src="uploading/<?= e($trainer['profile_image']) ?>" class="avatar" onerror="this.onerror=null;this.src='assets/images/avatar/01.jpg'">
                     </td>
                     <td>
                         <form action="/trainer_home" method="post" style="display: inline;">

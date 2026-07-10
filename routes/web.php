@@ -22,6 +22,8 @@ use App\Controllers\Admin\PasswordController as AdminPasswordController;
 use App\Controllers\Student\AuthController as StudentAuthController;
 use App\Controllers\Student\HomeController as StudentHomeController;
 use App\Controllers\Student\CourseController as StudentCourseController;
+use App\Controllers\Student\ProfileController as StudentProfileController;
+use App\Controllers\Student\PasswordController as StudentPasswordController;
 use App\Controllers\Student\OrderController;
 use App\Controllers\Trainer\AuthController as TrainerAuthController;
 use App\Controllers\Trainer\HomeController as TrainerHomeController;
@@ -50,6 +52,12 @@ $router->any('/student', [StudentHomeController::class, 'index']);         // co
 
 /* Courses within a category (posted from the home category cards/dropdown). */
 $router->any('/course', [StudentCourseController::class, 'index']);
+
+/* Profile + edit + change password. */
+$router->any('/student_profile', [StudentProfileController::class, 'show']);
+$router->post('/get_edit', [StudentProfileController::class, 'update']);
+$router->any('/student_password', [StudentPasswordController::class, 'edit']);
+$router->post('/student_password_comfirm', [StudentPasswordController::class, 'update']);
 
 /* Ordering/checkout screen — self-submits, so it handles GET and POST. */
 $router->any('/orders', [OrderController::class, 'index']);

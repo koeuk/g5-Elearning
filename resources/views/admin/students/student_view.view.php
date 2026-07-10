@@ -99,7 +99,7 @@
                     <td><?= $student['phone'] ?></td>
                     <td><?= $student['gender'] ?></td>
                     <td>
-                        <img src="../../../uploading/<?= $student['profile_image'] ?>" class="avatar">
+                        <img src="uploading/<?= e($student['profile_image']) ?>" class="avatar" onerror="this.onerror=null;this.src='assets/images/avatar/01.jpg'">
                     </td>
                     <td class='d-flex gap-2'>
                         <form action="student_profile" method='post'>
@@ -147,7 +147,7 @@
                                 <div class="card" >
                                     <div class="left">
                                         <div class="img ">
-                                            <img src="../../../uploading/<?= $student['profile_image'] ?>" class="card-img" alt="...">
+                                            <img src="uploading/<?= e($student['profile_image']) ?>" class="card-img" alt="..." onerror="this.onerror=null;this.src='assets/images/avatar/01.jpg'">
                                         </div>
 
                                     </div>

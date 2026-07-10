@@ -214,8 +214,9 @@
 
                          <td class="text-start ">
                               <div class="position-relative">
-                                   <img class="rounded-circle" src="uploading/<?= $course['image_courses'] ?>" alt=""
-                                        style="width: 40px; height: 40px;">
+                                   <img class="rounded-circle" src="uploading/<?= e($course['image_courses']) ?>" alt=""
+                                        style="width: 40px; height: 40px; object-fit: cover;"
+                                        onerror="this.onerror=null;this.src='assets/images/avatar/01.jpg'">
                               </div>
                          </td>
                          <td class="text-start"><?= $course['price'] ?></td>
