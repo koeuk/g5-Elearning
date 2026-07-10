@@ -20,6 +20,128 @@ $email      = $student['email'] ?? '';
 
 echo View::partial('layouts/public/header');
 ?>
+<style>
+/* ============================================================
+   Student home — UI polish (scoped to this page's sections).
+   Warm, modern education aesthetic built on the app's orange.
+   ============================================================ */
+#categories_blog, #courses, #best {
+  --brand: #F28500;
+  --brand-2: #ff9e2c;
+  --brand-soft: rgba(242, 133, 0, .10);
+  --ink: #17171f;
+}
+
+/* Section headings ("Featured Courses", "Top Courses") */
+#courses > .container > .row h2,
+#best > .container > .row h2 {
+  position: relative;
+  display: inline-block;
+  font-weight: 800;
+  letter-spacing: -.02em;
+}
+#courses > .container > .row h2::after,
+#best > .container > .row h2::after {
+  content: "";
+  position: absolute; left: 50%; bottom: -10px; transform: translateX(-50%);
+  width: 64px; height: 4px; border-radius: 99px;
+  background: linear-gradient(90deg, var(--brand), var(--brand-2));
+}
+
+/* ---- Category cards ---- */
+#categories_blog .card {
+  border: 1px solid rgba(15, 15, 25, .06);
+  border-radius: 18px !important;
+  background: #fff;
+  overflow: hidden; position: relative;
+  transition: transform .4s cubic-bezier(.2, .7, .2, 1), box-shadow .4s ease, border-color .4s ease;
+  animation: eduRise .6s both;
+}
+#categories_blog [class*="col-"]:nth-child(1) .card { animation-delay: .04s; }
+#categories_blog [class*="col-"]:nth-child(2) .card { animation-delay: .11s; }
+#categories_blog [class*="col-"]:nth-child(3) .card { animation-delay: .18s; }
+#categories_blog [class*="col-"]:nth-child(4) .card { animation-delay: .25s; }
+#categories_blog .card::before {
+  content: ""; position: absolute; inset: 0 auto 0 0; width: 4px;
+  background: linear-gradient(var(--brand), var(--brand-2));
+  transform: scaleY(0); transform-origin: bottom; transition: transform .4s ease;
+}
+#categories_blog .card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(242, 133, 0, .35);
+  box-shadow: 0 20px 44px -16px rgba(242, 133, 0, .4);
+}
+#categories_blog .card:hover::before { transform: scaleY(1); }
+#categories_blog .card img {
+  transition: transform .45s ease, box-shadow .45s ease;
+  box-shadow: 0 0 0 4px var(--brand-soft);
+}
+#categories_blog .card:hover img { transform: scale(1.08) rotate(-3deg); }
+#categories_blog .card h5 a { font-weight: 700; color: var(--ink); letter-spacing: -.01em; }
+#categories_blog .card:hover h5 a { color: var(--brand); }
+#categories_blog .card span {
+  display: inline-block; margin-top: 6px;
+  font-size: .72rem; font-weight: 700; letter-spacing: .02em;
+  color: var(--brand); background: var(--brand-soft);
+  padding: 3px 11px; border-radius: 99px;
+}
+#categories_blog form { width: 100%; text-align: left; }
+
+/* ---- Featured course cards ---- */
+#courses .card {
+  border: none !important;
+  border-radius: 20px !important;
+  overflow: hidden;
+  box-shadow: 0 8px 26px -14px rgba(15, 15, 25, .22);
+  transition: transform .45s cubic-bezier(.2, .7, .2, 1), box-shadow .45s ease;
+  animation: eduRise .6s both;
+}
+#courses [class*="col-"]:nth-child(4n+1) .card { animation-delay: .04s; }
+#courses [class*="col-"]:nth-child(4n+2) .card { animation-delay: .11s; }
+#courses [class*="col-"]:nth-child(4n+3) .card { animation-delay: .18s; }
+#courses [class*="col-"]:nth-child(4n+4) .card { animation-delay: .25s; }
+#courses .card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 30px 56px -22px rgba(15, 15, 25, .4);
+}
+#courses .rounded-top { border-radius: 16px; overflow: hidden; position: relative; }
+#courses .rounded-top::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 55%, rgba(15, 15, 25, .28));
+  opacity: 0; transition: opacity .4s ease; pointer-events: none;
+}
+#courses .card:hover .rounded-top::after { opacity: 1; }
+#courses .card-img-top {
+  width: 100%; aspect-ratio: 16 / 10; object-fit: cover;
+  transition: transform .6s cubic-bezier(.2, .7, .2, 1);
+}
+#courses .card:hover .card-img-top { transform: scale(1.08); }
+#courses .avatar-img { box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--brand-soft); }
+#courses .card-title a { font-weight: 700; color: var(--ink); letter-spacing: -.01em; }
+#courses .card-title a:hover { color: var(--brand); }
+#courses .text-success { color: var(--brand) !important; font-weight: 800; font-size: 1.05rem; }
+#courses .badge.bg-info {
+  background: var(--brand-soft) !important; color: var(--brand) !important;
+  font-weight: 600; border-radius: 99px;
+}
+#courses .btn-primary {
+  background: linear-gradient(135deg, var(--brand), var(--brand-2)); border: none;
+  border-radius: 99px; font-weight: 600; box-shadow: 0 8px 18px -8px rgba(242, 133, 0, .6);
+  transition: transform .25s ease, filter .25s ease;
+}
+#courses .btn-primary:hover { filter: brightness(1.05); transform: translateY(-1px); }
+#courses .card-element-hover .icon-md {
+  backdrop-filter: blur(4px);
+  box-shadow: 0 6px 16px -6px rgba(0, 0, 0, .4);
+  transition: transform .3s ease;
+}
+#courses .card:hover .card-element-hover .icon-md { transform: scale(1.1); }
+
+@keyframes eduRise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) {
+  #categories_blog .card, #courses .card { animation: none; }
+}
+</style>
 <!-- Header START -->
 <header class="navbar-light navbar-sticky navbar-transparent">
   <!-- Logo Nav START -->
