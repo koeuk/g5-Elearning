@@ -60,6 +60,12 @@
 </style>
 
 <div class="table-responsive p-5 pt-3">
+    <?php $flash = \App\Core\Session::flash('student_pw'); if ($flash): ?>
+        <div class="alert alert-<?= $flash['type'] === 'success' ? 'success' : 'danger' ?> alert-dismissible fade show" role="alert">
+            <?= e($flash['message']) ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
     <div class="mt-3 mb-3 d-flex justify-content-between align-items-center">
         <h3>Students List</h3>
 
@@ -107,7 +113,8 @@
 			                <input type="hidden" name="admin" value=''>
                             <button type='sumit' class='d-flex justify-content-center align-items-center gap-1 btn btn-warning btn-sm'><i class="fas fa-eye"></i> Detail</button>
                         </form>
-                        <a class="d-flex justify-content-center align-items-center gap-1 btn btn-primary btn-sm" href="" data-bs-toggle="modal" data-bs-target="#deleteStudent<?= $student['user_id'] ?>"><i class="fas fa-trash"></i> Delete</a>                      
+                        <a class="d-flex justify-content-center align-items-center gap-1 btn btn-info btn-sm text-white" href="" data-bs-toggle="modal" data-bs-target="#editStudent<?= $student['user_id'] ?>"><i class="fas fa-edit"></i> Edit</a>
+                        <a class="d-flex justify-content-center align-items-center gap-1 btn btn-primary btn-sm" href="" data-bs-toggle="modal" data-bs-target="#deleteStudent<?= $student['user_id'] ?>"><i class="fas fa-trash"></i> Delete</a>
                     </td>
                 </tr>
                 
@@ -176,8 +183,64 @@
     </table>
 </div>
 
-
-
+<!-- ========================= Edit student (details + password) ================= -->
+<?php foreach (($students ?? []) as $student): ?>
+<div class="modal fade" id="editStudent<?= $student['user_id'] ?>" tabindex="-1" aria-labelledby="editStudentLabel<?= $student['user_id'] ?>" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="editStudentLabel<?= $student['user_id'] ?>"><i class="fas fa-user-edit me-2"></i>Edit — <?= e($student['name']) ?></h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-dark">
+                <div class="row g-4">
+                    <!-- Edit details -->
+                    <div class="col-md-7">
+                        <h6 class="fw-bold text-primary mb-3"><i class="fas fa-id-card me-1"></i> Details</h6>
+                        <form action="/get_edit" method="post" enctype="multipart/form-data">
+                            <input type="hidden" name="id" value="<?= (int) $student['user_id'] ?>">
+                            <div class="mb-3">
+                                <label class="form-label">Name</label>
+                                <input type="text" class="form-control" name="name" value="<?= e($student['name']) ?>">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" name="email" value="<?= e($student['email']) ?>">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Phone</label>
+                                <input type="text" class="form-control" name="phone" value="<?= e($student['phone']) ?>">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Profile photo <span class="text-muted small">(leave empty to keep)</span></label>
+                                <input type="file" class="form-control" name="image" accept="image/*">
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100"><i class="fas fa-save me-1"></i> Save details</button>
+                        </form>
+                    </div>
+                    <!-- Change password -->
+                    <div class="col-md-5 border-start ps-md-4">
+                        <h6 class="fw-bold text-primary mb-3"><i class="fas fa-key me-1"></i> Change password</h6>
+                        <form action="/updateStudentPassword" method="post">
+                            <input type="hidden" name="id" value="<?= (int) $student['user_id'] ?>">
+                            <div class="mb-3">
+                                <label class="form-label">New password</label>
+                                <input type="password" class="form-control" name="newPassword" placeholder="••••••••" autocomplete="new-password">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Confirm password</label>
+                                <input type="password" class="form-control" name="confirmPassword" placeholder="••••••••" autocomplete="new-password">
+                            </div>
+                            <p class="text-muted small">At least 8 characters with a letter, number &amp; symbol.</p>
+                            <button type="submit" class="btn btn-warning w-100 text-white" style="background:#F28500;"><i class="fas fa-key me-1"></i> Update password</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<?php endforeach; ?>
 
 <!-- ========================= show popup form when create student================= -->
 <!-- Modal -->

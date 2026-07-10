@@ -98,6 +98,7 @@ $router->post('/delete_trainer', [AdminTrainerController::class, 'destroy']);
 $router->get('/list_student', [AdminStudentController::class, 'index']);
 $router->post('/addStudent', [AdminStudentController::class, 'store']);
 $router->post('/deleteStudent', [AdminStudentController::class, 'destroy']);
+$router->post('/updateStudentPassword', [AdminStudentController::class, 'updatePassword']);
 
 /* Change password. */
 $router->get('/admin_password', [AdminPasswordController::class, 'edit']);
