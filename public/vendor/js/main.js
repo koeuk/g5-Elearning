@@ -65,8 +65,8 @@
 
 
     // Worldwide Sales Chart
-    var ctx1 = $("#worldwide-sales").get(0).getContext("2d");
-    var myChart1 = new Chart(ctx1, {
+    var el1 = $("#worldwide-sales").get(0);
+    var myChart1 = el1 && new Chart(el1.getContext("2d"), {
         type: "bar",
         data: {
             labels: ["2016", "2017", "2018", "2019", "2020", "2021", "2022"],
@@ -94,8 +94,8 @@
 
 
     // Salse & Revenue Chart
-    var ctx2 = $("#salse-revenue").get(0).getContext("2d");
-    var myChart2 = new Chart(ctx2, {
+    var el2 = $("#salse-revenue").get(0);
+    var myChart2 = el2 && new Chart(el2.getContext("2d"), {
         type: "line",
         data: {
             labels: ["2016", "2017", "2018", "2019", "2020", "2021", "2022"],
@@ -121,8 +121,8 @@
 
 
     // Single Line Chart
-    var ctx3 = $("#line-chart").get(0).getContext("2d");
-    var myChart3 = new Chart(ctx3, {
+    var el3 = $("#line-chart").get(0);
+    var myChart3 = el3 && new Chart(el3.getContext("2d"), {
         type: "line",
         data: {
             labels: [50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150],
@@ -140,8 +140,8 @@
 
 
     // Single Bar Chart
-    var ctx4 = $("#bar-chart").get(0).getContext("2d");
-    var myChart4 = new Chart(ctx4, {
+    var el4 = $("#bar-chart").get(0);
+    var myChart4 = el4 && new Chart(el4.getContext("2d"), {
         type: "bar",
         data: {
             labels: ["Italy", "France", "Spain", "USA", "Argentina"],
@@ -163,8 +163,8 @@
 
 
     // Pie Chart
-    var ctx5 = $("#pie-chart").get(0).getContext("2d");
-    var myChart5 = new Chart(ctx5, {
+    var el5 = $("#pie-chart").get(0);
+    var myChart5 = el5 && new Chart(el5.getContext("2d"), {
         type: "pie",
         data: {
             labels: ["Italy", "France", "Spain", "USA", "Argentina"],
@@ -186,8 +186,8 @@
 
 
     // Doughnut Chart
-    var ctx6 = $("#doughnut-chart").get(0).getContext("2d");
-    var myChart6 = new Chart(ctx6, {
+    var el6 = $("#doughnut-chart").get(0);
+    var myChart6 = el6 && new Chart(el6.getContext("2d"), {
         type: "doughnut",
         data: {
             labels: ["Italy", "France", "Spain", "USA", "Argentina"],

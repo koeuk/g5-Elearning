@@ -52,13 +52,13 @@ echo View::partial('layouts/public/header');
             <!-- Dropdown submenu -->
             <li class="dropdown-submenu dropend">
               <form action="/course" method='post'>
-                <input type="text" name='id' value='<?= $category['category_id'] ?>' hidden>
-                <input type="text" name='email' value='<?= $email ?>' hidden>
-                <button class='btn bd-0'><img class="rounded-circle me-lg-2" src="uploading/<?= $category['image'] ?>" alt="" style="width: 30px; height: 30px;"><?= $category['title'] ?></button>
+                <input type="text" name='id' value='<?= e($category['category_id']) ?>' hidden>
+                <input type="text" name='email' value='<?= e($email) ?>' hidden>
+                <button class='btn bd-0'><img class="rounded-circle me-lg-2" src="uploading/<?= e($category['image']) ?>" alt="" style="width: 30px; height: 30px;"><?= e($category['title']) ?></button>
               </form>
               <ul class="dropdown-menu dropdown-menu-start" data-bs-popper="none">
                 <?php foreach ($category['courses'] as $subCourse): ?>
-                <li><a class="dropdown-item" href="#"><?= $subCourse['title'] ?></a></li>
+                <li><a class="dropdown-item" href="#"><?= e($subCourse['title']) ?></a></li>
                 <?php endforeach ?>
               </ul>
             </li>
@@ -70,9 +70,9 @@ echo View::partial('layouts/public/header');
       <!-- Category menu END -->
       <div class="navbar-nav position-relative overflow-visible me-3">
         <form action="/orders" method='post'>
-          <input type="text" name='email' value='<?= $email ?>' hidden>
+          <input type="text" name='email' value='<?= e($email) ?>' hidden>
           <button type='submit' class='btn border-0' style='margin-top: 8px;'><i class="fas fa-shopping-cart fs-5"></i></button>
-          <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-success mt-xl-2 ms-n1"<?php if ($cartCount === 0) { echo 'hidden'; } ?>><?= $cartCount ?></span>
+          <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-success mt-xl-2 ms-n1"<?php if ($cartCount === 0) { echo 'hidden'; } ?>><?= e($cartCount) ?></span>
         </form>
       </div>
 
@@ -90,12 +90,12 @@ echo View::partial('layouts/public/header');
       <!-- Right header content START -->
       <div class="nav-item dropdown ">
         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-        <img class="rounded-circle me-lg-2" src="../../uploading/<?= $student['profile_image'] ?? '' ?>" alt="" style="width: 50px; height:50px;">
-        <span class="d-none d-lg-inline-flex"><?= $student['name'] ?? '' ?></span>
+        <img class="rounded-circle me-lg-2" src="../../uploading/<?= e($student['profile_image'] ?? '') ?>" alt="" style="width: 50px; height:50px;">
+        <span class="d-none d-lg-inline-flex"><?= e($student['name'] ?? '') ?></span>
         </a>
         <div class="dropdown-menu dropdown-menu-end border-0 rounded-0 rounded-bottom m-0">
           <form action="/student_profile" method="post">
-            <input type="hidden" name="id" value="<?= $student['user_id'] ?? '' ?>">
+            <input type="hidden" name="id" value="<?= e($student['user_id'] ?? '') ?>">
             <button type="submit" class="btn btn-primary py-1 w-100 mb-4"> View Profile</button>
           </form>
           <div class='d-flex justify-content-center'>
@@ -184,14 +184,14 @@ Category START -->
 			<div class="col-sm-6 col-lg-4 col-xl-3">
 				<div class="card card-body shadow rounded-3">
 					<div class="d-flex align-items-center">
-						<img class="rounded-circle me-lg-2" src="uploading/<?= $cate['image'] ?>" alt="" style="width: 70px; height: 70px;">
+						<img class="rounded-circle me-lg-2" src="uploading/<?= e($cate['image']) ?>" alt="" style="width: 70px; height: 70px;">
 						<div class="ms-3">
 							<form action="/course" method="post">
 								<button type='submit' class="btn btn-outline-none">
-									<input type="text" name='email' value='<?= $email ?>' hidden>
-									<input type="text" name='id' value='<?= $cate['category_id'] ?>' hidden>
-									<h5 class="mb-0"><a class="stretched-link"><?= $cate['title'] ?></a></h5>
-									<span><?= $cate['course_count'] ?> Courses</span>
+									<input type="text" name='email' value='<?= e($email) ?>' hidden>
+									<input type="text" name='id' value='<?= e($cate['category_id']) ?>' hidden>
+									<h5 class="mb-0"><a class="stretched-link"><?= e($cate['title']) ?></a></h5>
+									<span><?= e($cate['course_count']) ?> Courses</span>
 								</button>
 							</form>
 						</div>
@@ -226,12 +226,12 @@ Featured course START -->
 					<div class="rounded-top overflow-hidden">
 						<div class="card-overlay-hover">
 							<!-- Image -->
-							<img src="../uploading/<?= $course['image_courses'] ?>" class="card-img-top" alt="course image">
+							<img src="../uploading/<?= e($course['image_courses']) ?>" class="card-img-top" alt="course image">
 						</div>
 						<!-- Hover element -->
 						<div class="card-img-overlay">
 							<div class="card-element-hover d-flex justify-content-end">
-								<button class="icon-md bg-white rounded-circle border border-orange text-orange show-popup" data-user='<?= $email ?>' data-course='<?= $course['course_id'] ?>' data-title="<?= $course['title'] ?>" data-price="<?= $course['price'] ?>" data-imgs='<?= $course['image_courses'] ?>' <?php if ($course['paid'] || $course['in_cart']) { echo 'hidden'; } ?>><i class="fas fa-shopping-cart text-danger"></i></button>
+								<button class="icon-md bg-white rounded-circle border border-orange text-orange show-popup" data-user='<?= e($email) ?>' data-course='<?= e($course['course_id']) ?>' data-title="<?= e($course['title']) ?>" data-price="<?= e($course['price']) ?>" data-imgs='<?= e($course['image_courses']) ?>' <?php if ($course['paid'] || $course['in_cart']) { echo 'hidden'; } ?>><i class="fas fa-shopping-cart text-danger"></i></button>
 							</div>
 						</div>
 					</div>
@@ -244,25 +244,25 @@ Featured course START -->
 								<!-- Info -->
 								<li class="list-inline-item d-flex justify-content-center align-items-center">
 									<div class="icon-md bg-orange bg-opacity-10 text-orange rounded-circle"><i class="fas fa-user-graduate"></i></div>
-									<span class="h6 fw-light mb-0 ms-2"><?= $course['enrolled'] ?></span>
+									<span class="h6 fw-light mb-0 ms-2"><?= e($course['enrolled']) ?></span>
 								</li>
 							</ul>
 							<!-- Avatar -->
 							<div class="avatar avatar-sm">
-								<img class="avatar-img rounded-circle" src="uploading/<?= $course['trainer_image'] ?>" alt="avatar"></div>
+								<img class="avatar-img rounded-circle" src="uploading/<?= e($course['trainer_image']) ?>" alt="avatar"></div>
 						</div>
 						<!-- Divider -->
 						<hr>
 						<!-- Title -->
-						<h6 class="card-title"><a href="#"><?= $course['title'] ?></a></h6>
+						<h6 class="card-title"><a href="#"><?= e($course['title']) ?></a></h6>
 						<!-- Badge and Price -->
 						<div class="d-flex justify-content-between align-items-center mb-0">
-							<div><a href="#" class="badge bg-info bg-opacity-10 text-info me-2"> <i class="fas fa-circle small fw-bold"></i>Trainer: <?= $course['trainer_name'] ?> </a></div>
+							<div><a href="#" class="badge bg-info bg-opacity-10 text-info me-2"> <i class="fas fa-circle small fw-bold"></i>Trainer: <?= e($course['trainer_name']) ?> </a></div>
 							<!-- Price -->
-							<h5 class="text-success mb-0" <?php if ($course['paid']) { echo 'hidden'; } ?>><?= $course['price'] ?></h5>
+							<h5 class="text-success mb-0" <?php if ($course['paid']) { echo 'hidden'; } ?>><?= e($course['price']) ?></h5>
 							<form action="/blog_learning" method='post' <?php if (!$course['paid']) { echo 'hidden'; } ?>>
-								<input type="text" value='<?= $email ?>' name='email' hidden>
-								<input type="text" value='<?= $course['course_id'] ?>' name='course_id' hidden>
+								<input type="text" value='<?= e($email) ?>' name='email' hidden>
+								<input type="text" value='<?= e($course['course_id']) ?>' name='course_id' hidden>
 								<input type="text" value='' name='home' hidden>
 								<button type="submit" class="btn btn-primary">Join course</button>
 							</form>
@@ -347,13 +347,13 @@ IT courses START -->
 			<div class="col-sm-6 col-lg-4 col-xl-3">
 				<!-- Image -->
 				<div class="card card-metro overflow-hidden rounded-3">
-					<img src="uploading/<?= $top['image_courses'] ?>" alt="">
+					<img src="uploading/<?= e($top['image_courses']) ?>" alt="">
 					<!-- Image overlay -->
 					<div class="card-img-overlay d-flex">
 						<!-- Info -->
 						<div class="mt-auto card-text">
-							<a href="#courses" class="text-white mt-auto h5 stretched-link"><?= $top['title'] ?></a>
-							<div class="text-white"><?= $top['count'] ?> students</div>
+							<a href="#courses" class="text-white mt-auto h5 stretched-link"><?= e($top['title']) ?></a>
+							<div class="text-white"><?= e($top['count']) ?> students</div>
 						</div>
 					</div>
 				</div>
@@ -401,7 +401,7 @@ Live courses END -->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <!-- Payment modal -->
-<?= View::render('students/payments/payment', ['email' => $email]) ?>
+<?= e(View::render('students/payments/payment', ['email' => $email])) ?>
 
 <script>
 $(document).ready(function() {

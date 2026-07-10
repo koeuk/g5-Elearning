@@ -4,6 +4,9 @@
 # Composer
 /vendor/
 
+# PHPUnit
+/.phpunit.result.cache
+
 # User uploads (keep the folder, ignore its contents)
 public/uploading/*
 !public/uploading/.gitkeep
