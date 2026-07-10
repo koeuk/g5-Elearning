@@ -28,7 +28,7 @@ $student = Auth::user() ?? [];
   <style>
     .d-none-sm{display:inline}@media(max-width:520px){.d-none-sm{display:none}}
     .pw-wrap{max-width:460px;margin:0 auto;padding:2.5rem 0}
-    .pw-card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:2rem;box-shadow:var(--shadow);animation:ui-fadeup .5s both}
+    .pw-card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:2rem;animation:ui-fadeup .5s both}
     .pw-icon{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;font-size:1.5rem;
       background:var(--bg-tint-1);color:var(--accent);margin-bottom:1rem}
     .pw-card h1{font-family:var(--serif);font-weight:600;font-size:1.7rem;margin:0 0 .3rem}

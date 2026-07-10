@@ -137,10 +137,11 @@ final class ManageController extends Controller
     }
 
     /**
-     * Flatten each lesson's MCQ questions into display rows.
+     * Flatten each lesson's MCQ questions into display rows, each carrying
+     * quiz_id, lesson_id, lesson_title, question, options[] and answer index.
      *
      * @param array<int, array> $lessons
-     * @return array<int, array{quiz_id:int, lesson_id:int, lesson_title:string, question:string, options:array<int,string>, answer:int}>
+     * @return array<int, array>
      */
     private function quizRows(array $lessons): array
     {

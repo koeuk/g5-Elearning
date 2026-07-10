@@ -32,7 +32,7 @@ $initial = strtoupper(substr((string) $name, 0, 1)) ?: 'S';
     .d-none-sm{display:inline}@media(max-width:520px){.d-none-sm{display:none}}
     .prof{display:grid;grid-template-columns:320px 1fr;gap:1.8rem;align-items:start}
     @media(max-width:820px){.prof{grid-template-columns:1fr}}
-    .prof-card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:2rem 1.6rem;text-align:center;box-shadow:var(--shadow)}
+    .prof-card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:2rem 1.6rem;text-align:center;}
     .prof-ava{width:120px;height:120px;border-radius:50%;object-fit:cover;margin:0 auto .9rem;display:grid;place-items:center;
       background:var(--surface-3);color:var(--accent);font-family:var(--serif);font-size:3rem;border:3px solid var(--surface-2)}
     .prof-card h2{font-family:var(--serif);font-weight:600;font-size:1.5rem;margin:0}

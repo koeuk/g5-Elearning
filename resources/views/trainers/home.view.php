@@ -32,13 +32,13 @@ $initial      = strtoupper(substr((string) $name, 0, 1)) ?: 'T';
   <style>
     .d-none-sm{display:inline}@media(max-width:520px){.d-none-sm{display:none}}
     .tr-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin:1.6rem 0 0}
-    .tr-stat{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:1.1rem 1.3rem;display:flex;align-items:center;gap:.9rem;box-shadow:var(--shadow)}
+    .tr-stat{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:1.1rem 1.3rem;display:flex;align-items:center;gap:.9rem}
     .tr-stat .ic{width:46px;height:46px;border-radius:13px;flex:none;display:grid;place-items:center;background:var(--bg-tint-1);color:var(--accent);font-size:1.3rem}
     .tr-stat b{font-family:var(--serif);font-weight:700;font-size:1.5rem;display:block;line-height:1}
     .tr-stat span{color:var(--muted);font-size:.85rem}
     .tr-grid{display:grid;grid-template-columns:340px 1fr;gap:1.8rem;align-items:start}
     @media(max-width:900px){.tr-grid{grid-template-columns:1fr}}
-    .prof-card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:2rem 1.6rem;text-align:center;box-shadow:var(--shadow)}
+    .prof-card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:2rem 1.6rem;text-align:center}
     .prof-ava{width:120px;height:120px;border-radius:50%;object-fit:cover;margin:0 auto .9rem;display:grid;place-items:center;background:var(--surface-3);color:var(--accent);font-family:var(--serif);font-size:3rem;border:3px solid var(--surface-2)}
     .prof-card h2{font-family:var(--serif);font-weight:600;font-size:1.5rem;margin:0}
     .prof-card .role{color:var(--accent);font-weight:700;font-size:.78rem;text-transform:uppercase;letter-spacing:.12em;margin-top:.2rem}

@@ -39,7 +39,7 @@ $courseId = (int) ($course['course_id'] ?? 0);
         .nav-pills { background: var(--surface-2); border: 1px solid var(--line); border-radius: 999px; padding: .35rem; display: inline-flex; gap: .25rem; }
         .nav-pills .nav-link { color: var(--muted); font-weight: 600; border-radius: 999px; }
         .nav-pills .nav-link.active { background: var(--accent); color: var(--accent-ink); }
-        .card-panel { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); }
+        .card-panel { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; }
         .card-panel h3 { font-family: var(--serif); font-weight: 600; }
         table thead th { color: var(--accent); border-bottom: 2px solid var(--line); }
         .modal-title { color: var(--accent); font-weight: 700; font-family: var(--serif); }

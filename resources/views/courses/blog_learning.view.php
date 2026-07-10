@@ -65,7 +65,7 @@ foreach ($lessons as $li => $ll) {
     .cls-panel.is-active{display:block}
     /* Lessons — course player (stage on top, playlist below) */
     .lesson__num{display:inline-flex;align-items:center;gap:.4rem;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:.4rem}
-    .player{background:var(--surface);border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:1.8rem}
+    .player{background:var(--surface);border:1px solid var(--line);border-radius:22px;overflow:hidden;margin-bottom:1.8rem}
     .player__stage{position:relative;aspect-ratio:16/9;background:#000}
     .player__stage iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
     .player__meta{padding:1.25rem 1.5rem 1.5rem}
@@ -90,16 +90,16 @@ foreach ($lessons as $li => $ll) {
     .lrow.is-active .lrow__play{display:none}
     .lrow.is-active .lrow__now{display:inline-block}
     /* Quiz upload + cards */
-    .quiz-upload{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:1.6rem;box-shadow:var(--shadow);margin-bottom:2rem}
+    .quiz-upload{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:1.6rem;margin-bottom:2rem}
     .quiz-upload .row{display:flex;gap:.8rem;flex-wrap:wrap;align-items:flex-end}
     .quiz-upload .row > *{flex:1;min-width:180px}
     .quiz-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:1.1rem}
-    .quiz{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:1.3rem;box-shadow:var(--shadow);text-align:center;transition:transform .25s}
+    .quiz{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:1.3rem;text-align:center;transition:transform .25s}
     .quiz:hover{transform:translateY(-4px)}
     .quiz .ic{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;margin:0 auto .8rem;background:var(--bg-tint-1);color:var(--accent);font-size:1.4rem}
     .quiz h4{font-family:var(--serif);font-weight:600;font-size:1.02rem;margin:0 0 .9rem}
     /* MCQ quiz form */
-    .quizform{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:1.7rem;box-shadow:var(--shadow);margin-bottom:1.6rem}
+    .quizform{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:1.7rem;margin-bottom:1.6rem}
     .quizform__head{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;margin-bottom:1.2rem}
     .quizform__head h3{font-family:var(--serif);font-weight:600;font-size:1.35rem;margin:0}
     .quizform__meta{color:var(--muted);font-size:.85rem;font-weight:600;white-space:nowrap}
@@ -122,7 +122,7 @@ foreach ($lessons as $li => $ll) {
     .qresult strong{color:var(--accent)}
     .qresult.is-pass strong{color:var(--emerald)}
     /* Trainer */
-    .trainer-card{display:flex;gap:1.6rem;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:2rem;box-shadow:var(--shadow);flex-wrap:wrap}
+    .trainer-card{display:flex;gap:1.6rem;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:2rem;flex-wrap:wrap}
     .trainer-ava{width:110px;height:110px;border-radius:50%;object-fit:cover;flex:none;display:grid;place-items:center;background:var(--surface-3);color:var(--accent);font-family:var(--serif);font-size:2.6rem;border:3px solid var(--surface-2)}
     .trainer-info h2{font-family:var(--serif);font-weight:600;font-size:1.6rem;margin:0 0 .2rem}
     .trainer-info .role{color:var(--accent);font-weight:700;font-size:.76rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.9rem}

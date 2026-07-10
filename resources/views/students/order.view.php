@@ -92,7 +92,7 @@
       border:1px solid var(--line); transition:.3s cubic-bezier(.2,.7,.3,1);
       animation:fadeUp .6s both;
     }
-    .course:hover{border-color:var(--line-2);transform:translateY(-3px);box-shadow:var(--shadow)}
+    .course:hover{border-color:var(--line-2);transform:translateY(-3px);}
     .course__img{width:84px;height:84px;border-radius:14px;object-fit:cover;flex:none;
       background:var(--surface-3);border:1px solid var(--line)}
     .course__body{flex:1;min-width:0}
@@ -126,7 +126,7 @@
     /* ---- Summary (sticky) ---- */
     .summary{position:sticky;top:1.5rem;border-radius:22px;overflow:hidden;
       background:linear-gradient(180deg,var(--surface-2),var(--surface));
-      border:1px solid var(--line);box-shadow:var(--shadow);animation:fadeUp .7s .1s both}
+      border:1px solid var(--line);animation:fadeUp .7s .1s both}
     .summary__head{padding:1.3rem 1.4rem;border-bottom:1px solid var(--line);
       display:flex;align-items:center;gap:.6rem}
     .summary__head i{color:var(--accent)}
