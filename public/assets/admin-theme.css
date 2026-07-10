@@ -25,10 +25,20 @@
 
 /* ---- Page + shell surfaces ---- */
 :root[data-theme="light"] body { background: var(--admin-bg); color: var(--admin-ink); }
-:root[data-theme="light"] .content,
-:root[data-theme="light"] .sidebar { background: var(--admin-bg) !important; }
 
-:root[data-theme="light"] .sidebar .navbar,
+/* Content area = the light-gray page. */
+:root[data-theme="light"] .content { background: var(--admin-bg) !important; }
+
+/* Sidebar = a full-height white panel (the template already sets height:100vh). */
+:root[data-theme="light"] .sidebar {
+    background: var(--admin-surface) !important;
+    border-right: 1px solid var(--admin-line);
+}
+/* Its inner navbar blends into the white sidebar — no shadow, so there's no
+   line partway down where the nav items end. */
+:root[data-theme="light"] .sidebar .navbar { background: transparent !important; }
+
+/* The top bar inside the content: a white bar with a soft shadow. */
 :root[data-theme="light"] .content > .navbar {
     background: var(--admin-surface) !important;
     box-shadow: 0 1px 0 var(--admin-line), 0 8px 24px -18px rgba(20, 25, 40, .35);

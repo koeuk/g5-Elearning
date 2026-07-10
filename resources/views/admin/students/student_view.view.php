@@ -108,11 +108,7 @@
                         <img src="<?= e(uploadedImage((string) $student['profile_image'])) ?>" class="avatar">
                     </td>
                     <td class='d-flex gap-2'>
-                        <form action="student_profile" method='post'>
-			                <input type="hidden" name="id" value='<?=$student['user_id'] ?>'>
-			                <input type="hidden" name="admin" value=''>
-                            <button type='sumit' class='d-flex justify-content-center align-items-center gap-1 btn btn-warning btn-sm'><i class="fas fa-eye"></i> Detail</button>
-                        </form>
+                        <button type="button" class="d-flex justify-content-center align-items-center gap-1 btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#deleteDetail<?= $student['user_id'] ?>"><i class="fas fa-eye"></i> Detail</button>
                         <a class="d-flex justify-content-center align-items-center gap-1 btn btn-info btn-sm text-white" href="" data-bs-toggle="modal" data-bs-target="#editStudent<?= $student['user_id'] ?>"><i class="fas fa-edit"></i> Edit</a>
                         <a class="d-flex justify-content-center align-items-center gap-1 btn btn-primary btn-sm" href="" data-bs-toggle="modal" data-bs-target="#deleteStudent<?= $student['user_id'] ?>"><i class="fas fa-trash"></i> Delete</a>
                     </td>
@@ -142,38 +138,25 @@
 
                 <!-- Modal Detail-->
                 <div class="modal fade" id="deleteDetail<?= $student['user_id'] ?>" tabindex="-1" aria-labelledby="deleteStudentLabel<?= $student['user_id'] ?>" aria-hidden="true">
-
-                <div class="modal-dialog modal-lg" style=" height:700px";>
-                        <div class="modal-content">
-                            <div class="modal-header bg-primary " style="border: 3px solid white;">
-                                <h3 class="modal-title text-white " id="deleteStudentLabel<?= $student['user_id'] ?>">Detail Student</h3>
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content" style="border: none; border-radius: 18px; overflow: hidden;">
+                            <div class="modal-header" style="background: linear-gradient(135deg, #ffb454, #F28500); color: #1a1206;">
+                                <h5 class="modal-title" style="font-weight: 800; color:#1a1206;"><i class="fas fa-user-graduate me-2"></i>Student Details</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-
-                            <div class="modal-detail " >
-                                <div class="card" >
-                                    <div class="left">
-                                        <div class="img ">
-                                            <img src="<?= e(uploadedImage((string) $student['profile_image'])) ?>" class="card-img" alt="...">
-                                        </div>
-
-                                    </div>
-
-                                    <div class="right">
-                                        <div class="mb-3 row">
-                                            <a href="#"><p class="modal-title mt-2 p-0 btn text-start">Roles: Student</p></a><br>
-                                            <a href="#"><p class="modal-title mt-2 p-0 btn text-start">Name : <?=$student['name']?></p></a> <br>
-                                            <a href="#"><p class="modal-title mt-2 p-0 btn text-start">Phone : <?=$student['phone']?></p></a> <br>
-                                            <a href="#"><p class="modal-title mt-2 p-0 btn text-start">Email : <?=$student['email']?></p></a> <br>
-                                            <a href="#"><p class="modal-title mt-2 p-0 btn text-start">Date of Student : <?php echo date('Y-m-d'); ?></p></a> <br>
-                                        </div>
-
-                                    </div>
+                            <div class="modal-body d-flex flex-wrap gap-4 p-4" style="background: #1d1810; color: #f4ede0;">
+                                <img src="<?= e(uploadedImage((string) $student['profile_image'])) ?>" alt="<?= e($student['name']) ?>"
+                                     style="width: 150px; height: 150px; object-fit: cover; border-radius: 14px; box-shadow: 0 12px 26px -10px rgba(0,0,0,.7);">
+                                <div class="flex-grow-1" style="min-width: 220px;">
+                                    <h4 style="font-weight: 800; color: #fff;"><?= e($student['name']) ?></h4>
+                                    <p class="mb-2"><span style="color:#a99e8b;">Role :</span> Student</p>
+                                    <p class="mb-2"><span style="color:#a99e8b;">Email :</span> <?= e($student['email']) ?></p>
+                                    <p class="mb-2"><span style="color:#a99e8b;">Phone :</span> <?= e($student['phone']) ?></p>
+                                    <p class="mb-0"><span style="color:#a99e8b;">Gender :</span> <?= e($student['gender']) ?></p>
                                 </div>
                             </div>
-                           
-                            <div class="modal-footer" style="border: 1px solid white">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <div class="modal-footer" style="background:#1d1810; border-top: 1px solid rgba(242,133,0,.2);">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             </div>
                         </div>
                     </div>
