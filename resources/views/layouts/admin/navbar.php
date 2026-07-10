@@ -6,7 +6,28 @@ $admin = \App\Models\User::admin() ?: ['profile_image' => '', 'name' => 'Admin']
 $adminAvatar = trim((string) ($admin['profile_image'] ?? '')) !== ''
     ? 'uploading/' . $admin['profile_image']
     : 'uploading/admin.png';
+
+// True when the current request path matches any of the given routes.
+$isActive = static function (string ...$paths): bool {
+    foreach ($paths as $p) {
+        if (urlIs($p)) {
+            return true;
+        }
+    }
+    return false;
+};
+$usersActive = $isActive('/list_trainer', '/list_student');
 ?>
+<style>
+    /* Highlight the sidebar item for the page you're on. */
+    .sidebar .nav-link.active,
+    .sidebar .dropdown-item.active {
+        color: #F28500 !important;
+        background-color: rgba(242, 133, 0, .12);
+        border-radius: .35rem;
+    }
+    .sidebar .nav-link.active i { color: #F28500 !important; }
+</style>
 <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-secondary navbar-dark">
                 <a href="index.html" class="navbar-brand mx-4 mb-3">
@@ -23,14 +44,14 @@ $adminAvatar = trim((string) ($admin['profile_image'] ?? '')) !== ''
                     </div>
                 </div>
                 <div class="navbar-nav w-100">
-                    <a href="/admin_home" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
-                    <a href="/categories" class="nav-item nav-link"><i class="fa fa-th-large me-2" ></i>Categories</a>
-                    <a href="/courses_as_admin" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Course</a>
+                    <a href="/admin_home" class="nav-item nav-link<?= $isActive('/admin_home') ? ' active' : '' ?>"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
+                    <a href="/categories" class="nav-item nav-link<?= $isActive('/categories') ? ' active' : '' ?>"><i class="fa fa-th-large me-2" ></i>Categories</a>
+                    <a href="/courses_as_admin" class="nav-item nav-link<?= $isActive('/courses_as_admin', '/viewCourse') ? ' active' : '' ?>"><i class="fa fa-table me-2"></i>Course</a>
                     <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="bi bi-people me-2"></i>Users</a>
-                        <div class="dropdown-menu bg-transparent border-0">
-                            <a href="/list_trainer" class="dropdown-item">Trainers</a>
-                            <a href="/list_student" class="dropdown-item">Students</a>
+                        <a href="#" class="nav-link dropdown-toggle<?= $usersActive ? ' active' : '' ?>" data-bs-toggle="dropdown"><i class="bi bi-people me-2"></i>Users</a>
+                        <div class="dropdown-menu bg-transparent border-0<?= $usersActive ? ' show' : '' ?>">
+                            <a href="/list_trainer" class="dropdown-item<?= $isActive('/list_trainer') ? ' active' : '' ?>">Trainers</a>
+                            <a href="/list_student" class="dropdown-item<?= $isActive('/list_student') ? ' active' : '' ?>">Students</a>
                         </div>
                     </div>
                 </div>

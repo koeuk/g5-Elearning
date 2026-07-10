@@ -29,6 +29,31 @@
 
     <!-- Template Stylesheet -->
     <link href="vendor/css/admin.css" rel="stylesheet">
+
+    <!--
+        Shared admin-modal form styling. The dark admin theme styles
+        .form-control dark, which is unreadable inside the white modals
+        (Add Student / Category / Trainer, etc.). Make every modal form
+        input fit the white modal, with an orange (brand) focus.
+    -->
+    <style>
+        .modal-body .form-control,
+        .modal-body .form-select {
+            background-color: #fff;
+            color: #212529;
+            border: 1px solid #ced4da;
+        }
+        .modal-body .form-control:focus,
+        .modal-body .form-select:focus {
+            background-color: #fff;
+            color: #212529;
+            border-color: #F28500;
+            box-shadow: 0 0 0 .2rem rgba(242, 133, 0, .25);
+        }
+        .modal-body .form-floating > label { color: #6c757d; }
+        .modal-body .form-floating > .form-control:focus ~ label,
+        .modal-body .form-floating > .form-control:not(:placeholder-shown) ~ label { color: #F28500; }
+    </style>
 </head>
 
 <body>

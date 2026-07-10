@@ -21,6 +21,7 @@ use App\Controllers\Admin\TrainerController as AdminTrainerController;
 use App\Controllers\Admin\PasswordController as AdminPasswordController;
 use App\Controllers\Student\AuthController as StudentAuthController;
 use App\Controllers\Student\HomeController as StudentHomeController;
+use App\Controllers\Student\CourseController as StudentCourseController;
 use App\Controllers\Student\OrderController;
 use App\Controllers\Trainer\AuthController as TrainerAuthController;
 use App\Controllers\Trainer\HomeController as TrainerHomeController;
@@ -46,6 +47,9 @@ $router->get('/logout', [StudentAuthController::class, 'logout']);         // cl
 /* Authenticated area. Handles GET and POST (the course grid self-submits to
    add a course to the cart). */
 $router->any('/student', [StudentHomeController::class, 'index']);         // course-grid home
+
+/* Courses within a category (posted from the home category cards/dropdown). */
+$router->any('/course', [StudentCourseController::class, 'index']);
 
 /* Ordering/checkout screen — self-submits, so it handles GET and POST. */
 $router->any('/orders', [OrderController::class, 'index']);

@@ -312,12 +312,12 @@ Category START -->
 				<div class="card card-body shadow rounded-3">
 					<div class="d-flex align-items-center">
 						<img class="rounded-circle me-lg-2" src="uploading/<?= e($cate['image']) ?>" alt="" style="width: 70px; height: 70px;">
-						<div class="ms-3">
+						<div class="ms-3" style="min-width: 0;">
 							<form action="/course" method="post">
-								<button type='submit' class="btn btn-outline-none">
+								<button type='submit' class="btn btn-outline-none text-start p-0 w-100">
 									<input type="text" name='email' value='<?= e($email) ?>' hidden>
 									<input type="text" name='id' value='<?= e($cate['category_id']) ?>' hidden>
-									<h5 class="mb-0"><a class="stretched-link"><?= e($cate['title']) ?></a></h5>
+									<h5 class="mb-0 text-break"><a class="stretched-link"><?= e($cate['title']) ?></a></h5>
 									<span><?= e($cate['course_count']) ?> Courses</span>
 								</button>
 							</form>
