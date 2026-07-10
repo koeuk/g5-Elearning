@@ -30,7 +30,11 @@ $email      = $student['email'] ?? '';
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,400;9..144,0,600;9..144,1,500;9..144,1,600&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="assets/student-ui.css" rel="stylesheet">
-  <style>.d-none-sm{display:inline}@media(max-width:520px){.d-none-sm{display:none}}</style>
+  <style>.d-none-sm{display:inline}@media(max-width:520px){.d-none-sm{display:none}}
+    .crs__view{background:transparent;color:var(--accent);border:1px solid var(--accent);border-radius:10px;padding:.5rem .85rem;font-weight:700;font-size:.85rem;cursor:pointer;font-family:var(--sans);display:inline-flex;align-items:center;gap:.35rem;text-decoration:none;transition:.2s}
+    .crs__view:hover{background:var(--accent);color:var(--accent-ink)}
+    .crs__foot-right{display:flex;align-items:center;gap:.7rem}
+  </style>
 </head>
 <body class="ui-scope">
   <?= View::partial('layouts/student/topbar', ['student' => $student, 'cartCount' => $cartCount, 'active' => 'home']) ?>
@@ -106,7 +110,14 @@ $email      = $student['email'] ?? '';
                     <button type="submit" class="crs__join"><i class="bi bi-play-fill"></i> Start</button>
                   </form>
                 <?php else: ?>
-                  <span class="crs__price"><?= e($course['price']) ?></span>
+                  <span class="crs__foot-right">
+                    <span class="crs__price"><?= e($course['price']) ?></span>
+                    <form action="/blog_learning" method="post" style="margin:0">
+                      <input type="hidden" name="email" value="<?= e($email) ?>">
+                      <input type="hidden" name="course_id" value="<?= (int) $course['course_id'] ?>">
+                      <button type="submit" class="crs__view" title="Preview free lessons"><i class="bi bi-eye"></i> View</button>
+                    </form>
+                  </span>
                 <?php endif; ?>
               </div>
             </div>

@@ -101,7 +101,7 @@ CREATE TABLE `payments` (
 CREATE TABLE `quizzes` (
   `quiz_id` int(11) NOT NULL,
   `lesson_id` int(11) DEFAULT NULL,
-  `content` varchar(300) DEFAULT NULL
+  `content` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
