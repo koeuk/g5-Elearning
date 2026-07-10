@@ -33,13 +33,12 @@ final class ValidationTest extends TestCase
         ];
     }
 
-    public function testRegistrationAcceptsASimplePassword(): void
+    public function testRegistrationDoesNotFlagASimplePassword(): void
     {
-        // Everything valid, plain numeric password — the email lookup is the
-        // only remaining gate (skipped here since the DB isn't involved and the
-        // address is unique in practice). We assert the password itself is not
-        // flagged.
-        $errors = Validation::registration('Sok', 'sok@example.com', '12345678', '012345678', '12345678');
+        // A plain numeric password must not be rejected for "strength". We leave
+        // the phone empty so validation stops before the email-uniqueness check
+        // (which would need the database); that isolates the password rule.
+        $errors = Validation::registration('Sok', 'sok@example.com', '12345678', '', '12345678');
 
         $this->assertSame('', $errors['password']);
         $this->assertSame('', $errors['password_comfirm']);
