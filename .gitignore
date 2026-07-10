@@ -1,6 +1,9 @@
 # Environment
 .env
 
+# Composer
+/vendor/
+
 # User uploads (keep the folder, ignore its contents)
 public/uploading/*
 !public/uploading/.gitkeep

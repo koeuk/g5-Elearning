@@ -1,0 +1,1 @@
+{"version":2,"defects":[],"times":{"Tests\\AuthTest::test_hash_is_not_plaintext_and_verifies":0.575,"Tests\\AuthTest::test_legacy_plaintext_password_still_verifies":0,"Tests\\AuthTest::test_proper_hash_does_not_need_rehash":0.195}}
