@@ -64,7 +64,7 @@ $student = Auth::user() ?? [];
                    type="password" id="newPassword" name="newPassword" placeholder="••••••••">
             <button class="ui-eye" type="button" data-eye="newPassword" aria-label="Show password"><i class="bi bi-eye"></i></button>
           </div>
-          <span class="ui-err"><?= $require['newPassword'] !== '' ? e($require['newPassword']) : '8+ chars with a letter, number &amp; symbol.' ?></span>
+          <?php if ($require['newPassword'] !== ''): ?><span class="ui-err"><?= e($require['newPassword']) ?></span><?php else: ?><span class="ui-err" style="color:var(--muted);font-weight:500">8+ chars with a letter, number &amp; symbol.</span><?php endif; ?>
         </div>
 
         <div class="ui-field">

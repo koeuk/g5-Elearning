@@ -81,7 +81,7 @@
                    type="password" id="password" name="password" placeholder="••••••••">
             <button class="ui-eye" type="button" data-eye="password" aria-label="Show password"><i class="bi bi-eye"></i></button>
           </div>
-          <span class="ui-err"><?= $errors['password'] !== '' ? e($errors['password']) : '8+ chars with a letter, number &amp; symbol.' ?></span>
+          <?php if ($errors['password'] !== ''): ?><span class="ui-err"><?= e($errors['password']) ?></span><?php else: ?><span class="ui-err" style="color:var(--muted);font-weight:500">8+ chars with a letter, number &amp; symbol.</span><?php endif; ?>
         </div>
 
         <div class="ui-field">

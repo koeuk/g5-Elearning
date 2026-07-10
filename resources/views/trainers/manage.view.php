@@ -18,7 +18,7 @@ $courseId = (int) ($course['course_id'] ?? 0);
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <link rel="shortcut icon" href="assets/images/favicon.ico">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root { --brand: #F28500; --brand-lt: #ffb454; }
@@ -310,7 +310,7 @@ $courseField = '<input type="hidden" name="course" value="' . $courseId . '">';
     <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Close</button></div>
 </div></div></div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     const bs = id => bootstrap.Modal.getOrCreateInstance(document.getElementById(id));
     const on = (sel, fn) => document.querySelectorAll(sel).forEach(el => el.addEventListener('click', () => fn(el)));
