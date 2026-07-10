@@ -31,6 +31,12 @@
 
 
 <div class="table-responsive p-5 pt-3">
+    <?php $flash = \App\Core\Session::flash('trainer_pw'); if ($flash): ?>
+        <div class="alert alert-<?= $flash['type'] === 'success' ? 'success' : 'danger' ?> alert-dismissible fade show" role="alert">
+            <?= e($flash['message']) ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
     <div class="mt-3 mb-3 d-flex justify-content-between align-items-center">
         <h3>Trainers List</h3>
 
@@ -75,6 +81,7 @@
                     </td>
                     <td>
                         <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#trainerDetail<?= $trainer['user_id'] ?>"><i class="fas fa-eye"></i> Detail</button>
+                        <button type="button" class="btn btn-sm btn-info text-white" data-bs-toggle="modal" data-bs-target="#editTrainer<?= $trainer['user_id'] ?>"><i class="fas fa-edit"></i> Edit</button>
                         <form id="delete-form-<?= $trainer['user_id'] ?>" action="/delete_trainer" method="post" style="display: inline;">
                             <input type="text" name="id" value="<?= $trainer['user_id'] ?>" hidden>
                             <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#delete-modal<?= $trainer['user_id'] ?>"><i class="fas fa-trash"></i>Delete</button>
@@ -117,6 +124,63 @@
                                             <p class="mb-2"><span style="color:#a99e8b;">Email :</span> <?= e($trainer['email']) ?></p>
                                             <p class="mb-2"><span style="color:#a99e8b;">Phone :</span> <?= e($trainer['phone']) ?></p>
                                             <p class="mb-0"><span style="color:#a99e8b;">Gender :</span> <?= e($trainer['gender']) ?></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Edit Trainer Modal (details + password) -->
+                        <div class="modal fade" id="editTrainer<?= $trainer['user_id'] ?>" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-primary text-white">
+                                        <h5 class="modal-title"><i class="fas fa-user-edit me-2"></i>Edit — <?= e($trainer['name']) ?></h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body text-dark">
+                                        <div class="row g-4">
+                                            <!-- Details -->
+                                            <div class="col-md-7">
+                                                <h6 class="fw-bold text-primary mb-3"><i class="fas fa-id-card me-1"></i> Details</h6>
+                                                <form action="/update_trainer" method="post" enctype="multipart/form-data">
+                                                    <input type="hidden" name="id" value="<?= (int) $trainer['user_id'] ?>">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Name</label>
+                                                        <input type="text" class="form-control" name="name" value="<?= e($trainer['name']) ?>">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Email</label>
+                                                        <input type="email" class="form-control" name="email" value="<?= e($trainer['email']) ?>">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Phone</label>
+                                                        <input type="text" class="form-control" name="phone" value="<?= e($trainer['phone']) ?>">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Profile photo <span class="text-muted small">(leave empty to keep)</span></label>
+                                                        <input type="file" class="form-control" name="image" accept="image/*">
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary w-100"><i class="fas fa-save me-1"></i> Save details</button>
+                                                </form>
+                                            </div>
+                                            <!-- Change password -->
+                                            <div class="col-md-5 border-start ps-md-4">
+                                                <h6 class="fw-bold text-primary mb-3"><i class="fas fa-key me-1"></i> Change password</h6>
+                                                <form action="/updateTrainerPassword" method="post">
+                                                    <input type="hidden" name="id" value="<?= (int) $trainer['user_id'] ?>">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">New password</label>
+                                                        <input type="password" class="form-control" name="newPassword" placeholder="••••••••" autocomplete="new-password">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Confirm password</label>
+                                                        <input type="password" class="form-control" name="confirmPassword" placeholder="••••••••" autocomplete="new-password">
+                                                    </div>
+                                                    <p class="text-muted small">At least 8 characters with a letter, number &amp; symbol.</p>
+                                                    <button type="submit" class="btn btn-warning w-100 text-white" style="background:#F28500;"><i class="fas fa-key me-1"></i> Update password</button>
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
