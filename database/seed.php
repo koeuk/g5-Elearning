@@ -23,9 +23,9 @@ Env::load(__DIR__ . '/../.env');
 /* --- Trainer (courses need an owner; roles_id = 2) ----------------------- */
 $trainer = User::findByEmail('trainer@example.com', User::ROLE_TRAINER);
 if ($trainer === []) {
-    User::create('Sophea Chan', 'trainer@example.com', 'Trainer@123', '0123456789', 'Female', 'admin.png', User::ROLE_TRAINER);
+    User::create('Sophea Chan', 'trainer@example.com', '12345678', '0123456789', 'Female', 'admin.png', User::ROLE_TRAINER);
     $trainer = User::findByEmail('trainer@example.com', User::ROLE_TRAINER);
-    echo "Created trainer trainer@example.com (password: Trainer@123)\n";
+    echo "Created trainer trainer@example.com (password: 12345678)\n";
 } else {
     echo "Trainer already present — leaving as is.\n";
 }

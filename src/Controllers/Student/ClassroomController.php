@@ -15,8 +15,8 @@ use App\Models\User;
  *
  * Reached from the "Join course" / "Open course" buttons, which POST a
  * course_id. Replaces app/controllers/courses/blog_learning.controller. Shows
- * the course's lessons (with videos), its quizzes, and the trainer; a POST with
- * an uploaded image records a quiz answer for the selected lesson.
+ * the course's lessons (with videos), the per-lesson multiple-choice quizzes,
+ * and the trainer. Submitting a quiz form auto-grades it and records the score.
  */
 final class ClassroomController extends Controller
 {
@@ -30,55 +30,69 @@ final class ClassroomController extends Controller
         $studentId = (int) ($student['user_id'] ?? 0);
         $courseId  = (int) $this->input('course_id');
 
-        if ($this->isPost() && $studentId > 0) {
-            $this->submitQuizAnswer($studentId);
+        // A quiz submission carries quiz_lesson (the lesson being graded).
+        $result = null;
+        if ($this->isPost() && $studentId > 0 && $this->input('quiz_lesson') !== '') {
+            $result = $this->gradeQuiz($studentId);
         }
 
         $course  = Course::find($courseId) ?: [];
         $teacher = isset($course['user_id']) ? (User::find((int) $course['user_id']) ?: []) : [];
 
         $this->view('courses/blog_learning', [
-            'student'  => $student,
-            'course'   => $course,
-            'courseId' => $courseId,
-            'lessons'  => $this->lessonsWithQuizzes($courseId),
-            'teacher'  => $teacher,
+            'student'    => $student,
+            'course'     => $course,
+            'courseId'   => $courseId,
+            'lessons'    => $this->lessonsWithQuestions($courseId),
+            'teacher'    => $teacher,
+            'quizResult' => $result,
         ]);
     }
 
     /**
-     * Lessons for the course, each carrying its quizzes.
+     * Lessons for the course, each carrying its parsed MCQ questions in a
+     * `quizzes` list (quiz_id, question, options, answer).
      *
      * @return array<int, array>
      */
-    private function lessonsWithQuizzes(int $courseId): array
+    private function lessonsWithQuestions(int $courseId): array
     {
         $lessons = Lesson::forCourse($courseId);
         foreach ($lessons as $i => $lesson) {
-            $lessons[$i]['quizzes'] = Quiz::forLesson((int) $lesson['lesson_id']);
+            $lessons[$i]['quizzes'] = Quiz::questionsForLesson((int) $lesson['lesson_id']);
         }
         return $lessons;
     }
 
-    /** Record an uploaded quiz answer image for the chosen lesson. */
-    private function submitQuizAnswer(int $studentId): void
+    /**
+     * Auto-grade a submitted quiz and record the score.
+     *
+     * Expects: quiz_lesson (lesson id) and answers[quiz_id] = chosen option index.
+     *
+     * @return array{lesson_id:int, score:int, total:int, given:array<int,int>}|null
+     */
+    private function gradeQuiz(int $studentId): ?array
     {
-        $lessonTitle = $this->input('lesson_select');
-        if ($lessonTitle === '' || $lessonTitle === 'Select the lesson' || empty($_FILES['image']['name'])) {
-            return;
+        $lessonId  = (int) $this->input('quiz_lesson');
+        $questions = Quiz::questionsForLesson($lessonId);
+        if ($questions === []) {
+            return null;
         }
 
-        $lesson = Lesson::findByTitle($lessonTitle);
-        if ($lesson === false) {
-            return;
+        $answers = (array) ($_POST['answers'] ?? []);
+        $given   = [];
+        $score   = 0;
+        foreach ($questions as $q) {
+            $picked = isset($answers[$q['quiz_id']]) ? (int) $answers[$q['quiz_id']] : -1;
+            $given[$q['quiz_id']] = $picked;
+            if ($picked === $q['answer']) {
+                $score++;
+            }
         }
 
-        $image = basename((string) $_FILES['image']['name']);
-        if (QuizSubmission::existsByImage($image) !== []) {
-            return;
-        }
+        $total = count($questions);
+        QuizSubmission::record($studentId, $lessonId, $score, $total, date('Y-m-d H:i:s'));
 
-        move_uploaded_file($_FILES['image']['tmp_name'], 'uploading' . DIRECTORY_SEPARATOR . $image);
-        QuizSubmission::create($studentId, (int) $lesson['lesson_id'], $image);
+        return ['lesson_id' => $lessonId, 'score' => $score, 'total' => $total, 'given' => $given];
     }
 }

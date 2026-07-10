@@ -19,6 +19,7 @@ use App\Controllers\Admin\CourseController as AdminCourseController;
 use App\Controllers\Admin\StudentController as AdminStudentController;
 use App\Controllers\Admin\TrainerController as AdminTrainerController;
 use App\Controllers\Admin\PasswordController as AdminPasswordController;
+use App\Controllers\Admin\QuizController as AdminQuizController;
 use App\Controllers\Student\AuthController as StudentAuthController;
 use App\Controllers\Student\HomeController as StudentHomeController;
 use App\Controllers\Student\CourseController as StudentCourseController;
@@ -101,6 +102,11 @@ $router->get('/list_student', [AdminStudentController::class, 'index']);
 $router->post('/addStudent', [AdminStudentController::class, 'store']);
 $router->post('/deleteStudent', [AdminStudentController::class, 'destroy']);
 $router->post('/updateStudentPassword', [AdminStudentController::class, 'updatePassword']);
+
+/* Quizzes (multiple-choice questions per lesson). */
+$router->get('/admin_quizzes', [AdminQuizController::class, 'index']);
+$router->post('/admin_quizzes_add', [AdminQuizController::class, 'store']);
+$router->post('/admin_quizzes_delete', [AdminQuizController::class, 'destroy']);
 
 /* Change password. */
 $router->get('/admin_password', [AdminPasswordController::class, 'edit']);

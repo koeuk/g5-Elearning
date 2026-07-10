@@ -26,6 +26,33 @@ final class QuizSubmission
         $stmt->execute([':user_id' => $userId, ':lesson_id' => $lessonId, ':image' => $image]);
     }
 
+    /** Record an auto-graded multiple-choice result for a lesson. */
+    public static function record(int $userId, int $lessonId, int $score, int $total, string $date): void
+    {
+        $stmt = Database::connection()->prepare(
+            'INSERT INTO quiz_sumit (user_id, lesson_id, score, total, created_at)
+             VALUES (:user_id, :lesson_id, :score, :total, :date)'
+        );
+        $stmt->execute([
+            ':user_id'   => $userId,
+            ':lesson_id' => $lessonId,
+            ':score'     => $score,
+            ':total'     => $total,
+            ':date'      => $date,
+        ]);
+    }
+
+    /** The most recent graded result for a user + lesson, or [] if none. */
+    public static function latestResult(int $userId, int $lessonId): array
+    {
+        $stmt = Database::connection()->prepare(
+            'SELECT * FROM quiz_sumit WHERE user_id = :u AND lesson_id = :l AND score IS NOT NULL
+             ORDER BY sumit_id DESC LIMIT 1'
+        );
+        $stmt->execute([':u' => $userId, ':l' => $lessonId]);
+        return $stmt->rowCount() > 0 ? $stmt->fetch() : [];
+    }
+
     /** Whether a submission with this image exists. Returns [] when absent. */
     public static function existsByImage(string $image): array
     {

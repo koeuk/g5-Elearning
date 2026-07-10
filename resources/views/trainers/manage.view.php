@@ -71,22 +71,30 @@ $courseId = (int) ($course['course_id'] ?? 0);
                 </div>
                 <div class="table-responsive">
                     <table class="table align-middle">
-                        <thead><tr><th>Title</th><th>Description</th><th>Video</th><th>Action</th></tr></thead>
+                        <thead><tr><th>Title</th><th>Access</th><th>Description</th><th>Video</th><th>Action</th></tr></thead>
                         <tbody>
                         <?php if (empty($lessons)) : ?>
-                            <tr><td colspan="4" class="text-muted">No lessons yet. Add your first one.</td></tr>
+                            <tr><td colspan="5" class="text-muted">No lessons yet. Add your first one.</td></tr>
                         <?php endif; ?>
-                        <?php foreach ($lessons as $lesson) : ?>
+                        <?php foreach ($lessons as $lesson) : $free = !empty($lesson['is_free']); ?>
                             <tr>
                                 <td><?= e($lesson['title']) ?></td>
-                                <td class="text-truncate" style="max-width: 320px;"><?= e($lesson['description']) ?></td>
+                                <td>
+                                    <?php if ($free) : ?>
+                                        <span class="badge bg-success"><i class="fas fa-unlock-alt me-1"></i>Free</span>
+                                    <?php else : ?>
+                                        <span class="badge bg-secondary"><i class="fas fa-lock me-1"></i>Paid</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td class="text-truncate" style="max-width: 300px;"><?= e($lesson['description']) ?></td>
                                 <td><button class="btn btn-sm btn-link view-video" data-video="<?= e($lesson['video']) ?>"><i class="fas fa-play-circle text-orange fa-lg"></i></button></td>
                                 <td class="d-flex gap-2">
                                     <button class="btn btn-sm btn-orange edit-lesson"
                                             data-id="<?= (int) $lesson['lesson_id'] ?>"
                                             data-title="<?= e($lesson['title']) ?>"
                                             data-description="<?= e($lesson['description']) ?>"
-                                            data-video="<?= e($lesson['video']) ?>"><i class="fas fa-edit"></i> Edit</button>
+                                            data-video="<?= e($lesson['video']) ?>"
+                                            data-free="<?= $free ? '1' : '0' ?>"><i class="fas fa-edit"></i> Edit</button>
                                     <button class="btn btn-sm btn-danger del-lesson" data-id="<?= (int) $lesson['lesson_id'] ?>"><i class="fas fa-trash"></i> Delete</button>
                                 </td>
                             </tr>
@@ -196,6 +204,10 @@ $courseField = '<input type="hidden" name="course" value="' . $courseId . '">';
             <div class="mb-3"><label class="form-label">Title</label><input class="form-control" name="title" required></div>
             <div class="mb-3"><label class="form-label">Description</label><textarea class="form-control" name="description" rows="3"></textarea></div>
             <div class="mb-3"><label class="form-label">Video URL</label><input class="form-control" name="video" placeholder="https://www.youtube.com/embed/…" required></div>
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" name="is_free" value="1" id="al-free">
+                <label class="form-check-label" for="al-free">Free lesson &mdash; previewable without buying the course</label>
+            </div>
         </div>
         <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button class="btn btn-orange">Add lesson</button></div>
     </form>
@@ -211,6 +223,10 @@ $courseField = '<input type="hidden" name="course" value="' . $courseId . '">';
             <div class="mb-3"><label class="form-label">Title</label><input class="form-control" name="title" id="el-title" required></div>
             <div class="mb-3"><label class="form-label">Description</label><textarea class="form-control" name="description" id="el-desc" rows="3"></textarea></div>
             <div class="mb-3"><label class="form-label">Video URL</label><input class="form-control" name="video" id="el-video" required></div>
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" name="is_free" value="1" id="el-free">
+                <label class="form-check-label" for="el-free">Free lesson &mdash; previewable without buying the course</label>
+            </div>
         </div>
         <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button class="btn btn-orange">Update</button></div>
     </form>
@@ -317,10 +333,11 @@ $courseField = '<input type="hidden" name="course" value="' . $courseId . '">';
 
     // Populate + open edit/delete modals from the row's data-* attributes.
     on('.edit-lesson', el => {
-        el.dataset; document.getElementById('el-id').value = el.dataset.id;
+        document.getElementById('el-id').value = el.dataset.id;
         document.getElementById('el-title').value = el.dataset.title;
         document.getElementById('el-desc').value = el.dataset.description;
         document.getElementById('el-video').value = el.dataset.video;
+        document.getElementById('el-free').checked = el.dataset.free === '1';
         bs('editLessonModal').show();
     });
     on('.del-lesson', el => { document.getElementById('dl-id').value = el.dataset.id; bs('delLessonModal').show(); });

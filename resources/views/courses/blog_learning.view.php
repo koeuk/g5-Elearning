@@ -15,9 +15,10 @@ use App\Core\View;
 $student   = $student ?? [];
 $course    = $course ?? [];
 $courseId  = $courseId ?? 0;
-$lessons   = $lessons ?? [];
-$teacher   = $teacher ?? [];
-$email     = $student['email'] ?? '';
+$lessons    = $lessons ?? [];
+$teacher    = $teacher ?? [];
+$email      = $student['email'] ?? '';
+$quizResult = $quizResult ?? null;
 
 $quizCount = 0;
 foreach ($lessons as $l) {
@@ -88,6 +89,29 @@ $tInit = strtoupper(substr((string) ($tName ?: 'T'), 0, 1));
     .quiz:hover{transform:translateY(-4px)}
     .quiz .ic{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;margin:0 auto .8rem;background:var(--bg-tint-1);color:var(--accent);font-size:1.4rem}
     .quiz h4{font-family:var(--serif);font-weight:600;font-size:1.02rem;margin:0 0 .9rem}
+    /* MCQ quiz form */
+    .quizform{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:1.7rem;box-shadow:var(--shadow);margin-bottom:1.6rem}
+    .quizform__head{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;margin-bottom:1.2rem}
+    .quizform__head h3{font-family:var(--serif);font-weight:600;font-size:1.35rem;margin:0}
+    .quizform__meta{color:var(--muted);font-size:.85rem;font-weight:600;white-space:nowrap}
+    .qblock{border:0;padding:0;margin:0 0 1.4rem;min-width:0}
+    .qblock legend{font-weight:600;font-size:1.03rem;margin-bottom:.7rem;display:flex;gap:.6rem;align-items:flex-start;width:100%}
+    .qnum{flex:none;width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-size:.78rem;font-weight:800;background:var(--bg-tint-1);color:var(--accent);margin-top:1px}
+    .qopt{display:flex;align-items:center;gap:.7rem;padding:.7rem .95rem;border:1px solid var(--line);border-radius:12px;margin-bottom:.5rem;cursor:pointer;transition:border-color .15s,background .15s}
+    .qopt:hover{border-color:var(--accent);background:var(--bg-tint-1)}
+    .qopt input{accent-color:var(--accent);flex:none}
+    .qopt span{flex:1}
+    .qopt.is-correct{border-color:var(--emerald);background:var(--bg-tint-2)}
+    .qopt.is-wrong{border-color:var(--rose)}
+    .qopt.is-correct i{color:var(--emerald)}
+    .qopt.is-wrong i{color:var(--rose)}
+    .qresult{display:flex;align-items:center;gap:.65rem;padding:.95rem 1.15rem;border-radius:13px;margin-bottom:1.2rem;font-weight:600;
+      background:var(--bg-tint-1);border:1px solid var(--accent);color:var(--text)}
+    .qresult.is-pass{border-color:var(--emerald)}
+    .qresult i{font-size:1.25rem;color:var(--accent)}
+    .qresult.is-pass i{color:var(--emerald)}
+    .qresult strong{color:var(--accent)}
+    .qresult.is-pass strong{color:var(--emerald)}
     /* Trainer */
     .trainer-card{display:flex;gap:1.6rem;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:2rem;box-shadow:var(--shadow);flex-wrap:wrap}
     .trainer-ava{width:110px;height:110px;border-radius:50%;object-fit:cover;flex:none;display:grid;place-items:center;background:var(--surface-3);color:var(--accent);font-family:var(--serif);font-size:2.6rem;border:3px solid var(--surface-2)}
@@ -160,42 +184,68 @@ $tInit = strtoupper(substr((string) ($tName ?: 'T'), 0, 1));
   <section class="page section cls-panel" id="panel-quizzes" style="padding-top:1.4rem">
     <div class="section__head" style="text-align:left;margin:0 0 1.4rem"><p class="k">Test your understanding</p><h2>Quizzes</h2></div>
 
-    <div class="quiz-upload">
-      <h4 class="ui-serif" style="font-family:var(--serif);font-weight:600;margin:0 0 .3rem">Submit your result</h4>
-      <p class="ui-muted" style="color:var(--muted);font-size:.9rem;margin:0 0 1.1rem">Take a screenshot of your quiz result and upload it for the lesson you completed.</p>
-      <form action="/blog_learning#panel-quizzes" method="post" enctype="multipart/form-data">
-        <div class="row">
-          <div class="ui-field" style="margin:0"><label class="ui-label" for="qimage">Result screenshot</label>
-            <input class="ui-input" type="file" id="qimage" name="image" accept="image/*" style="padding:.55rem 1rem"></div>
-          <div class="ui-field" style="margin:0"><label class="ui-label" for="lesson_select">Lesson</label>
-            <select class="ui-input" id="lesson_select" name="lesson_select">
-              <option>Select the lesson</option>
-              <?php foreach ($lessons as $lesson): ?>
-                <?php if (!empty($lesson['quizzes'])): ?>
-                  <option value="<?= e($lesson['title']) ?>"><?= e($lesson['title']) ?></option>
-                <?php endif; ?>
-              <?php endforeach; ?>
-            </select></div>
-          <input type="hidden" name="course_id" value="<?= (int) $courseId ?>">
-          <button class="ui-btn ui-btn--primary" type="submit" style="flex:0 0 auto"><i class="bi bi-upload"></i> Submit</button>
-        </div>
-      </form>
-    </div>
-
     <?php if ($quizCount < 1): ?>
       <div class="empty-block"><i class="bi bi-patch-question"></i>No quizzes have been added to this course yet.</div>
     <?php else: ?>
-      <div class="quiz-grid">
-        <?php foreach ($lessons as $lesson): ?>
-          <?php foreach ($lesson['quizzes'] as $quiz): ?>
-            <div class="quiz">
-              <div class="ic"><i class="bi bi-ui-checks-grid"></i></div>
-              <h4><?= e($lesson['title']) ?></h4>
-              <a href="<?= e($quiz['content']) ?>" target="_blank" rel="noopener" class="ui-btn ui-btn--ghost ui-btn--block"><i class="bi bi-box-arrow-up-right"></i> Start quiz</a>
+      <?php foreach ($lessons as $lesson): ?>
+        <?php if (empty($lesson['quizzes'])) {
+            continue;
+        } ?>
+        <?php
+            $lid = (int) $lesson['lesson_id'];
+            $res = ($quizResult && (int) $quizResult['lesson_id'] === $lid) ? $quizResult : null;
+        ?>
+        <div class="quizform">
+          <div class="quizform__head">
+            <h3><?= e($lesson['title']) ?></h3>
+            <span class="quizform__meta"><?= count($lesson['quizzes']) ?> question<?= count($lesson['quizzes']) === 1 ? '' : 's' ?></span>
+          </div>
+
+          <?php if ($res): ?>
+            <div class="qresult<?= $res['score'] === $res['total'] ? ' is-pass' : '' ?>">
+              <i class="bi bi-<?= $res['score'] === $res['total'] ? 'patch-check-fill' : 'clipboard-check' ?>"></i>
+              You scored <strong><?= (int) $res['score'] ?> / <?= (int) $res['total'] ?></strong><?= $res['score'] === $res['total'] ? ' — perfect!' : '' ?>
             </div>
-          <?php endforeach; ?>
-        <?php endforeach; ?>
-      </div>
+          <?php endif; ?>
+
+          <form method="post" action="/blog_learning#panel-quizzes">
+            <input type="hidden" name="course_id" value="<?= (int) $courseId ?>">
+            <input type="hidden" name="quiz_lesson" value="<?= $lid ?>">
+            <?php foreach ($lesson['quizzes'] as $qi => $q): ?>
+              <fieldset class="qblock">
+                <legend><span class="qnum"><?= $qi + 1 ?></span> <?= e($q['question']) ?></legend>
+                <?php foreach ($q['options'] as $oi => $opt): ?>
+                  <?php
+                    $picked    = $res && (int) ($res['given'][$q['quiz_id']] ?? -1) === $oi;
+                    $isCorrect = $res && $oi === $q['answer'];
+                    $cls = $res ? ($isCorrect ? ' is-correct' : ($picked ? ' is-wrong' : '')) : '';
+                  ?>
+                  <label class="qopt<?= $cls ?>">
+                    <input type="radio" name="answers[<?= (int) $q['quiz_id'] ?>]" value="<?= $oi ?>"
+                           <?= $picked ? 'checked' : '' ?> <?= $res ? 'disabled' : 'required' ?>>
+                    <span><?= e($opt) ?></span>
+                    <?php if ($res && ($isCorrect || $picked)): ?>
+                      <i class="bi bi-<?= $isCorrect ? 'check-lg' : 'x-lg' ?>"></i>
+                    <?php endif; ?>
+                  </label>
+                <?php endforeach; ?>
+              </fieldset>
+            <?php endforeach; ?>
+
+            <?php if (!$res): ?>
+              <button type="submit" class="ui-btn ui-btn--primary"><i class="bi bi-check2-circle"></i> Submit answers</button>
+            <?php endif; ?>
+          </form>
+
+          <?php if ($res): ?>
+            <!-- Retake: reload the classroom fresh (no quiz_lesson = no grading). -->
+            <form method="post" action="/blog_learning#panel-quizzes" style="margin-top:.6rem">
+              <input type="hidden" name="course_id" value="<?= (int) $courseId ?>">
+              <button type="submit" class="ui-btn ui-btn--ghost"><i class="bi bi-arrow-repeat"></i> Retake quiz</button>
+            </form>
+          <?php endif; ?>
+        </div>
+      <?php endforeach; ?>
     <?php endif; ?>
   </section>
 

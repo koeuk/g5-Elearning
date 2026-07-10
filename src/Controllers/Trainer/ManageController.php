@@ -67,7 +67,7 @@ final class ManageController extends Controller
                     Session::flash('error', 'A lesson with that title already exists in this course.');
                     return;
                 }
-                Lesson::create($title, $this->input('description'), $this->input('video'), $courseId);
+                Lesson::create($title, $this->input('description'), $this->input('video'), $courseId, $this->input('is_free') === '1');
                 Session::flash('success', 'Lesson added.');
                 return;
 
@@ -76,7 +76,8 @@ final class ManageController extends Controller
                     (int) $this->input('lesson_id'),
                     $this->input('title'),
                     $this->input('description'),
-                    $this->input('video')
+                    $this->input('video'),
+                    $this->input('is_free') === '1'
                 );
                 Session::flash('success', 'Lesson updated.');
                 return;

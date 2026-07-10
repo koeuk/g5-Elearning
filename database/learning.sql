@@ -114,7 +114,10 @@ CREATE TABLE `quiz_sumit` (
   `sumit_id` int(11) NOT NULL,
   `user_id` int(11) DEFAULT NULL,
   `lesson_id` int(11) DEFAULT NULL,
-  `image` varchar(255) DEFAULT NULL
+  `image` varchar(255) DEFAULT NULL,
+  `score` int(11) DEFAULT NULL,
+  `total` int(11) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------

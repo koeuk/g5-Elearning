@@ -39,30 +39,32 @@ final class Lesson
         return $stmt->rowCount() > 0 ? $stmt->fetch() : [];
     }
 
-    public static function create(string $title, string $description, string $video, int $courseId): void
+    public static function create(string $title, string $description, string $video, int $courseId, bool $isFree = false): void
     {
         $stmt = Database::connection()->prepare(
-            'INSERT INTO lessons (title, description, course_id, video)
-             VALUES (:title, :description, :course_id, :video)'
+            'INSERT INTO lessons (title, description, course_id, video, is_free)
+             VALUES (:title, :description, :course_id, :video, :is_free)'
         );
         $stmt->execute([
             ':title'       => $title,
             ':description' => $description,
             ':course_id'   => $courseId,
             ':video'       => $video,
+            ':is_free'     => $isFree ? 1 : 0,
         ]);
     }
 
-    public static function update(int $id, string $title, string $description, string $video): void
+    public static function update(int $id, string $title, string $description, string $video, bool $isFree = false): void
     {
         $stmt = Database::connection()->prepare(
-            'UPDATE lessons SET title = :title, description = :description, video = :video WHERE lesson_id = :id'
+            'UPDATE lessons SET title = :title, description = :description, video = :video, is_free = :is_free WHERE lesson_id = :id'
         );
         $stmt->execute([
             ':id'          => $id,
             ':title'       => $title,
             ':description' => $description,
             ':video'       => $video,
+            ':is_free'     => $isFree ? 1 : 0,
         ]);
     }
 
