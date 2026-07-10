@@ -53,10 +53,21 @@
 
     .avatar {
         vertical-align: middle;
-        width: 45px;
-        height: 45px;
+        width: 46px;
+        height: 46px;
         border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid rgba(242, 133, 0, .45);
     }
+    /* Gender pill */
+    .gender-pill { font-size: .78rem; font-weight: 600; padding: .3rem .8rem; border-radius: 999px; }
+    .gender-pill.male   { background: rgba(13, 110, 253, .12); color: #0d6efd; }
+    .gender-pill.female { background: rgba(214, 51, 132, .12); color: #d63384; }
+    /* Action buttons stay on one line, column shrinks to fit */
+    .col-actions { width: 1%; white-space: nowrap; }
+    .col-actions .btn { display: inline-flex; align-items: center; gap: .35rem; }
+    /* Roomier rows */
+    table.table > :not(caption) > * > * { padding-top: .85rem; padding-bottom: .85rem; }
 </style>
 
 <div class="table-responsive p-5 pt-3">
@@ -88,7 +99,7 @@
                 <th scope="col">Phone</th>
                 <th scope="col">Gender</th>
                 <th scope="col">Profile</th>
-                <th scope="col" class="text-end">Action</th>
+                <th scope="col" class="text-end col-actions">Action</th>
             </tr>
         </thead>
 
@@ -100,17 +111,23 @@
             foreach ($students as $key => $student) :
             ?>
                 <tr>
-                    <td><?= $student['name'] ?></td>
-                    <td><?= $student['email'] ?></td>
-                    <td><?= $student['phone'] ?></td>
-                    <td><?= $student['gender'] ?></td>
+                    <td class="fw-semibold"><?= e($student['name']) ?></td>
+                    <td><?= e($student['email']) ?></td>
+                    <td><?= e($student['phone']) ?></td>
                     <td>
-                        <img src="<?= e(uploadedImage((string) $student['profile_image'])) ?>" class="avatar">
+                        <span class="gender-pill <?= ($student['gender'] ?? '') === 'Male' ? 'male' : 'female' ?>">
+                            <i class="fas fa-<?= ($student['gender'] ?? '') === 'Male' ? 'mars' : 'venus' ?> me-1"></i><?= e($student['gender']) ?>
+                        </span>
                     </td>
-                    <td class='d-flex gap-2 justify-content-end'>
-                        <button type="button" class="d-flex justify-content-center align-items-center gap-1 btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#deleteDetail<?= $student['user_id'] ?>"><i class="fas fa-eye"></i> Detail</button>
-                        <a class="d-flex justify-content-center align-items-center gap-1 btn btn-info btn-sm text-white" href="" data-bs-toggle="modal" data-bs-target="#editStudent<?= $student['user_id'] ?>"><i class="fas fa-edit"></i> Edit</a>
-                        <a class="d-flex justify-content-center align-items-center gap-1 btn btn-primary btn-sm" href="" data-bs-toggle="modal" data-bs-target="#deleteStudent<?= $student['user_id'] ?>"><i class="fas fa-trash"></i> Delete</a>
+                    <td>
+                        <img src="<?= e(uploadedImage((string) $student['profile_image'])) ?>" class="avatar" alt="<?= e($student['name']) ?>">
+                    </td>
+                    <td class="text-end col-actions">
+                        <div class="d-inline-flex gap-2">
+                            <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#deleteDetail<?= $student['user_id'] ?>"><i class="fas fa-eye"></i> Detail</button>
+                            <button type="button" class="btn btn-info btn-sm text-white" data-bs-toggle="modal" data-bs-target="#editStudent<?= $student['user_id'] ?>"><i class="fas fa-edit"></i> Edit</button>
+                            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteStudent<?= $student['user_id'] ?>"><i class="fas fa-trash"></i> Delete</button>
+                        </div>
                     </td>
                 </tr>
                 

@@ -34,6 +34,15 @@ $email      = $student['email'] ?? '';
     .crs__view{background:transparent;color:var(--accent);border:1px solid var(--accent);border-radius:10px;padding:.5rem .85rem;font-weight:700;font-size:.85rem;cursor:pointer;font-family:var(--sans);display:inline-flex;align-items:center;gap:.35rem;text-decoration:none;transition:.2s}
     .crs__view:hover{background:var(--accent);color:var(--accent-ink)}
     .crs__foot-right{display:flex;align-items:center;gap:.7rem}
+    /* Hero live clock */
+    .hero-clock{position:absolute;top:50%;right:2.5%;transform:translateY(-50%);
+      background:var(--surface);border:1px solid var(--line);border-radius:22px;
+      padding:1.5rem 2rem;text-align:center;box-shadow:var(--shadow);min-width:230px;animation:ui-fadeup .6s .1s both}
+    .hero-clock__ic{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;margin:0 auto .7rem;
+      background:var(--bg-tint-1);color:var(--accent);font-size:1.35rem}
+    .hero-clock__time{font-family:var(--serif);font-weight:600;font-size:2.5rem;line-height:1;color:var(--text);letter-spacing:.01em}
+    .hero-clock__date{color:var(--muted);font-size:.92rem;margin-top:.5rem;font-weight:600}
+    @media(max-width:1150px){.hero-clock{position:static;transform:none;margin:1.8rem auto 0;display:inline-block}}
   </style>
 </head>
 <body class="ui-scope">
@@ -47,6 +56,13 @@ $email      = $student['email'] ?? '';
     <div class="hero-home__cta">
       <a href="#courses" class="ui-btn ui-btn--primary"><i class="bi bi-collection-play"></i> Browse courses</a>
       <a href="/orders" class="ui-btn ui-btn--ghost"><i class="bi bi-bag-heart"></i> View cart<?= (int) $cartCount > 0 ? ' (' . (int) $cartCount . ')' : '' ?></a>
+    </div>
+
+    <!-- Live clock -->
+    <div class="hero-clock" id="heroClock">
+      <div class="hero-clock__ic"><i class="bi bi-clock-history"></i></div>
+      <div class="hero-clock__time" id="hcTime">--:--</div>
+      <div class="hero-clock__date" id="hcDate">&nbsp;</div>
     </div>
   </section>
 
@@ -170,6 +186,20 @@ $email      = $student['email'] ?? '';
     </div>
   </footer>
 
+  <script>
+  // Live hero clock — ticks every second.
+  (function () {
+    var t = document.getElementById('hcTime'), d = document.getElementById('hcDate');
+    if (!t || !d) return;
+    function tick() {
+      var now = new Date();
+      t.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      d.textContent = now.toLocaleDateString([], { weekday: 'long', month: 'short', day: 'numeric' });
+    }
+    tick();
+    setInterval(tick, 1000);
+  })();
+  </script>
   <script src="assets/theme.js"></script>
 </body>
 </html>

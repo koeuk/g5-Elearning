@@ -5,7 +5,11 @@
  * @var array{categories: int, courses: int, revenue: int, users: int} $stats
  * @var array<int, array{title: string, count: int}>                    $popular
  * @var array<int, array{title: string, user: string, date: string, total: string}> $payments
+ * @var array<int, array{title: string, count: int}>                    $coursesBought
+ * @var array<int, array{name: string, count: int}>                     $topStudents
  */
+$coursesBought = $coursesBought ?? [];
+$topStudents   = $topStudents ?? [];
 ?>
             <!-- Sale & Revenue Start -->
             <div class="container-fluid pt-4 px-4">
@@ -49,6 +53,33 @@
                 </div>
             </div>
             <!-- Sale & Revenue End -->
+
+            <!-- Charts Start -->
+            <div class="container-fluid pt-4 px-4">
+                <div class="row g-4">
+                    <div class="col-12 col-xl-6">
+                        <div class="bg-secondary rounded p-4 h-100">
+                            <h5 class="mb-3 fw-bold text-start" style="color:#F28500;"><i class="fas fa-shopping-cart me-2"></i>Courses Bought</h5>
+                            <?php if (empty($coursesBought)) : ?>
+                                <p class="text-muted mb-0">No purchases yet.</p>
+                            <?php else : ?>
+                                <div style="height:300px"><canvas id="coursesChart"></canvas></div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <div class="col-12 col-xl-6">
+                        <div class="bg-secondary rounded p-4 h-100">
+                            <h5 class="mb-3 fw-bold text-start" style="color:#F28500;"><i class="fas fa-user-graduate me-2"></i>Top Students <span class="text-muted small">(courses bought)</span></h5>
+                            <?php if (empty($topStudents)) : ?>
+                                <p class="text-muted mb-0">No students have bought a course yet.</p>
+                            <?php else : ?>
+                                <div style="height:300px"><canvas id="studentsChart"></canvas></div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Charts End -->
 
             <!-- Recent Sales Start -->
             <div class="container-fluid pt-4 px-4">
@@ -109,3 +140,85 @@
                 </div>
             </div>
             <!-- Recent Sales End -->
+
+<script>
+/* Admin dashboard charts (Chart.js v3). Runs after the footer loads chart.min.js. */
+window.addEventListener('load', function () {
+    if (typeof Chart === 'undefined') { return; }
+
+    var coursesData  = <?= json_encode(array_map(static fn ($r) => ['label' => $r['title'], 'value' => (int) $r['count']], $coursesBought), JSON_UNESCAPED_UNICODE) ?>;
+    var studentsData = <?= json_encode(array_map(static fn ($r) => ['label' => $r['name'], 'value' => (int) $r['count']], $topStudents), JSON_UNESCAPED_UNICODE) ?>;
+    var charts = {};
+
+    function themeColors() {
+        var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+        return {
+            ink:  dark ? '#e7eaf2' : '#1f2430',
+            grid: dark ? 'rgba(255,255,255,.09)' : 'rgba(20,25,40,.08)',
+            bar:  '#F28500',
+            barHover: '#ff9e2c'
+        };
+    }
+
+    /* Draw each value just past its bar end — direct labels, no plugin dependency. */
+    var valueLabels = {
+        id: 'valueLabels',
+        afterDatasetsDraw: function (chart) {
+            var ctx = chart.ctx, ink = themeColors().ink;
+            chart.getDatasetMeta(0).data.forEach(function (bar, i) {
+                ctx.save();
+                ctx.fillStyle = ink;
+                ctx.font = '700 12px system-ui, sans-serif';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(chart.data.datasets[0].data[i], bar.x + 7, bar.y);
+                ctx.restore();
+            });
+        }
+    };
+
+    function makeBar(id, rows, unit) {
+        var el = document.getElementById(id);
+        if (!el) { return; }
+        var c = themeColors();
+        if (charts[id]) { charts[id].destroy(); }
+        charts[id] = new Chart(el, {
+            type: 'bar',
+            data: {
+                labels: rows.map(function (r) { return r.label; }),
+                datasets: [{
+                    data: rows.map(function (r) { return r.value; }),
+                    backgroundColor: c.bar,
+                    hoverBackgroundColor: c.barHover,
+                    borderRadius: 6,
+                    borderSkipped: false,
+                    maxBarThickness: 28
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: { padding: { right: 26 } },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { callbacks: { label: function (x) { return ' ' + x.parsed.x + ' ' + unit; } } }
+                },
+                scales: {
+                    x: { beginAtZero: true, ticks: { color: c.ink, precision: 0 }, grid: { color: c.grid, drawBorder: false } },
+                    y: { ticks: { color: c.ink }, grid: { display: false, drawBorder: false } }
+                }
+            },
+            plugins: [valueLabels]
+        });
+    }
+
+    function renderCharts() {
+        makeBar('coursesChart', coursesData, 'purchases');
+        makeBar('studentsChart', studentsData, 'courses');
+    }
+
+    renderCharts();
+    /* Rebuild with the right ink/grid when the dark/light toggle flips data-theme. */
+    new MutationObserver(renderCharts).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+});
+</script>
