@@ -57,6 +57,17 @@
 :root[data-theme="light"] tr.text-white,
 :root[data-theme="light"] tr.text-white > * { color: var(--admin-ink) !important; }
 
+/* Default content text + headings — the dark template paints them white via
+   --bs-body-color, so an un-classed <h3> like "Categories List" was invisible
+   on the light background. */
+:root[data-theme="light"] { --bs-body-color: #1f2430; --bs-body-color-rgb: 31, 36, 48; }
+:root[data-theme="light"] .content,
+:root[data-theme="light"] .content h1, :root[data-theme="light"] .content h2,
+:root[data-theme="light"] .content h3, :root[data-theme="light"] .content h4,
+:root[data-theme="light"] .content h5, :root[data-theme="light"] .content h6,
+:root[data-theme="light"] .content p, :root[data-theme="light"] .content label,
+:root[data-theme="light"] .sidebar h6, :root[data-theme="light"] .sidebar span { color: var(--admin-ink); }
+
 :root[data-theme="light"] .sidebar .navbar .navbar-nav .nav-link { color: var(--admin-muted); }
 :root[data-theme="light"] .sidebar .navbar .navbar-nav .nav-link:hover,
 :root[data-theme="light"] .sidebar .navbar .navbar-nav .nav-link.active { color: var(--admin-brand); }
@@ -100,9 +111,24 @@
 }
 :root[data-theme="light"] .dropdown-item { color: var(--admin-ink); }
 :root[data-theme="light"] .dropdown-item:hover { background: #f2f5fb; color: var(--admin-brand); }
+
+/* The sidebar's "Users" submenu is meant to blend into the sidebar (it's
+   bg-transparent border-0 in the markup) — no floating box or shadow. */
+:root[data-theme="light"] .sidebar .dropdown-menu {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+}
 :root[data-theme="light"] .border,
 :root[data-theme="light"] .border-top,
 :root[data-theme="light"] .border-bottom { border-color: var(--admin-line) !important; }
+
+/* Sidebar scrollbar: keep it on the white surface so no gray track shows at
+   the sidebar's right edge when the nav overflows. */
+:root[data-theme="light"] .sidebar::-webkit-scrollbar { width: 8px; }
+:root[data-theme="light"] .sidebar::-webkit-scrollbar-track { background: var(--admin-surface); }
+:root[data-theme="light"] .sidebar::-webkit-scrollbar-thumb { background: #d6dbe6; border-radius: 8px; }
+:root[data-theme="light"] .sidebar { scrollbar-width: thin; scrollbar-color: #d6dbe6 var(--admin-surface); }
 
 /* ---- Theme toggle button (in the top navbar) ---- */
 .admin-theme-toggle {

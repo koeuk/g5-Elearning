@@ -182,7 +182,7 @@
      </div>
 
      <!-- Table get the course and create the course -->
-     <div class="container p-5 pt-0 ">
+     <div class="container-fluid p-0">
           <table class="table text-start align-middle table-bordered table-dark table-hover mb-0 ">
                <thead class="bg-primary text-white">
                     <tr>
