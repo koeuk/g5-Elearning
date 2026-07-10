@@ -24,6 +24,7 @@ use App\Controllers\Student\HomeController as StudentHomeController;
 use App\Controllers\Student\OrderController;
 use App\Controllers\Trainer\AuthController as TrainerAuthController;
 use App\Controllers\Trainer\HomeController as TrainerHomeController;
+use App\Controllers\Trainer\ProfileController as TrainerProfileController;
 
 $router = new Router();
 
@@ -92,6 +93,8 @@ $router->get('/trainer_signin', [TrainerAuthController::class, 'showLogin']); //
 $router->post('/trainer_access', [TrainerAuthController::class, 'login']);    // credential check
 $router->get('/trainer_logout', [TrainerAuthController::class, 'logout']);    // clear session
 $router->get('/trainer', [TrainerHomeController::class, 'index']);            // dashboard
+$router->post('/trainer_edits', [TrainerProfileController::class, 'update']);              // edit profile
+$router->post('/trainer_password_comfirm', [TrainerProfileController::class, 'updatePassword']); // change password
 
 /*
  * The remaining areas (admin, students, trainers, courses) are migrated

@@ -7,9 +7,6 @@
           <form action="/updateCourse" method="post" class="g-5 p-2" enctype="multipart/form-data">
                <?php
 
-               require 'database/database.php';
-               require 'models/admin.model.php';
-               require 'models/category.model.php';
                if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $course = $course ?? [];
                }
@@ -38,7 +35,6 @@
                     <label for="#">Trainer </label>
                     <select class="form-select bg-white" id="sell1" name="user_id" aria-label="Default select example">
                          <?php
-                         require 'models/user.model.php';
                          $trainers = $trainers ?? [];
                          // $trainers = getTrainerWithUserName(); 
                          foreach ($trainers as $trainer) :

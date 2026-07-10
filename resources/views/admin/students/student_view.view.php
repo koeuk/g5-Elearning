@@ -89,8 +89,6 @@
         <!-- ==================Update trainer ============== -->
         <tbody>
             <?php
-            require 'database/database.php';
-            require 'models/student.model.php';
 
             $students = $students ?? [];
             foreach ($students as $key => $student) :

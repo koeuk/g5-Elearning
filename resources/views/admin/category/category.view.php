@@ -1,5 +1,4 @@
 <?php
-require "models/admin.model.php";
 ?>
 
 <!-- CSS style -->

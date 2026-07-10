@@ -81,9 +81,6 @@
                                              <select class="form-select bg-white" id="sell1" name="category_id"
                                                   aria-label="Default select example">
                                                   <?php
-                                                  require 'database/database.php';
-                                                  require 'models/category.model.php';
-                                                  // require 'models/category.model.php';
                                                   $categories = $categories ?? [];
                                                   foreach ($categories as $categiry) :
                                                   ?>
@@ -104,9 +101,6 @@
                                                   aria-label="Default select example">
                                                   <!-- call database -->
                                                   <?php
-                                                  require 'database/database.php';
-                                                  require 'models/admin.model.php';
-                                                  require 'models/user.model.php';
                                                   $trainers = $trainers ?? [];
                                                   // $trainers = getTrainerWithUserName(); 
                                                   foreach ($trainers as $trainer) : ?>

@@ -76,10 +76,14 @@ final class CourseController extends Controller
         $catId    = $category !== false ? (int) $category['category_id'] : 0;
         $userId   = $trainer !== false ? (int) $trainer['user_id'] : 0;
 
+        $title = $this->input('title');
+        $desc  = $this->input('description');
+        $price = $this->input('price');
+
         if (empty($_FILES['image']['name'])) {
-            Course::updateWithoutImage($id, $this->input('title'), $this->input('description'), $userId, $catId, $this->input('price'));
+            Course::updateWithoutImage($id, $title, $desc, $userId, $catId, $price);
         } else {
-            Course::update($id, $this->input('title'), $this->input('description'), $userId, $catId, $this->input('price'), $this->uploadImage());
+            Course::update($id, $title, $desc, $userId, $catId, $price, $this->uploadImage());
         }
 
         $this->redirect('/viewCourse');

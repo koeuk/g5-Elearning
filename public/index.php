@@ -9,6 +9,17 @@
  * routes/web.php. Application code lives in ../src under the App\ namespace.
  */
 
+// Under `php -S` (the built-in dev server) there is no .htaccess, so every
+// request — including real static files like /vendor/css/style.css — reaches
+// this front controller. Serve on-disk files directly instead of routing them,
+// otherwise assets 404 and pages render with no CSS/JS. No-op under Apache/FPM.
+if (PHP_SAPI === 'cli-server') {
+    $requested = __DIR__ . urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?: '/');
+    if (is_file($requested)) {
+        return false;
+    }
+}
+
 use App\Core\Env;
 use App\Core\Router;
 use App\Core\Session;

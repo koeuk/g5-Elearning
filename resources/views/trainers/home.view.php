@@ -73,6 +73,14 @@ $title = strtolower((string) ($trainer['gender'] ?? '')) === 'male' ? 'Mr.' : 'M
                     <div class="d-flex align-items-center mb-4 gap-2">
                         <span>Experiences:</span><h6 class="m-0">1 year</h6>
                     </div>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-outline-orange btn-sm" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                            <i class="fas fa-edit me-1"></i> Edit profile
+                        </button>
+                        <button type="button" class="btn btn-outline-orange btn-sm" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                            <i class="fas fa-key me-1"></i> Change password
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -143,6 +151,64 @@ $title = strtolower((string) ($trainer['gender'] ?? '')) === 'male' ? 'Mr.' : 'M
 </section>
 </main>
 <!-- **************** MAIN CONTENT END **************** -->
+
+<!-- Edit Profile modal -->
+<div class="modal fade" id="editProfileModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body border border-orange p-4 m-4" style="background-color: #f8f9fa;">
+                <h5 class="mb-4 text-orange">Edit Profile</h5>
+                <form action="/trainer_edits" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label">Profile Image:</label>
+                        <input type="file" class="form-control" name="image" accept="image/*">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Name:</label>
+                        <input type="text" class="form-control" name="name" value="<?= e($trainer['name'] ?? '') ?>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Phone:</label>
+                        <input type="text" class="form-control" name="phone" value="<?= e($trainer['phone'] ?? '') ?>">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email:</label>
+                        <input type="email" class="form-control" name="email" value="<?= e($trainer['email'] ?? '') ?>" required>
+                    </div>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-orange">Update</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Change Password modal -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body border border-orange p-4 m-4" style="background-color: #f8f9fa;">
+                <h5 class="mb-4 text-orange">Change password</h5>
+                <form action="/trainer_password_comfirm" method="post">
+                    <div class="mb-3">
+                        <label class="form-label">Current Password:</label>
+                        <input type="password" class="form-control" name="currentPassword" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">New Password:</label>
+                        <input type="password" class="form-control" name="newPassword" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Confirm New Password:</label>
+                        <input type="password" class="form-control" name="confirmPassword" required>
+                    </div>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-orange">Change Password</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
