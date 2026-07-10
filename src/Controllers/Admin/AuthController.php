@@ -21,6 +21,11 @@ final class AuthController extends Controller
     /** GET /admin — welcome splash, also the logout landing page. */
     public function start(): void
     {
+        // A signed-in non-admin (e.g. a student) must not have their session
+        // cleared just by landing here — send them back to their own area.
+        if (Auth::check() && Auth::role() !== User::ROLE_ADMIN) {
+            $this->redirect(Auth::role() === User::ROLE_STUDENT ? '/student' : '/');
+        }
         Auth::logout();
         $this->view('admin/start_admin');
     }

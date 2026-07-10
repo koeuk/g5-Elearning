@@ -21,9 +21,7 @@ final class DashboardController extends Controller
     /** GET /admin_home — summary tiles, popular courses and recent payments. */
     public function index(): void
     {
-        if (Auth::role() !== User::ROLE_ADMIN) {
-            $this->redirect('/admin_signin');
-        }
+        $this->requireAdmin();
 
         $payments = Payment::all();
 

@@ -63,7 +63,7 @@ final class ManageController extends Controller
                     Session::flash('error', 'Lesson title and video are required.');
                     return;
                 }
-                if (Lesson::existsInCourse($courseId, $title) !== false) {
+                if (Lesson::existsInCourse($courseId, $title) !== []) {
                     Session::flash('error', 'A lesson with that title already exists in this course.');
                     return;
                 }

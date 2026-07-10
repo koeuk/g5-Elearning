@@ -55,9 +55,7 @@ final class CategoryController extends Controller
 
     private function guard(): void
     {
-        if (Auth::role() !== User::ROLE_ADMIN) {
-            $this->redirect('/admin_signin');
-        }
+        $this->requireAdmin();
     }
 
     /** Move an uploaded image into public/uploading, or use the default. */

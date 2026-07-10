@@ -45,9 +45,7 @@ final class StudentController extends Controller
 
     private function guard(): void
     {
-        if (Auth::role() !== User::ROLE_ADMIN) {
-            $this->redirect('/admin_signin');
-        }
+        $this->requireAdmin();
     }
 
     private function uploadImage(): string
