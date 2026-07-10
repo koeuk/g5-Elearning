@@ -15,10 +15,9 @@
 						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
 						
 						<form action='/student#courses' method='post'>
-							<input type="text" id="modalUser" value='' name='email' hidden>
+							<input type="text" id="modalUser" value='<?= $email ?? '' ?>' name='email' hidden>
 							<input type="text" id="modalCourse" value='' name='course_id' hidden>
-							<input type="text" id="modalcategory" value='<?=$_POST['id']?>' name='id' hidden>
-							<button type='sumit'class="btn btn-primary succeses-popup">Add to card</button>
+							<button type='submit' class="btn btn-primary succeses-popup">Add to card</button>
 						</form>   
 					</div>
                     </div>

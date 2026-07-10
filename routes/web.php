@@ -35,8 +35,9 @@ $router->get('/signup', [StudentAuthController::class, 'showRegister']);   // re
 $router->post('/create_student', [StudentAuthController::class, 'register']); // create account
 $router->get('/logout', [StudentAuthController::class, 'logout']);         // clear session
 
-/* Authenticated area. */
-$router->get('/student', [StudentHomeController::class, 'index']);         // dashboard landing
+/* Authenticated area. Handles GET and POST (the course grid self-submits to
+   add a course to the cart). */
+$router->any('/student', [StudentHomeController::class, 'index']);         // course-grid home
 
 /* Ordering/checkout screen — self-submits, so it handles GET and POST. */
 $router->any('/orders', [OrderController::class, 'index']);

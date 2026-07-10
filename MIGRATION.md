@@ -48,6 +48,12 @@ every route below is migrated.
   `Auth::verify()` on read. Legacy plaintext rows still authenticate and are
   flagged by `Auth::needsRehash()` for transparent upgrade. Covered by `tests/AuthTest.php`.
 - **Home page** (`/`) migrated end-to-end as the reference vertical slice.
+- **Student course-grid home** (`/student`) migrated: identity now comes from
+  `Auth::user()` (not a posted email), the controller gathers all data
+  (categories+dropdown, course cards with enrolment/purchase flags, popular
+  courses, cart count) and the add-to-cart POST is handled server-side. The
+  `/student` route accepts GET and POST. The `students/payments/payment` modal
+  partial no longer reads `$_POST`.
 
 ## Model function → class-method map
 
