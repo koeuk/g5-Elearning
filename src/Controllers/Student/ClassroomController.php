@@ -6,6 +6,7 @@ use App\Core\Auth;
 use App\Core\Controller;
 use App\Models\Course;
 use App\Models\Lesson;
+use App\Models\Payment;
 use App\Models\Quiz;
 use App\Models\QuizSubmission;
 use App\Models\User;
@@ -39,10 +40,14 @@ final class ClassroomController extends Controller
         $course  = Course::find($courseId) ?: [];
         $teacher = isset($course['user_id']) ? (User::find((int) $course['user_id']) ?: []) : [];
 
+        // Owners see every lesson; non-owners only the ones marked free.
+        $owned = $studentId > 0 && $courseId > 0 && Payment::exists($studentId, $courseId) !== [];
+
         $this->view('courses/blog_learning', [
             'student'    => $student,
             'course'     => $course,
             'courseId'   => $courseId,
+            'owned'      => $owned,
             'lessons'    => $this->lessonsWithQuestions($courseId),
             'teacher'    => $teacher,
             'quizResult' => $result,

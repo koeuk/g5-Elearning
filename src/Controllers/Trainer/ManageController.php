@@ -88,26 +88,20 @@ final class ManageController extends Controller
                 return;
 
             case 'add_quiz':
-                if ((int) $this->input('lesson_id') <= 0 || $this->input('content') === '') {
-                    Session::flash('error', 'Pick a lesson and enter the quiz URL.');
+                $qLesson  = (int) $this->input('lesson_id');
+                $question = $this->input('question');
+                [$options, $answer] = $this->cleanOptions();
+                if ($qLesson <= 0 || $question === '' || count($options) < 2) {
+                    Session::flash('error', 'Pick a lesson, enter a question and at least two options.');
                     return;
                 }
-                Quiz::create((int) $this->input('lesson_id'), $this->input('content'));
-                Session::flash('success', 'Quiz added.');
-                return;
-
-            case 'edit_quiz':
-                Quiz::update(
-                    (int) $this->input('quiz_id'),
-                    (int) $this->input('lesson_id'),
-                    $this->input('content')
-                );
-                Session::flash('success', 'Quiz updated.');
+                Quiz::addQuestion($qLesson, $question, $options, $answer);
+                Session::flash('success', 'Question added.');
                 return;
 
             case 'delete_quiz':
                 Quiz::delete((int) $this->input('quiz_id'));
-                Session::flash('success', 'Quiz deleted.');
+                Session::flash('success', 'Question deleted.');
                 return;
 
             case 'delete_result':
@@ -118,21 +112,48 @@ final class ManageController extends Controller
     }
 
     /**
-     * Flatten each lesson's quizzes into display rows.
+     * Collect non-empty option fields (name="options[]") in order, remapping the
+     * chosen answer index past any blank rows.
+     *
+     * @return array{0: array<int,string>, 1: int}
+     */
+    private function cleanOptions(): array
+    {
+        $raw     = (array) ($_POST['options'] ?? []);
+        $chosen  = (int) $this->input('answer');
+        $options = [];
+        $answer  = 0;
+        foreach ($raw as $i => $opt) {
+            $opt = trim((string) $opt);
+            if ($opt === '') {
+                continue;
+            }
+            if ($i === $chosen) {
+                $answer = count($options);
+            }
+            $options[] = $opt;
+        }
+        return [$options, $answer];
+    }
+
+    /**
+     * Flatten each lesson's MCQ questions into display rows.
      *
      * @param array<int, array> $lessons
-     * @return array<int, array{quiz_id: int, lesson_id: int, lesson_title: string, content: string}>
+     * @return array<int, array{quiz_id:int, lesson_id:int, lesson_title:string, question:string, options:array<int,string>, answer:int}>
      */
     private function quizRows(array $lessons): array
     {
         $rows = [];
         foreach ($lessons as $lesson) {
-            foreach (Quiz::forLesson((int) $lesson['lesson_id']) as $quiz) {
+            foreach (Quiz::questionsForLesson((int) $lesson['lesson_id']) as $q) {
                 $rows[] = [
-                    'quiz_id'      => (int) $quiz['quiz_id'],
+                    'quiz_id'      => $q['quiz_id'],
                     'lesson_id'    => (int) $lesson['lesson_id'],
                     'lesson_title' => (string) $lesson['title'],
-                    'content'      => (string) $quiz['content'],
+                    'question'     => $q['question'],
+                    'options'      => $q['options'],
+                    'answer'       => $q['answer'],
                 ];
             }
         }

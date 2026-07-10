@@ -26,6 +26,15 @@ foreach ($lessons as $l) {
 }
 $tName = $teacher['name'] ?? '';
 $tInit = strtoupper(substr((string) ($tName ?: 'T'), 0, 1));
+
+// Free / paid access: owners watch everything; non-owners only lessons flagged
+// is_free — the rest are locked with a prompt to buy the course.
+$owned      = $owned ?? false;
+$isLocked   = static fn (array $l): bool => !$owned && empty($l['is_free']);
+$firstIndex = null;                       // first playable lesson for the stage
+foreach ($lessons as $li => $ll) {
+    if (!$isLocked($ll)) { $firstIndex = $li; break; }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -145,35 +154,42 @@ $tInit = strtoupper(substr((string) ($tName ?: 'T'), 0, 1));
     <?php if (empty($lessons)): ?>
       <div class="empty-block"><i class="bi bi-collection-play"></i>No lessons have been added to this course yet — check back soon.</div>
     <?php else: ?>
-      <?php $first = $lessons[0]; ?>
+      <?php $first = $firstIndex !== null ? $lessons[$firstIndex] : null; ?>
       <!-- Now-playing stage -->
       <div class="player">
         <div class="player__stage">
-          <iframe id="mainVideo" src="<?= e($first['video'] ?? '') ?>" title="<?= e($first['title']) ?>" allowfullscreen></iframe>
+          <iframe id="mainVideo" src="<?= e($first['video'] ?? '') ?>" title="<?= e($first['title'] ?? '') ?>" allowfullscreen></iframe>
+          <?php if ($first === null): ?>
+            <div class="stage-lock"><i class="bi bi-lock-fill"></i><p>Buy this course to unlock its lessons.</p></div>
+          <?php endif; ?>
         </div>
         <div class="player__meta">
-          <span class="lesson__num"><i class="bi bi-play-circle-fill"></i> Now playing · Lesson <span id="mainNum">1</span></span>
-          <h3 id="mainTitle"><?= e($first['title']) ?></h3>
-          <p id="mainDesc"><?= e($first['description'] ?? '') ?></p>
+          <span class="lesson__num"><i class="bi bi-play-circle-fill"></i> Now playing · Lesson <span id="mainNum"><?= $firstIndex !== null ? $firstIndex + 1 : '—' ?></span></span>
+          <h3 id="mainTitle"><?= e($first['title'] ?? 'Locked content') ?></h3>
+          <p id="mainDesc"><?= e($first['description'] ?? 'Purchase this course to watch its lessons.') ?></p>
         </div>
       </div>
 
       <!-- Playlist -->
       <div class="playlist__head"><p class="lesson__num" style="margin:0"><i class="bi bi-list-ol"></i> Lessons</p><span><?= count($lessons) ?> lesson<?= count($lessons) === 1 ? '' : 's' ?></span></div>
       <div class="lesson-list">
-        <?php foreach ($lessons as $i => $lesson): ?>
-          <button type="button" class="lrow<?= $i === 0 ? ' is-active' : '' ?>"
-                  data-video="<?= e($lesson['video'] ?? '') ?>"
+        <?php foreach ($lessons as $i => $lesson): $locked = $isLocked($lesson); $free = !empty($lesson['is_free']); ?>
+          <button type="button" class="lrow<?= $i === $firstIndex ? ' is-active' : '' ?><?= $locked ? ' lrow--locked' : '' ?>"<?= $locked ? ' disabled' : '' ?>
+                  data-video="<?= $locked ? '' : e($lesson['video'] ?? '') ?>"
                   data-title="<?= e($lesson['title']) ?>"
                   data-desc="<?= e($lesson['description'] ?? '') ?>"
                   data-num="<?= $i + 1 ?>">
             <span class="lrow__idx"><?= $i + 1 ?></span>
             <span class="lrow__text">
-              <strong><?= e($lesson['title']) ?></strong>
-              <small><?= e($lesson['description'] ?? '') ?></small>
+              <strong><?= e($lesson['title']) ?><?php if ($free): ?> <span class="lbadge lbadge--free">Free</span><?php elseif ($locked): ?> <span class="lbadge lbadge--paid">Paid</span><?php endif; ?></strong>
+              <small><?= $locked ? 'Buy the course to unlock this lesson.' : e($lesson['description'] ?? '') ?></small>
             </span>
-            <span class="lrow__now">Now playing</span>
-            <i class="bi bi-play-circle lrow__play"></i>
+            <?php if ($locked): ?>
+              <i class="bi bi-lock-fill lrow__play"></i>
+            <?php else: ?>
+              <span class="lrow__now">Now playing</span>
+              <i class="bi bi-play-circle lrow__play"></i>
+            <?php endif; ?>
           </button>
         <?php endforeach; ?>
       </div>
@@ -188,7 +204,7 @@ $tInit = strtoupper(substr((string) ($tName ?: 'T'), 0, 1));
       <div class="empty-block"><i class="bi bi-patch-question"></i>No quizzes have been added to this course yet.</div>
     <?php else: ?>
       <?php foreach ($lessons as $lesson): ?>
-        <?php if (empty($lesson['quizzes'])) {
+        <?php if (empty($lesson['quizzes']) || $isLocked($lesson)) {
             continue;
         } ?>
         <?php

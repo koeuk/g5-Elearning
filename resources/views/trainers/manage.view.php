@@ -114,20 +114,21 @@ $courseId = (int) ($course['course_id'] ?? 0);
                 </div>
                 <div class="table-responsive">
                     <table class="table align-middle">
-                        <thead><tr><th>Lesson</th><th>Content</th><th>Action</th></tr></thead>
+                        <thead><tr><th>Lesson</th><th>Question</th><th>Options</th><th>Action</th></tr></thead>
                         <tbody>
                         <?php if (empty($quizzes)) : ?>
-                            <tr><td colspan="3" class="text-muted">No quizzes yet.</td></tr>
+                            <tr><td colspan="4" class="text-muted">No questions yet.</td></tr>
                         <?php endif; ?>
                         <?php foreach ($quizzes as $q) : ?>
                             <tr>
                                 <td><?= e($q['lesson_title']) ?></td>
-                                <td><button class="btn btn-sm btn-link view-quiz" data-content="<?= e($q['content']) ?>"><i class="fas fa-list-alt text-orange fa-lg"></i></button></td>
-                                <td class="d-flex gap-2">
-                                    <button class="btn btn-sm btn-orange edit-quiz"
-                                            data-id="<?= (int) $q['quiz_id'] ?>"
-                                            data-lesson="<?= (int) $q['lesson_id'] ?>"
-                                            data-content="<?= e($q['content']) ?>"><i class="fas fa-edit"></i> Edit</button>
+                                <td><?= e($q['question']) ?></td>
+                                <td>
+                                    <?php foreach ($q['options'] as $oi => $opt) : ?>
+                                        <span class="badge <?= $oi === $q['answer'] ? 'bg-success' : 'bg-secondary' ?> me-1 mb-1"><?php if ($oi === $q['answer']) : ?><i class="fa fa-check me-1"></i><?php endif; ?><?= e($opt) ?></span>
+                                    <?php endforeach; ?>
+                                </td>
+                                <td>
                                     <button class="btn btn-sm btn-danger del-quiz" data-id="<?= (int) $q['quiz_id'] ?>"><i class="fas fa-trash"></i> Delete</button>
                                 </td>
                             </tr>
@@ -249,7 +250,7 @@ $courseField = '<input type="hidden" name="course" value="' . $courseId . '">';
 <!-- Add Quiz -->
 <div class="modal fade" id="addQuizModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog"><div class="modal-content">
     <form action="/trainer_manage" method="post">
-        <div class="modal-header"><h5 class="modal-title">Add Quiz</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-header"><h5 class="modal-title">Add Question</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
         <div class="modal-body">
             <input type="hidden" name="action" value="add_quiz"><?= $courseField ?>
             <div class="mb-3"><label class="form-label">Lesson</label>
@@ -260,9 +261,19 @@ $courseField = '<input type="hidden" name="course" value="' . $courseId . '">';
                     <?php endforeach; ?>
                 </select>
             </div>
-            <div class="mb-3"><label class="form-label">Quiz URL</label><input class="form-control" name="content" placeholder="https://…" required></div>
+            <div class="mb-3"><label class="form-label">Question</label>
+                <input class="form-control" name="question" placeholder="e.g. What does HTML stand for?" required></div>
+            <label class="form-label">Options <span class="text-muted small">(select the correct answer)</span></label>
+            <?php for ($i = 0; $i < 4; $i++) : ?>
+                <div class="input-group mb-2">
+                    <div class="input-group-text">
+                        <input class="form-check-input mt-0" type="radio" name="answer" value="<?= $i ?>" <?= $i === 0 ? 'checked' : '' ?> aria-label="Correct option <?= $i + 1 ?>">
+                    </div>
+                    <input type="text" class="form-control" name="options[]" placeholder="Option <?= $i + 1 ?><?= $i >= 2 ? ' (optional)' : '' ?>" <?= $i < 2 ? 'required' : '' ?>>
+                </div>
+            <?php endfor; ?>
         </div>
-        <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button class="btn btn-orange">Add quiz</button></div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button class="btn btn-orange">Add question</button></div>
     </form>
 </div></div></div>
 
