@@ -53,16 +53,32 @@ $tInit = strtoupper(substr((string) ($tName ?: 'T'), 0, 1));
     .cls-tab.is-active .n{background:rgba(0,0,0,.14);color:inherit}
     .cls-panel{display:none;animation:ui-fadeup .4s both}
     .cls-panel.is-active{display:block}
-    /* Lessons */
-    .lesson-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:1.5rem}
-    .lesson{background:var(--surface);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;transition:transform .3s,box-shadow .3s}
-    .lesson:hover{transform:translateY(-5px);box-shadow:0 22px 46px -22px rgba(0,0,0,.4)}
-    .lesson__media{position:relative;aspect-ratio:16/9;background:var(--surface-3)}
-    .lesson__media iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-    .lesson__body{padding:1.15rem 1.3rem 1.35rem}
+    /* Lessons — course player (stage on top, playlist below) */
     .lesson__num{display:inline-flex;align-items:center;gap:.4rem;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:.4rem}
-    .lesson h3{font-family:var(--serif);font-weight:600;font-size:1.2rem;margin:0 0 .35rem}
-    .lesson p{color:var(--muted);font-size:.9rem;margin:0;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+    .player{background:var(--surface);border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:1.8rem}
+    .player__stage{position:relative;aspect-ratio:16/9;background:#000}
+    .player__stage iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+    .player__meta{padding:1.25rem 1.5rem 1.5rem}
+    .player__meta h3{font-family:var(--serif);font-weight:600;font-size:1.5rem;margin:.15rem 0 .5rem;line-height:1.15}
+    .player__meta p{color:var(--muted);margin:0;max-width:70ch}
+    .playlist__head{display:flex;align-items:baseline;justify-content:space-between;margin:0 .2rem .8rem}
+    .playlist__head span{color:var(--faint);font-size:.85rem;font-weight:600}
+    .lesson-list{display:flex;flex-direction:column;gap:.6rem}
+    .lrow{display:flex;align-items:center;gap:1rem;width:100%;text-align:left;cursor:pointer;font-family:var(--sans);
+      background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:.8rem 1rem;color:var(--text);transition:.2s}
+    .lrow:hover{border-color:var(--line-2);transform:translateX(3px)}
+    .lrow.is-active{border-color:var(--accent);background:var(--bg-tint-1)}
+    .lrow__idx{width:42px;height:42px;border-radius:12px;flex:none;display:grid;place-items:center;font-weight:800;font-size:1.05rem;background:var(--surface-3);color:var(--accent)}
+    .lrow.is-active .lrow__idx{background:var(--accent);color:var(--accent-ink)}
+    .lrow__text{flex:1;min-width:0}
+    .lrow__text strong{display:block;font-family:var(--serif);font-weight:600;font-size:1.06rem;line-height:1.2;overflow-wrap:break-word}
+    .lrow__text small{display:block;color:var(--muted);font-size:.85rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .lrow__now{display:none;flex:none;font-size:.68rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);
+      background:var(--bg-tint-1);border:1px solid var(--accent);padding:.25rem .55rem;border-radius:99px}
+    .lrow__play{flex:none;font-size:1.5rem;color:var(--muted)}
+    .lrow:hover .lrow__play{color:var(--accent)}
+    .lrow.is-active .lrow__play{display:none}
+    .lrow.is-active .lrow__now{display:inline-block}
     /* Quiz upload + cards */
     .quiz-upload{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:1.6rem;box-shadow:var(--shadow);margin-bottom:2rem}
     .quiz-upload .row{display:flex;gap:.8rem;flex-wrap:wrap;align-items:flex-end}
@@ -105,20 +121,36 @@ $tInit = strtoupper(substr((string) ($tName ?: 'T'), 0, 1));
     <?php if (empty($lessons)): ?>
       <div class="empty-block"><i class="bi bi-collection-play"></i>No lessons have been added to this course yet — check back soon.</div>
     <?php else: ?>
-      <div class="lesson-grid">
+      <?php $first = $lessons[0]; ?>
+      <!-- Now-playing stage -->
+      <div class="player">
+        <div class="player__stage">
+          <iframe id="mainVideo" src="<?= e($first['video'] ?? '') ?>" title="<?= e($first['title']) ?>" allowfullscreen></iframe>
+        </div>
+        <div class="player__meta">
+          <span class="lesson__num"><i class="bi bi-play-circle-fill"></i> Now playing · Lesson <span id="mainNum">1</span></span>
+          <h3 id="mainTitle"><?= e($first['title']) ?></h3>
+          <p id="mainDesc"><?= e($first['description'] ?? '') ?></p>
+        </div>
+      </div>
+
+      <!-- Playlist -->
+      <div class="playlist__head"><p class="lesson__num" style="margin:0"><i class="bi bi-list-ol"></i> Lessons</p><span><?= count($lessons) ?> lesson<?= count($lessons) === 1 ? '' : 's' ?></span></div>
+      <div class="lesson-list">
         <?php foreach ($lessons as $i => $lesson): ?>
-          <article class="lesson" style="animation:ui-fadeup .5s <?= 0.05 * $i ?>s both">
-            <div class="lesson__media">
-              <?php if (!empty($lesson['video'])): ?>
-                <iframe src="<?= e($lesson['video']) ?>" title="<?= e($lesson['title']) ?>" allowfullscreen loading="lazy"></iframe>
-              <?php endif; ?>
-            </div>
-            <div class="lesson__body">
-              <span class="lesson__num"><i class="bi bi-bookmark-fill"></i> Lesson <?= $i + 1 ?></span>
-              <h3><?= e($lesson['title']) ?></h3>
-              <p><?= e($lesson['description'] ?? '') ?></p>
-            </div>
-          </article>
+          <button type="button" class="lrow<?= $i === 0 ? ' is-active' : '' ?>"
+                  data-video="<?= e($lesson['video'] ?? '') ?>"
+                  data-title="<?= e($lesson['title']) ?>"
+                  data-desc="<?= e($lesson['description'] ?? '') ?>"
+                  data-num="<?= $i + 1 ?>">
+            <span class="lrow__idx"><?= $i + 1 ?></span>
+            <span class="lrow__text">
+              <strong><?= e($lesson['title']) ?></strong>
+              <small><?= e($lesson['description'] ?? '') ?></small>
+            </span>
+            <span class="lrow__now">Now playing</span>
+            <i class="bi bi-play-circle lrow__play"></i>
+          </button>
         <?php endforeach; ?>
       </div>
     <?php endif; ?>
@@ -210,6 +242,26 @@ $tInit = strtoupper(substr((string) ($tName ?: 'T'), 0, 1));
       tabs.forEach(function(t){ t.addEventListener('click', function(){ activate(t.dataset.tab); }); });
       // Deep-link to the quizzes panel after an upload (form posts to #panel-quizzes).
       if (location.hash === '#panel-quizzes') activate('quizzes');
+    })();
+
+    // Course player: click a lesson row to load it into the stage above.
+    (function(){
+      var stage = document.getElementById('mainVideo');
+      if (!stage) return;
+      var rows = [].slice.call(document.querySelectorAll('.lesson-list .lrow'));
+      rows.forEach(function(row){
+        row.addEventListener('click', function(){
+          rows.forEach(function(r){ r.classList.remove('is-active'); });
+          row.classList.add('is-active');
+          var v = row.dataset.video || '';
+          if (v) { v += (v.indexOf('?') > -1 ? '&' : '?') + 'autoplay=1'; }
+          stage.src = v;
+          document.getElementById('mainTitle').textContent = row.dataset.title || '';
+          document.getElementById('mainDesc').textContent = row.dataset.desc || '';
+          document.getElementById('mainNum').textContent = row.dataset.num || '';
+          document.querySelector('.player').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
     })();
   </script>
 </body>
