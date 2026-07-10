@@ -1,6 +1,7 @@
 <?php
 /**
- * Authenticated student home — course grid.
+ * Student home — course-grid dashboard. Standalone page in the shared student
+ * design system (light/dark). Rebuilt from the legacy Eduport template.
  *
  * @var array $student    logged-in student (name, email, user_id, profile_image)
  * @var array $categories each with `course_count` and a `courses` list
@@ -8,7 +9,6 @@
  * @var array $topCourses most-purchased courses (title, image_courses, count)
  * @var int   $cartCount  number of items in the cart
  */
-
 use App\Core\View;
 
 $student    = $student ?? [];
@@ -17,543 +17,148 @@ $courses    = $courses ?? [];
 $topCourses = $topCourses ?? [];
 $cartCount  = $cartCount ?? 0;
 $email      = $student['email'] ?? '';
-
-echo View::partial('layouts/public/header');
 ?>
-<style>
-/* ============================================================
-   Student home — UI polish (scoped to this page's sections).
-   Warm, modern education aesthetic built on the app's orange.
-   ============================================================ */
-#categories_blog, #courses, #best {
-  --brand: #F28500;
-  --brand-2: #ff9e2c;
-  --brand-soft: rgba(242, 133, 0, .10);
-  --ink: #17171f;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home — E‑Learning</title>
+  <script>(function(){try{var s=localStorage.getItem('eLearnTheme');document.documentElement.setAttribute('data-theme',s||((window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light'));}catch(e){document.documentElement.setAttribute('data-theme','light');}})();</script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,400;9..144,0,600;9..144,1,500;9..144,1,600&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="assets/student-ui.css" rel="stylesheet">
+  <style>.d-none-sm{display:inline}@media(max-width:520px){.d-none-sm{display:none}}</style>
+</head>
+<body class="ui-scope">
+  <?= View::partial('layouts/student/topbar', ['student' => $student, 'cartCount' => $cartCount, 'active' => 'home']) ?>
 
-/* Section headings ("Featured Courses", "Top Courses") */
-#courses > .container > .row h2,
-#best > .container > .row h2 {
-  position: relative;
-  display: inline-block;
-  font-weight: 800;
-  letter-spacing: -.02em;
-}
-#courses > .container > .row h2::after,
-#best > .container > .row h2::after {
-  content: "";
-  position: absolute; left: 50%; bottom: -10px; transform: translateX(-50%);
-  width: 64px; height: 4px; border-radius: 99px;
-  background: linear-gradient(90deg, var(--brand), var(--brand-2));
-}
+  <!-- Hero -->
+  <section class="page hero-home">
+    <p class="k">Welcome back<?= $student ? ', ' . e($student['name'] ?? '') : '' ?></p>
+    <h1>Learn something <em>new</em> today.</h1>
+    <p>Explore hand‑picked courses, track what you own, and pick up right where you left off.</p>
+    <div class="hero-home__cta">
+      <a href="#courses" class="ui-btn ui-btn--primary"><i class="bi bi-collection-play"></i> Browse courses</a>
+      <a href="/orders" class="ui-btn ui-btn--ghost"><i class="bi bi-bag-heart"></i> View cart<?= (int) $cartCount > 0 ? ' (' . (int) $cartCount . ')' : '' ?></a>
+    </div>
+  </section>
 
-/* ---- Category cards ---- */
-#categories_blog .card {
-  border: 1px solid rgba(15, 15, 25, .06);
-  border-radius: 18px !important;
-  background: #fff;
-  overflow: hidden; position: relative;
-  transition: transform .4s cubic-bezier(.2, .7, .2, 1), box-shadow .4s ease, border-color .4s ease;
-  animation: eduRise .6s both;
-}
-#categories_blog [class*="col-"]:nth-child(1) .card { animation-delay: .04s; }
-#categories_blog [class*="col-"]:nth-child(2) .card { animation-delay: .11s; }
-#categories_blog [class*="col-"]:nth-child(3) .card { animation-delay: .18s; }
-#categories_blog [class*="col-"]:nth-child(4) .card { animation-delay: .25s; }
-#categories_blog .card::before {
-  content: ""; position: absolute; inset: 0 auto 0 0; width: 4px;
-  background: linear-gradient(var(--brand), var(--brand-2));
-  transform: scaleY(0); transform-origin: bottom; transition: transform .4s ease;
-}
-#categories_blog .card:hover {
-  transform: translateY(-6px);
-  border-color: rgba(242, 133, 0, .35);
-  box-shadow: 0 20px 44px -16px rgba(242, 133, 0, .4);
-}
-#categories_blog .card:hover::before { transform: scaleY(1); }
-#categories_blog .card img {
-  transition: transform .45s ease, box-shadow .45s ease;
-  box-shadow: 0 0 0 4px var(--brand-soft);
-}
-#categories_blog .card:hover img { transform: scale(1.08) rotate(-3deg); }
-#categories_blog .card h5 a { font-weight: 700; color: var(--ink); letter-spacing: -.01em; }
-#categories_blog .card:hover h5 a { color: var(--brand); }
-#categories_blog .card span {
-  display: inline-block; margin-top: 6px;
-  font-size: .72rem; font-weight: 700; letter-spacing: .02em;
-  color: var(--brand); background: var(--brand-soft);
-  padding: 3px 11px; border-radius: 99px;
-}
-#categories_blog form { width: 100%; text-align: left; }
-
-/* ---- Featured course cards ---- */
-#courses .card {
-  border: none !important;
-  border-radius: 20px !important;
-  overflow: hidden;
-  box-shadow: 0 8px 26px -14px rgba(15, 15, 25, .22);
-  transition: transform .45s cubic-bezier(.2, .7, .2, 1), box-shadow .45s ease;
-  animation: eduRise .6s both;
-}
-#courses [class*="col-"]:nth-child(4n+1) .card { animation-delay: .04s; }
-#courses [class*="col-"]:nth-child(4n+2) .card { animation-delay: .11s; }
-#courses [class*="col-"]:nth-child(4n+3) .card { animation-delay: .18s; }
-#courses [class*="col-"]:nth-child(4n+4) .card { animation-delay: .25s; }
-#courses .card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 30px 56px -22px rgba(15, 15, 25, .4);
-}
-#courses .rounded-top { border-radius: 16px; overflow: hidden; position: relative; }
-#courses .rounded-top::after {
-  content: ""; position: absolute; inset: 0;
-  background: linear-gradient(180deg, transparent 55%, rgba(15, 15, 25, .28));
-  opacity: 0; transition: opacity .4s ease; pointer-events: none;
-}
-#courses .card:hover .rounded-top::after { opacity: 1; }
-#courses .card-img-top {
-  width: 100%; aspect-ratio: 16 / 10; object-fit: cover;
-  transition: transform .6s cubic-bezier(.2, .7, .2, 1);
-}
-#courses .card:hover .card-img-top { transform: scale(1.08); }
-#courses .avatar-img { box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--brand-soft); }
-#courses .card-title a { font-weight: 700; color: var(--ink); letter-spacing: -.01em; }
-#courses .card-title a:hover { color: var(--brand); }
-#courses .text-success { color: var(--brand) !important; font-weight: 800; font-size: 1.05rem; }
-#courses .badge.bg-info {
-  background: var(--brand-soft) !important; color: var(--brand) !important;
-  font-weight: 600; border-radius: 99px;
-}
-#courses .btn-primary {
-  background: linear-gradient(135deg, var(--brand), var(--brand-2)); border: none;
-  border-radius: 99px; font-weight: 600; box-shadow: 0 8px 18px -8px rgba(242, 133, 0, .6);
-  transition: transform .25s ease, filter .25s ease;
-}
-#courses .btn-primary:hover { filter: brightness(1.05); transform: translateY(-1px); }
-#courses .card-element-hover .icon-md {
-  backdrop-filter: blur(4px);
-  box-shadow: 0 6px 16px -6px rgba(0, 0, 0, .4);
-  transition: transform .3s ease;
-}
-#courses .card:hover .card-element-hover .icon-md { transform: scale(1.1); }
-
-@keyframes eduRise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
-@media (prefers-reduced-motion: reduce) {
-  #categories_blog .card, #courses .card { animation: none; }
-}
-</style>
-<!-- Header START -->
-<header class="navbar-light navbar-sticky navbar-transparent">
-  <!-- Logo Nav START -->
-  <nav class="navbar navbar-expand-xl">
-    <div class="container">
-      <!-- Logo START -->
-      <a class="navbar-brand" href="#">
-        <img class="light-mode-item navbar-brand-item" src="assets/images/logo.svg" alt="logo">
-        <img class="dark-mode-item navbar-brand-item" src="assets/images/logo-light.svg" alt="logo">
-      </a>
-      <!-- Logo END -->
-
-      <!-- Responsive navbar toggler -->
-      <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
-        aria-controls="navbarCollapse" aria-expanded="true" aria-label="Toggle navigation">
-        <span class="me-2"><i class="fas fa-search fs-5"></i></span>
-      </button>
-
-      <!-- Category menu START -->
-      <ul class="navbar-nav navbar-nav-scroll dropdown-clickable">
-        <li class="nav-item dropdown dropdown-menu-shadow-stacked">
-          <a class="nav-link" href="#" id="categoryMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="bi bi-grid-3x3-gap-fill me-3 fs-5 me-xl-1 d-xl-none"></i>
-            <i class="bi bi-grid-3x3-gap-fill me-1 d-none d-xl-inline-block"></i>
-            <span class="d-none d-xl-inline-block">Category</span>
-          </a>
-
-          <ul class="dropdown-menu z-index-unset" aria-labelledby="categoryMenu">
-            <?php foreach ($categories as $category): ?>
-            <!-- Dropdown submenu -->
-            <li class="dropdown-submenu dropend">
-              <form action="/course" method='post'>
-                <input type="text" name='id' value='<?= e($category['category_id']) ?>' hidden>
-                <input type="text" name='email' value='<?= e($email) ?>' hidden>
-                <button class='btn bd-0'><img class="rounded-circle me-lg-2" src="uploading/<?= e($category['image']) ?>" alt="" style="width: 30px; height: 30px;"><?= e($category['title']) ?></button>
-              </form>
-              <ul class="dropdown-menu dropdown-menu-start" data-bs-popper="none">
-                <?php foreach ($category['courses'] as $subCourse): ?>
-                <li><a class="dropdown-item" href="#"><?= e($subCourse['title']) ?></a></li>
-                <?php endforeach ?>
-              </ul>
-            </li>
-            <?php endforeach ?>
-            <li><a class="dropdown-item bg-primary text-primary bg-opacity-10 rounded-2 mb-0" href="#categories_blog">View all categories</a></li>
-          </ul>
-        </li>
-      </ul>
-      <!-- Category menu END -->
-      <div class="navbar-nav position-relative overflow-visible me-3">
-        <form action="/orders" method='post'>
-          <input type="text" name='email' value='<?= e($email) ?>' hidden>
-          <button type='submit' class='btn border-0' style='margin-top: 8px;'><i class="fas fa-shopping-cart fs-5"></i></button>
-          <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-success mt-xl-2 ms-n1"<?php if ($cartCount === 0) { echo 'hidden'; } ?>><?= e($cartCount) ?></span>
+  <!-- Categories -->
+  <?php if (!empty($categories)): ?>
+  <section class="page section" id="categories">
+    <div class="section__head"><p class="k">Explore</p><h2>Browse by category</h2></div>
+    <div class="cat-grid">
+      <?php foreach ($categories as $cate): ?>
+        <form action="/course" method="post" style="display:block">
+          <input type="hidden" name="id" value="<?= (int) $cate['category_id'] ?>">
+          <input type="hidden" name="email" value="<?= e($email) ?>">
+          <button type="submit" class="cat-card">
+            <img src="uploading/<?= e($cate['image'] ?? '') ?>" alt="" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'cat-card__ph',innerHTML:'<i class=&quot;bi bi-folder2-open&quot;></i>'}))">
+            <span class="cat-card__t">
+              <h5><?= e($cate['title']) ?></h5>
+              <span><?= (int) ($cate['course_count'] ?? 0) ?> course<?= (int) ($cate['course_count'] ?? 0) === 1 ? '' : 's' ?></span>
+            </span>
+          </button>
         </form>
-      </div>
+      <?php endforeach; ?>
+    </div>
+  </section>
+  <?php endif; ?>
 
-      <!-- Main navbar START -->
-      <div class="navbar-collapse collapse" id="navbarCollapse">
-        <!-- Nav Search START -->
-        <div class="col-xl-8">
-          <div class="nav my-3 my-xl-0 px-4 flex-nowrap align-items-center">
+  <!-- Featured courses -->
+  <section class="page section" id="courses">
+    <div class="section__head"><p class="k">Featured</p><h2>Courses for you</h2><p>Top picks across every category.</p></div>
+    <?php if (empty($courses)): ?>
+      <div class="empty-block"><i class="bi bi-collection"></i>No courses available yet — check back soon.</div>
+    <?php else: ?>
+      <div class="course-grid">
+        <?php foreach ($courses as $i => $course): $isPaid = !empty($course['paid']); $inCart = !empty($course['in_cart']); ?>
+          <article class="crs" style="animation:ui-fadeup .5s <?= 0.04 * $i ?>s both">
+            <div class="crs__media">
+              <img src="uploading/<?= e($course['image_courses']) ?>" alt="" onerror="this.style.display='none'">
+              <?php if ($isPaid): ?>
+                <span class="crs__owned"><i class="bi bi-check-circle-fill"></i> Owned</span>
+              <?php elseif ($inCart): ?>
+                <span class="crs__owned" style="background:var(--accent);color:var(--accent-ink)"><i class="bi bi-bag-check-fill"></i> In cart</span>
+              <?php else: ?>
+                <form action="/student" method="post">
+                  <input type="hidden" name="course_id" value="<?= (int) $course['course_id'] ?>">
+                  <input type="hidden" name="email" value="<?= e($email) ?>">
+                  <button type="submit" class="crs__cart" title="Add to cart" aria-label="Add to cart"><i class="bi bi-cart-plus"></i></button>
+                </form>
+              <?php endif; ?>
+            </div>
+            <div class="crs__body">
+              <h3 class="crs__title"><?= e($course['title']) ?></h3>
+              <div class="crs__meta">
+                <img class="crs__ava" src="uploading/<?= e($course['trainer_image'] ?? '') ?>" alt="" onerror="this.style.visibility='hidden'">
+                <span><?= e($course['trainer_name'] ?? 'Trainer') ?></span>
+              </div>
+              <div class="crs__foot">
+                <span class="crs__enroll"><span class="ic"><i class="bi bi-people-fill"></i></span><?= (int) ($course['enrolled'] ?? 0) ?></span>
+                <?php if ($isPaid): ?>
+                  <form action="/blog_learning" method="post">
+                    <input type="hidden" name="email" value="<?= e($email) ?>">
+                    <input type="hidden" name="course_id" value="<?= (int) $course['course_id'] ?>">
+                    <button type="submit" class="crs__join"><i class="bi bi-play-fill"></i> Start</button>
+                  </form>
+                <?php else: ?>
+                  <span class="crs__price"><?= e($course['price']) ?></span>
+                <?php endif; ?>
+              </div>
+            </div>
+          </article>
+        <?php endforeach; ?>
+      </div>
+    <?php endif; ?>
+  </section>
+
+  <!-- CTA -->
+  <section class="page">
+    <div class="cta-strip">
+      <div>
+        <h3>Earn a certificate</h3>
+        <p>Finish a course and get a shareable certificate to show what you’ve learned.</p>
+      </div>
+      <a href="#courses" class="ui-btn ui-btn--primary"><i class="bi bi-award"></i> Start learning</a>
+    </div>
+  </section>
+
+  <!-- Top courses -->
+  <?php if (!empty($topCourses)): ?>
+  <section class="page section" id="best">
+    <div class="section__head"><p class="k">Most popular</p><h2>Top courses this week</h2></div>
+    <div class="top-grid">
+      <?php foreach ($topCourses as $top): ?>
+        <div class="top-tile">
+          <img src="uploading/<?= e($top['image_courses']) ?>" alt="" onerror="this.style.opacity=.15">
+          <div class="top-tile__grad"></div>
+          <div class="top-tile__c">
+            <h5><?= e($top['title']) ?></h5>
+            <span><i class="bi bi-people"></i> <?= (int) $top['count'] ?> students</span>
           </div>
         </div>
-        <!-- Nav Search END -->
-      </div>
-      <!-- Main navbar END -->
+      <?php endforeach; ?>
+    </div>
+  </section>
+  <?php endif; ?>
 
-      <!-- Right header content START -->
-      <div class="nav-item dropdown ">
-        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-        <?php $studentAvatar = trim((string) ($student['profile_image'] ?? '')) !== ''
-            ? 'uploading/' . $student['profile_image']
-            : 'assets/images/avatar/01.jpg'; ?>
-        <img class="rounded-circle me-lg-2" src="<?= e($studentAvatar) ?>" alt="" style="width: 50px; height:50px;">
-        <span class="d-none d-lg-inline-flex"><?= e($student['name'] ?? '') ?></span>
-        </a>
-        <div class="dropdown-menu dropdown-menu-end border-0 rounded-0 rounded-bottom m-0">
-          <form action="/student_profile" method="post">
-            <input type="hidden" name="id" value="<?= e($student['user_id'] ?? '') ?>">
-            <button type="submit" class="btn btn-primary py-1 w-100 mb-4"> View Profile</button>
-          </form>
-          <div class='d-flex justify-content-center'>
-            <a href="/logout"><button class="btn btn-danger-soft mb-0"><i class="fas fa-sign-in-alt me-2"></i>Log Out</button></a>
-          </div>
-        </div>
+  <!-- Footer -->
+  <footer class="foot">
+    <div class="foot__wrap">
+      <span>© <?= date('Y') ?> E‑Learning — grow your skills.</span>
+      <div class="foot__soc">
+        <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+        <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+        <a href="#" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
+        <a href="#" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
       </div>
     </div>
-  </nav>
-  <!-- Logo Nav END -->
-  </header>
-<!-- Header END -->
+  </footer>
 
-<?= View::partial('layouts/partials/flash') ?>
-
-<!-- **************** MAIN CONTENT START **************** -->
-<main>
-<!-- =======================
-Main Banner START -->
-<section class="bg-light">
-	<div class="container pt-5 mt-0 mt-lg-5">
-		<!-- Title and SVG START -->
-		<div class="row position-relative mb-0 mb-sm-5 pb-0 pb-lg-5">
-			<div class="col-lg-8 text-center mx-auto position-relative">
-				<!-- SVG decoration -->
-				<figure class="position-absolute top-100 start-100 translate-middle ms-5 d-none d-lg-block">
-					<svg width="21.5px" height="21.5px" viewBox="0 0 21.5 21.5">
-						<polygon class="fill-danger" points="21.5,14.3 14.4,9.9 18.9,2.8 14.3,0 9.9,7.1 2.8,2.6 0,7.2 7.1,11.6 2.6,18.7 7.2,21.5 11.6,14.4 18.7,18.9 "></polygon>
-					</svg>
-				</figure>
-				<!-- SVG decoration -->
-				<figure class="position-absolute top-0 start-100 translate-middle d-none d-md-block">
-					<svg width="27px" height="27px" ml-5>
-						<path class="fill-purple" d="M13.122,5.946 L17.679,-0.001 L17.404,7.528 L24.661,5.946 L19.683,11.533 L26.244,15.056 L18.891,16.089 L21.686,23.068 L15.400,19.062 L13.122,26.232 L10.843,19.062 L4.557,23.068 L7.352,16.089 L-0.000,15.056 L6.561,11.533 L1.582,5.946 L8.839,7.528 L8.565,-0.001 L13.122,5.946 Z"></path>
-					</svg>
-				</figure>
-
-				<!-- Title -->
-				<h1>Education empowers individuals with knowledge and skills</h1>
-				<p>enabling them to unlock their full potential, pursue meaningful careers, and contribute positively to society's growth and development. </p>
-			</div>
-		</div>
-		<!-- Title and SVG END -->
-	</div>
-</section>
-<!-- =======================
-Main Banner END -->
-
-<!-- =======================
-Video START -->
-<section class="pb-0 py-sm-0 mt-n8">
-	<div class="container">
-		<div class="row">
-			<div class="col-md-8 text-center mx-auto">
-				<div class="card card-body shadow p-2">
-					<div class="position-relative">
-						<!-- Image -->
-						<img src="assets/images/about/12.jpg" class="card-img rounded-2" alt="...">
-						<div class="card-img-overlay">
-							<!-- Video link -->
-							<div class="position-absolute top-50 start-50 translate-middle">
-								<a href="https://www.youtube.com/embed/tXHviS-4ygo" class="btn btn-lg text-danger btn-round btn-white-shadow mb-0" data-glightbox="" data-gallery="video-tour">
-									<i class="fas fa-play"></i>
-								</a>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</section>
-<!-- =======================
-Video END -->
-
-<!-- =======================
-Category START -->
-<section id='categories_blog' style="background-color: rgba(0, 0, 0,0.05);">
-	<div class="container">
-		<div class="row mb-4">
-			<div class="col-lg-8 text-center mx-auto">
-				<p class="mb-0">All the Categories </p>
-			</div>
-		</div>
-		<div class="row g-4">
-		<?php foreach ($categories as $cate): ?>
-			<!-- Category item -->
-			<div class="col-sm-6 col-lg-4 col-xl-3">
-				<div class="card card-body shadow rounded-3">
-					<div class="d-flex align-items-center">
-						<img class="rounded-circle me-lg-2" src="uploading/<?= e($cate['image']) ?>" alt="" style="width: 70px; height: 70px;">
-						<div class="ms-3" style="min-width: 0;">
-							<form action="/course" method="post">
-								<button type='submit' class="btn btn-outline-none text-start p-0 w-100">
-									<input type="text" name='email' value='<?= e($email) ?>' hidden>
-									<input type="text" name='id' value='<?= e($cate['category_id']) ?>' hidden>
-									<h5 class="mb-0 text-break" style="white-space: normal;"><a class="stretched-link"><?= e($cate['title']) ?></a></h5>
-									<span><?= e($cate['course_count']) ?> Courses</span>
-								</button>
-							</form>
-						</div>
-					</div>
-				</div>
-			</div>
-			<?php endforeach ?>
-			<!-- Category item -->
-		</div>
-	</div>
-</section>
-<!-- =======================
-Category END -->
-
-<!-- =======================
-Featured course START -->
-<section id='courses' class="pt-0 pt-md-5" style="background-color: rgba(0, 0, 0,0.05);">
-	<div class="container">
-		<!-- Title -->
-		<div class="row mb-4">
-			<div class="col-lg-8 text-center mx-auto">
-				<h2 class="fs-1 mb-0">Featured Courses</h2>
-				<p class="mb-0 text-orange">Explore top picks of the week </p>
-			</div>
-		</div>
-
-		<div class="row g-4">
-			<?php foreach ($courses as $course): ?>
-			<!-- Card Item START -->
-			<div class="col-md-6 col-lg-4 col-xxl-3">
-				<div class="card p-2 shadow h-100">
-					<div class="rounded-top overflow-hidden">
-						<div class="card-overlay-hover">
-							<!-- Image -->
-							<img src="../uploading/<?= e($course['image_courses']) ?>" class="card-img-top" alt="course image">
-						</div>
-						<!-- Hover element -->
-						<div class="card-img-overlay">
-							<div class="card-element-hover d-flex justify-content-end">
-								<button class="icon-md bg-white rounded-circle border border-orange text-orange show-popup" data-user='<?= e($email) ?>' data-course='<?= e($course['course_id']) ?>' data-title="<?= e($course['title']) ?>" data-price="<?= e($course['price']) ?>" data-imgs='<?= e($course['image_courses']) ?>' <?php if ($course['paid'] || $course['in_cart']) { echo 'hidden'; } ?>><i class="fas fa-shopping-cart text-danger"></i></button>
-							</div>
-						</div>
-					</div>
-					<!-- Card body -->
-					<div class="card-body px-2">
-						<!-- Badge and icon -->
-						<div class="d-flex justify-content-between">
-							<!-- Rating and info -->
-							<ul class="list-inline hstack gap-2 mb-0">
-								<!-- Info -->
-								<li class="list-inline-item d-flex justify-content-center align-items-center">
-									<div class="icon-md bg-orange bg-opacity-10 text-orange rounded-circle"><i class="fas fa-user-graduate"></i></div>
-									<span class="h6 fw-light mb-0 ms-2"><?= e($course['enrolled']) ?></span>
-								</li>
-							</ul>
-							<!-- Avatar -->
-							<div class="avatar avatar-sm">
-								<img class="avatar-img rounded-circle" src="uploading/<?= e($course['trainer_image']) ?>" alt="avatar"></div>
-						</div>
-						<!-- Divider -->
-						<hr>
-						<!-- Title -->
-						<h6 class="card-title"><a href="#"><?= e($course['title']) ?></a></h6>
-						<!-- Badge and Price -->
-						<div class="d-flex justify-content-between align-items-center mb-0">
-							<div><a href="#" class="badge bg-info bg-opacity-10 text-info me-2"> <i class="fas fa-circle small fw-bold"></i>Trainer: <?= e($course['trainer_name']) ?> </a></div>
-							<!-- Price -->
-							<h5 class="text-success mb-0" <?php if ($course['paid']) { echo 'hidden'; } ?>><?= e($course['price']) ?></h5>
-							<form action="/blog_learning" method='post' <?php if (!$course['paid']) { echo 'hidden'; } ?>>
-								<input type="text" value='<?= e($email) ?>' name='email' hidden>
-								<input type="text" value='<?= e($course['course_id']) ?>' name='course_id' hidden>
-								<input type="text" value='' name='home' hidden>
-								<button type="submit" class="btn btn-primary">Join course</button>
-							</form>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- Card Item END -->
-			<?php endforeach ?>
-
-		</div>
-		<!-- Button -->
-		<div class="text-center mt-5">
-			<a href="#" class="btn btn-primary-soft">View more<i class="fas fa-sync ms-2"></i></a>
-		</div>
-	</div>
-</section>
-<!-- =======================
-Featured course END -->
-
-<!-- =======================
-Action box START -->
-<section class="py-0">
-	<div class="container">
-		<div class="row g-4">
-			<!-- Action box item -->
-			<div class="col-lg-6 position-relative overflow-hidden">
-				<div class="bg-primary bg-opacity-10 rounded-3 p-5 h-100">
-					<!-- Image -->
-					<div class="position-absolute bottom-0 end-0 me-3">
-						<img src="assets/images/element/08.svg" class="h-100px h-sm-200px" alt="">
-					</div>
-					<!-- Content -->
-					<div class="row">
-						<div class="col-sm-8 position-relative">
-							<h3 class="mb-1">Earn a Certificate</h3>
-							<p class="mb-3 h5 fw-light lead">Get the right professional certificate program for you.</p>
-							<a href="#courses" class="btn btn-primary mb-0">View Programs</a>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<!-- Action box item -->
-			<div class="col-lg-6 position-relative overflow-hidden">
-				<div class="bg-secondary rounded-3 bg-opacity-10 p-5 h-100">
-					<!-- Image -->
-					<div class="position-absolute bottom-0 end-0 me-3">
-						<img src="assets/images/element/15.svg" class="h-100px h-sm-200px" alt="">
-					</div>
-					<!-- Content -->
-					<div class="row">
-						<div class="col-sm-8 position-relative">
-							<h3 class="mb-1">Best Rated Courses</h3>
-							<p class="mb-3 h5 fw-light lead">Enroll now in the most popular and best rated courses.</p>
-							<a href="#best" class="btn btn-warning mb-0">View Courses</a>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</section>
-<!-- =======================
-Action box END -->
-
-<!-- =======================
-IT courses START -->
-<section id='best' style="background-color: rgba(0, 0, 0,0.1);">
-	<div class="container">
-		<!-- Title -->
-		<div class="row mb-4">
-			<div class="col-lg-8 text-center mx-auto">
-				<h2 class="fs-1">Top Courses</h2>
-				<p class="mb-0">Information Technology Courses to expand your skills and boost your career & salary</p>
-			</div>
-		</div>
-
-		<div class="row g-4">
-			<?php foreach ($topCourses as $top): ?>
-			<!-- Course item -->
-			<div class="col-sm-6 col-lg-4 col-xl-3">
-				<!-- Image -->
-				<div class="card card-metro overflow-hidden rounded-3">
-					<img src="uploading/<?= e($top['image_courses']) ?>" alt="">
-					<!-- Image overlay -->
-					<div class="card-img-overlay d-flex">
-						<!-- Info -->
-						<div class="mt-auto card-text">
-							<a href="#courses" class="text-white mt-auto h5 stretched-link"><?= e($top['title']) ?></a>
-							<div class="text-white"><?= e($top['count']) ?> students</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<?php endforeach ?>
-		</div>
-	</div>
-</section>
-<!-- =======================
-IT courses END -->
-
-<!-- =======================
-Live courses START -->
-<section class="bg-light position-relative">
-	<!-- SVG decoration -->
-	<figure class="position-absolute top-50 start-0 translate-middle-y ms-5 d-none d-xxl-block">
-		<svg width="29px" height="29px">
-			<path class="fill-orange" d="M29.004,14.502 C29.004,22.512 22.511,29.004 14.502,29.004 C6.492,29.004 -0.001,22.512 -0.001,14.502 C-0.001,6.492 6.492,-0.001 14.502,-0.001 C22.511,-0.001 29.004,6.492 29.004,14.502 Z"></path>
-			</svg>
-	</figure>
-
-	<!-- SVG decoration -->
-	<figure class="position-absolute bottom-0 start-50 translate-middle-x">
-		<svg width="23px" height="23px">
-		<path class="fill-primary" d="M23.003,11.501 C23.003,17.854 17.853,23.003 11.501,23.003 C5.149,23.003 -0.001,17.854 -0.001,11.501 C-0.001,5.149 5.149,-0.000 11.501,-0.000 C17.853,-0.000 23.003,5.149 23.003,11.501 Z"></path>
-		</svg>
-	</figure>
-
-	<!-- SVG decoration -->
-	<figure class="position-absolute top-50 end-0 translate-middle-y ms-5">
-		<svg width="22px" height="22px">
-			<path class="fill-warning" d="M22.003,11.001 C22.003,17.078 17.077,22.003 11.001,22.003 C4.925,22.003 -0.001,17.078 -0.001,11.001 C-0.001,4.925 4.925,-0.000 11.001,-0.000 C17.077,-0.000 22.003,4.925 22.003,11.001 Z"></path>
-		</svg>
-	</figure>
-</section>
-<!-- =======================
-Live courses END -->
-
-</main>
-<!-- **************** MAIN CONTENT END **************** -->
-
-<!-- Bootstrap JavaScript (optional, only needed for certain features like modals) -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-<!-- Payment modal -->
-<?= e(View::render('students/payments/payment', ['email' => $email])) ?>
-
-<script>
-$(document).ready(function() {
-  $('.show-popup').click(function() {
-    var title = $(this).data('title');
-    var price = $(this).data('price');
-    var user = $(this).data('user');
-    var course = $(this).data('course');
-    var imgs = $(this).data('imgs');
-
-    $('#modalTitle').text(title);
-    $('#modalPrice').text(price);
-    $('#modalUser').val(user);
-    $('#modalCourse').val(course);
-	$('#imgs').attr('src','uploading/'+imgs);
-    $('#popupModal').modal('show');
-    $('#paymentModal').modal('show');
-  });
-});
-
-$(document).ready(function() {
-  $('.ssuccss-popup').click(function() {
-    $('#confirmationModal').modal('show');
-  });
-});
-</script>
-
-<?= View::partial('layouts/public/footer') ?>
+  <script src="assets/theme.js"></script>
+</body>
+</html>

@@ -70,7 +70,7 @@ echo View::partial('layouts/public/header');
 								<!-- Title + price -->
 								<div class="d-flex justify-content-between align-items-start gap-2 mb-2">
 									<div class="min-w-0">
-										<h5 class="card-title mb-1 lh-sm"><a href="/trainer-classroom" class="text-dark text-decoration-none"><?= e($course['title']) ?></a></h5>
+										<h5 class="card-title mb-1 lh-sm text-dark"><?= e($course['title']) ?></h5>
 										<p class="small text-muted mb-0"><i class="fas fa-chalkboard-teacher text-orange me-1"></i>Professor at Sigma College</p>
 									</div>
 									<h5 class="text-orange fw-bold mb-0 flex-shrink-0" <?php if ($course['paid']) { echo 'hidden'; } ?>>$<?= e($course['price']) ?></h5>

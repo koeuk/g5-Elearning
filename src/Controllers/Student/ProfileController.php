@@ -46,14 +46,21 @@ final class ProfileController extends Controller
             ? (string) ($current['profile_image'] ?? 'non.webp')
             : $this->uploadImage();
 
-        User::update(
-            $id,
-            $this->input('name'),
-            $this->input('email'),
-            $this->input('phone'),
-            (string) ($current['gender'] ?? 'Male'),
-            $image
-        );
+        // Fall back to the existing values when a field is left blank, so an
+        // empty submit can't wipe the name/email/phone.
+        $name  = $this->input('name')  ?: (string) ($current['name'] ?? '');
+        $phone = $this->input('phone') ?: (string) ($current['phone'] ?? '');
+        $email = $this->input('email') ?: (string) ($current['email'] ?? '');
+
+        // Guard the users.email UNIQUE constraint: if the new email already
+        // belongs to a different account, keep the current one instead of
+        // letting the UPDATE throw a duplicate-key error.
+        $owner = User::findByEmail($email);
+        if (!empty($owner) && (int) $owner['user_id'] !== $id) {
+            $email = (string) ($current['email'] ?? '');
+        }
+
+        User::update($id, $name, $email, $phone, (string) ($current['gender'] ?? 'Male'), $image);
 
         // Keep the session copy in sync when a student edits their own profile.
         if (!$isAdmin) {
