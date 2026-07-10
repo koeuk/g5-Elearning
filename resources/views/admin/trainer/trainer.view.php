@@ -59,7 +59,7 @@
                 <th scope="col">Phone</th>
                 <th scope="col">Gender</th>
                 <th scope="col">Profile</th>
-                <th scope="col">Operations</th>
+                <th scope="col" class="text-end">Operations</th>
             </tr>
         </thead>
 
@@ -79,7 +79,7 @@
                     <td>
                         <img src="<?= e(uploadedImage((string) $trainer['profile_image'])) ?>" class="avatar">
                     </td>
-                    <td>
+                    <td class="text-end">
                         <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#trainerDetail<?= $trainer['user_id'] ?>"><i class="fas fa-eye"></i> Detail</button>
                         <button type="button" class="btn btn-sm btn-info text-white" data-bs-toggle="modal" data-bs-target="#editTrainer<?= $trainer['user_id'] ?>"><i class="fas fa-edit"></i> Edit</button>
                         <form id="delete-form-<?= $trainer['user_id'] ?>" action="/delete_trainer" method="post" style="display: inline;">

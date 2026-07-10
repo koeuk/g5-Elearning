@@ -88,7 +88,7 @@
                 <th scope="col">Phone</th>
                 <th scope="col">Gender</th>
                 <th scope="col">Profile</th>
-                <th scope="col">Action</th>
+                <th scope="col" class="text-end">Action</th>
             </tr>
         </thead>
 
@@ -107,7 +107,7 @@
                     <td>
                         <img src="<?= e(uploadedImage((string) $student['profile_image'])) ?>" class="avatar">
                     </td>
-                    <td class='d-flex gap-2'>
+                    <td class='d-flex gap-2 justify-content-end'>
                         <button type="button" class="d-flex justify-content-center align-items-center gap-1 btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#deleteDetail<?= $student['user_id'] ?>"><i class="fas fa-eye"></i> Detail</button>
                         <a class="d-flex justify-content-center align-items-center gap-1 btn btn-info btn-sm text-white" href="" data-bs-toggle="modal" data-bs-target="#editStudent<?= $student['user_id'] ?>"><i class="fas fa-edit"></i> Edit</a>
                         <a class="d-flex justify-content-center align-items-center gap-1 btn btn-primary btn-sm" href="" data-bs-toggle="modal" data-bs-target="#deleteStudent<?= $student['user_id'] ?>"><i class="fas fa-trash"></i> Delete</a>

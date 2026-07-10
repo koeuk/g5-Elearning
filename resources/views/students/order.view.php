@@ -193,7 +193,7 @@
       border-radius:10px;background:transparent;color:var(--muted);font-family:var(--sans);font-weight:700;
       font-size:.92rem;cursor:pointer;transition:.22s}
     .seg button i{font-size:1.05rem}
-    .seg button.is-active{background:var(--text);color:#14161d}
+    .seg button.is-active{background:var(--text);color:var(--surface)}
     .seg button.is-active[data-method="cash"]{background:var(--emerald);color:#053225}
 
     .fields{display:grid;gap:.9rem;transition:.3s}

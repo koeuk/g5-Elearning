@@ -24,12 +24,41 @@ final class DashboardController extends Controller
         $this->requireAdmin();
 
         $payments = Payment::all();
+        $popular  = $this->popularCourses($payments);
 
         $this->admin('admin/admin', [
-            'stats'    => $this->stats($payments),
-            'popular'  => $this->popularCourses($payments),
-            'payments' => $this->recentPayments($payments),
+            'stats'        => $this->stats($payments),
+            'popular'      => $popular,
+            'payments'     => $this->recentPayments($payments),
+            // Chart data: courses by purchases, and students by courses bought.
+            'coursesBought' => $popular,
+            'topStudents'   => $this->studentPurchases($payments),
         ]);
+    }
+
+    /**
+     * Students ranked by how many courses they have bought, most first.
+     *
+     * @return array<int, array{name: string, count: int}>
+     */
+    private function studentPurchases(array $payments): array
+    {
+        $counts = [];
+        foreach ($payments as $pay) {
+            $uid = (int) $pay['user_id'];
+            $counts[$uid] = ($counts[$uid] ?? 0) + 1;
+        }
+        arsort($counts);
+
+        $rows = [];
+        foreach ($counts as $uid => $count) {
+            $user   = User::find($uid);
+            $rows[] = [
+                'name'  => $user['name'] ?? '(deleted user)',
+                'count' => $count,
+            ];
+        }
+        return $rows;
     }
 
     /** Top summary tiles. */
