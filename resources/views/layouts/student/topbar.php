@@ -17,6 +17,7 @@ $initial   = strtoupper(substr((string) $sName, 0, 1)) ?: 'S';
     <a class="snav__brand" href="/student"><span class="snav__dot"><i class="bi bi-mortarboard-fill"></i></span> E‑Learning</a>
     <nav class="snav__links">
       <a href="/student" style="<?= $active === 'home' ? 'color:var(--text);background:var(--surface-2)' : '' ?>"><i class="bi bi-grid-1x2-fill"></i> Home</a>
+      <a href="/my_courses" style="<?= $active === 'courses' ? 'color:var(--text);background:var(--surface-2)' : '' ?>"><i class="bi bi-journal-bookmark-fill"></i> My Courses</a>
       <a href="/orders" style="<?= $active === 'cart' ? 'color:var(--text);background:var(--surface-2)' : '' ?>">
         <i class="bi bi-bag-heart-fill"></i> My cart
         <?php if ((int) $cartCount > 0): ?><span class="snav__badge"><?= (int) $cartCount ?></span><?php endif; ?>

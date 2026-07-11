@@ -34,35 +34,68 @@ $email      = $student['email'] ?? '';
     .crs__view{background:transparent;color:var(--accent);border:1px solid var(--accent);border-radius:10px;padding:.5rem .85rem;font-weight:700;font-size:.85rem;cursor:pointer;font-family:var(--sans);display:inline-flex;align-items:center;gap:.35rem;text-decoration:none;transition:.2s}
     .crs__view:hover{background:var(--accent);color:var(--accent-ink)}
     .crs__foot-right{display:flex;align-items:center;gap:.7rem}
-    /* Hero live clock */
-    .hero-clock{position:absolute;top:50%;right:2.5%;transform:translateY(-50%);
+    /* Hero: text (left) + clock (right) in one row */
+    #heroMain{text-align:left}
+    .hero-row{display:flex;align-items:center;justify-content:space-between;gap:2.5rem;flex-wrap:wrap}
+    .hero-left{flex:1 1 480px;min-width:300px}
+    #heroMain h1{margin:0;max-width:20ch}
+    #heroMain > .hero-row .hero-home__cta{justify-content:flex-start;margin-top:1.6rem}
+    .hero-clock{flex:none;
       background:var(--surface);border:1px solid var(--line);border-radius:22px;
-      padding:1.5rem 2rem;text-align:center;box-shadow:var(--shadow);min-width:230px;animation:ui-fadeup .6s .1s both}
+      padding:1.5rem 2rem;text-align:center;min-width:230px;animation:ui-fadeup .6s .1s both}
     .hero-clock__ic{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;margin:0 auto .7rem;
       background:var(--bg-tint-1);color:var(--accent);font-size:1.35rem}
     .hero-clock__time{font-family:var(--serif);font-weight:600;font-size:2.5rem;line-height:1;color:var(--text);letter-spacing:.01em}
     .hero-clock__date{color:var(--muted);font-size:.92rem;margin-top:.5rem;font-weight:600}
-    @media(max-width:1150px){.hero-clock{position:static;transform:none;margin:1.8rem auto 0;display:inline-block}}
+    @media(max-width:1150px){.hero-row{justify-content:center;text-align:center}#heroMain h1{max-width:none}#heroMain > .hero-row .hero-home__cta{justify-content:center}.hero-clock{margin:.5rem auto 0}}
+    /* Featured video card */
+    .video-card{border-radius:22px;overflow:hidden;border:1px solid var(--line);background:var(--surface);max-width:920px;margin:0 auto}
+    .video-card__stage{position:relative;aspect-ratio:16/9;background:var(--surface-3);cursor:pointer;overflow:hidden}
+    .video-card__stage img{width:100%;height:100%;object-fit:cover;display:block;transition:.4s}
+    .video-card__stage:hover img{transform:scale(1.04)}
+    .video-card__stage iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+    .video-card__grad{position:absolute;inset:0;background:linear-gradient(180deg,transparent 52%,rgba(0,0,0,.4));pointer-events:none}
+    .video-card__play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:78px;height:78px;border-radius:50%;border:none;
+      background:var(--accent);color:var(--accent-ink);font-size:2.1rem;display:grid;place-items:center;cursor:pointer;transition:.2s;box-shadow:0 12px 34px -8px var(--accent)}
+    .video-card__stage:hover .video-card__play{transform:translate(-50%,-50%) scale(1.08)}
+    .video-card__cap{position:absolute;left:1.4rem;bottom:1.1rem;color:#fff;font-family:var(--serif);font-weight:600;font-size:1.2rem;z-index:2;text-shadow:0 2px 12px rgba(0,0,0,.5)}
   </style>
 </head>
 <body class="ui-scope">
   <?= View::partial('layouts/student/topbar', ['student' => $student, 'cartCount' => $cartCount, 'active' => 'home']) ?>
 
   <!-- Hero -->
-  <section class="page hero-home">
-    <p class="k">Welcome back<?= $student ? ', ' . e($student['name'] ?? '') : '' ?></p>
-    <h1>Learn something <em>new</em> today.</h1>
-    <p>Explore hand‑picked courses, track what you own, and pick up right where you left off.</p>
-    <div class="hero-home__cta">
-      <a href="#courses" class="ui-btn ui-btn--primary"><i class="bi bi-collection-play"></i> Browse courses</a>
-      <a href="/orders" class="ui-btn ui-btn--ghost"><i class="bi bi-bag-heart"></i> View cart<?= (int) $cartCount > 0 ? ' (' . (int) $cartCount . ')' : '' ?></a>
-    </div>
+  <section class="page hero-home" id="heroMain">
+    <div class="hero-row">
+      <div class="hero-left">
+        <p class="k">Welcome back<?= $student ? ', ' . e($student['name'] ?? '') : '' ?></p>
+        <h1>Learn something <em>new</em> today.</h1>
+        <p>Explore hand‑picked courses, track what you own, and pick up right where you left off.</p>
+        <div class="hero-home__cta">
+          <a href="#courses" class="ui-btn ui-btn--primary"><i class="bi bi-collection-play"></i> Browse courses</a>
+          <a href="/orders" class="ui-btn ui-btn--ghost"><i class="bi bi-bag-heart"></i> View cart<?= (int) $cartCount > 0 ? ' (' . (int) $cartCount . ')' : '' ?></a>
+        </div>
+      </div>
 
-    <!-- Live clock -->
-    <div class="hero-clock" id="heroClock">
-      <div class="hero-clock__ic"><i class="bi bi-clock-history"></i></div>
-      <div class="hero-clock__time" id="hcTime">--:--</div>
-      <div class="hero-clock__date" id="hcDate">&nbsp;</div>
+      <!-- Live clock -->
+      <div class="hero-clock" id="heroClock">
+        <div class="hero-clock__ic"><i class="bi bi-clock-history"></i></div>
+        <div class="hero-clock__time" id="hcTime">--:--</div>
+        <div class="hero-clock__date" id="hcDate">&nbsp;</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured video -->
+  <section class="page section" id="intro-video" style="padding-top:1rem">
+    <div class="section__head"><p class="k">Watch</p><h2>How E‑Learning works</h2></div>
+    <div class="video-card">
+      <div class="video-card__stage" id="videoStage" data-embed="https://www.youtube.com/embed/tXHviS-4ygo?autoplay=1&rel=0">
+        <img src="assets/images/about/12.jpg" alt="Intro video" onerror="this.style.opacity=.25">
+        <div class="video-card__grad"></div>
+        <span class="video-card__cap">A quick tour of your learning hub</span>
+        <button class="video-card__play" type="button" aria-label="Play video"><i class="bi bi-play-fill"></i></button>
+      </div>
     </div>
   </section>
 
@@ -198,6 +231,14 @@ $email      = $student['email'] ?? '';
     }
     tick();
     setInterval(tick, 1000);
+  })();
+  // Featured video — swap the thumbnail for the player on click.
+  (function () {
+    var stage = document.getElementById('videoStage');
+    if (!stage) return;
+    stage.addEventListener('click', function () {
+      stage.innerHTML = '<iframe src="' + stage.dataset.embed + '" title="Intro video" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
+    });
   })();
   </script>
   <script src="assets/theme.js"></script>
