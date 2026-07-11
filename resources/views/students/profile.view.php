@@ -42,8 +42,16 @@ $initial = strtoupper(substr((string) $name, 0, 1)) ?: 'S';
     .prof-row .ic{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:var(--bg-tint-1);color:var(--accent);flex:none}
     .prof-row small{color:var(--muted);font-size:.74rem;text-transform:uppercase;letter-spacing:.06em;display:block}
     .prof-row span{font-weight:600;word-break:break-word}
-    .edit-form{margin-top:1.2rem;display:none}
-    .edit-form.is-open{display:block;animation:ui-fadeup .25s both}
+    /* Edit-profile popup dialog */
+    .prof-dialog{border:none;border-radius:20px;padding:0;width:92%;max-width:430px;background:var(--surface);color:var(--text);
+      box-shadow:0 40px 100px -30px rgba(0,0,0,.55);overflow:hidden}
+    .prof-dialog::backdrop{background:rgba(15,12,8,.5);backdrop-filter:blur(3px)}
+    .prof-dialog[open]{animation:ui-fadeup .28s cubic-bezier(.2,.7,.2,1) both}
+    .prof-dialog__head{display:flex;align-items:center;justify-content:space-between;padding:1.15rem 1.5rem;border-bottom:1px solid var(--line)}
+    .prof-dialog__head h3{margin:0;font-family:var(--serif);font-weight:600;font-size:1.28rem;display:flex;align-items:center}
+    .prof-dialog__x{background:transparent;border:none;color:var(--muted);font-size:1.7rem;line-height:1;cursor:pointer;padding:0 .2rem;transition:color .2s}
+    .prof-dialog__x:hover{color:var(--accent)}
+    .prof-dialog form{padding:1.4rem 1.5rem 1.6rem}
     .crs__desc{color:var(--muted);font-size:.88rem;margin:0 0 .9rem;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
   </style>
 </head>
@@ -70,18 +78,27 @@ $initial = strtoupper(substr((string) $name, 0, 1)) ?: 'S';
 
         <button class="ui-btn ui-btn--ghost ui-btn--block" id="editToggle" style="margin-top:1.3rem"><i class="bi bi-pencil-square"></i> Edit profile</button>
 
-        <form class="edit-form" id="editForm" action="/get_edit" method="post" enctype="multipart/form-data">
-          <?php if ($isAdmin && isset($student['user_id'])): ?><input type="hidden" name="id" value="<?= (int) $student['user_id'] ?>"><?php endif; ?>
-          <div class="ui-field" style="text-align:left"><label class="ui-label" for="name">Name</label>
-            <input class="ui-input" id="name" name="name" value="<?= e($name) ?>"></div>
-          <div class="ui-field" style="text-align:left"><label class="ui-label" for="phone">Phone</label>
-            <input class="ui-input" id="phone" name="phone" value="<?= e($student['phone'] ?? '') ?>"></div>
-          <div class="ui-field" style="text-align:left"><label class="ui-label" for="email">Email</label>
-            <input class="ui-input" id="email" name="email" value="<?= e($email) ?>"></div>
-          <div class="ui-field" style="text-align:left"><label class="ui-label" for="image">Profile photo</label>
-            <input class="ui-input" type="file" id="image" name="image" accept="image/*" style="padding:.6rem 1rem"></div>
-          <button class="ui-btn ui-btn--primary ui-btn--block" type="submit"><i class="bi bi-check2"></i> Save changes</button>
-        </form>
+        <dialog class="prof-dialog" id="editDialog">
+          <div class="prof-dialog__head">
+            <h3><i class="bi bi-pencil-square" style="color:var(--accent);margin-right:.4rem"></i>Edit profile</h3>
+            <button type="button" class="prof-dialog__x" id="editClose" aria-label="Close">&times;</button>
+          </div>
+          <form action="/get_edit" method="post" enctype="multipart/form-data">
+            <?php if ($isAdmin && isset($student['user_id'])): ?><input type="hidden" name="id" value="<?= (int) $student['user_id'] ?>"><?php endif; ?>
+            <div class="ui-field" style="text-align:left"><label class="ui-label" for="name">Name</label>
+              <input class="ui-input" id="name" name="name" value="<?= e($name) ?>"></div>
+            <div class="ui-field" style="text-align:left"><label class="ui-label" for="phone">Phone</label>
+              <input class="ui-input" id="phone" name="phone" value="<?= e($student['phone'] ?? '') ?>"></div>
+            <div class="ui-field" style="text-align:left"><label class="ui-label" for="email">Email</label>
+              <input class="ui-input" id="email" name="email" value="<?= e($email) ?>"></div>
+            <div class="ui-field" style="text-align:left"><label class="ui-label" for="image">Profile photo</label>
+              <input class="ui-input" type="file" id="image" name="image" accept="image/*" style="padding:.6rem 1rem"></div>
+            <div style="display:flex;gap:.6rem;margin-top:.3rem">
+              <button class="ui-btn ui-btn--ghost" type="button" id="editCancel" style="flex:1">Cancel</button>
+              <button class="ui-btn ui-btn--primary" type="submit" style="flex:2"><i class="bi bi-check2"></i> Save changes</button>
+            </div>
+          </form>
+        </dialog>
       </aside>
 
       <!-- Purchased courses -->
@@ -134,9 +151,18 @@ $initial = strtoupper(substr((string) $name, 0, 1)) ?: 'S';
 
   <script src="assets/theme.js"></script>
   <script>
-    document.getElementById('editToggle').addEventListener('click', function(){
-      document.getElementById('editForm').classList.toggle('is-open');
-    });
+    (function () {
+      var dlg = document.getElementById('editDialog');
+      if (!dlg) return;
+      document.getElementById('editToggle').addEventListener('click', function () { dlg.showModal(); });
+      document.getElementById('editClose').addEventListener('click', function () { dlg.close(); });
+      document.getElementById('editCancel').addEventListener('click', function () { dlg.close(); });
+      // Close when clicking the dark backdrop (outside the dialog box).
+      dlg.addEventListener('click', function (e) {
+        var r = dlg.getBoundingClientRect();
+        if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dlg.close();
+      });
+    })();
   </script>
 </body>
 </html>

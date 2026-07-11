@@ -57,6 +57,9 @@ foreach ($lessons as $li => $ll) {
     .cls-hero p.lead{color:var(--muted);max-width:56ch;margin:0}
     /* Tabs */
     .cls-tabs{display:inline-flex;gap:.3rem;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:.35rem;margin-top:1.6rem;flex-wrap:wrap}
+    /* Eyebrow + tabs on one row */
+    .cls-headrow{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;margin-bottom:.7rem}
+    .cls-headrow .cls-tabs{margin-top:0}
     .cls-tab{border:none;background:transparent;color:var(--muted);font-family:inherit;font-weight:600;font-size:.9rem;padding:.55rem 1.25rem;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem;transition:background .2s,color .2s}
     .cls-tab .n{font-size:.72rem;background:var(--bg-tint-1);color:var(--accent);border-radius:999px;padding:.05rem .5rem}
     .cls-tab.is-active{background:var(--accent);color:var(--accent-ink);box-shadow:var(--shadow)}
@@ -137,15 +140,16 @@ foreach ($lessons as $li => $ll) {
   <!-- Hero -->
   <section class="page cls-hero">
     <a href="/student" class="ui-btn ui-btn--ghost" style="padding:.5rem .95rem;font-size:.88rem;margin-bottom:1.2rem"><i class="bi bi-arrow-left"></i> Back to home</a>
-    <p class="k">Classroom</p>
+    <div class="cls-headrow">
+      <p class="k" style="margin:0">Classroom</p>
+      <div class="cls-tabs" role="tablist">
+        <button class="cls-tab is-active" data-tab="lessons"><i class="bi bi-play-btn"></i> Lessons <span class="n"><?= count($lessons) ?></span></button>
+        <button class="cls-tab" data-tab="quizzes"><i class="bi bi-patch-question"></i> Quizzes <span class="n"><?= $quizCount ?></span></button>
+        <button class="cls-tab" data-tab="trainer"><i class="bi bi-person-badge"></i> Trainer</button>
+      </div>
+    </div>
     <h1>Welcome to <em><?= e($course['title'] ?? 'your course') ?></em></h1>
     <p class="lead">Work through each lesson at your own pace, test yourself with quizzes, and reach out to your trainer any time.</p>
-
-    <div class="cls-tabs" role="tablist">
-      <button class="cls-tab is-active" data-tab="lessons"><i class="bi bi-play-btn"></i> Lessons <span class="n"><?= count($lessons) ?></span></button>
-      <button class="cls-tab" data-tab="quizzes"><i class="bi bi-patch-question"></i> Quizzes <span class="n"><?= $quizCount ?></span></button>
-      <button class="cls-tab" data-tab="trainer"><i class="bi bi-person-badge"></i> Trainer</button>
-    </div>
   </section>
 
   <style>
@@ -165,7 +169,6 @@ foreach ($lessons as $li => $ll) {
   </style>
   <!-- Lessons -->
   <section class="page section cls-panel is-active" id="panel-lessons" style="padding-top:1.4rem">
-    <div class="section__head" style="text-align:left;margin:0 0 1.4rem"><p class="k">Course content</p><h2>Lessons</h2></div>
     <?php if (empty($lessons)): ?>
       <div class="empty-block"><i class="bi bi-collection-play"></i>No lessons have been added to this course yet — check back soon.</div>
     <?php else: ?>
@@ -220,7 +223,6 @@ foreach ($lessons as $li => $ll) {
 
   <!-- Quizzes -->
   <section class="page section cls-panel" id="panel-quizzes" style="padding-top:1.4rem">
-    <div class="section__head" style="text-align:left;margin:0 0 1.4rem"><p class="k">Test your understanding</p><h2>Quizzes</h2></div>
 
     <?php if ($quizCount < 1): ?>
       <div class="empty-block"><i class="bi bi-patch-question"></i>No quizzes have been added to this course yet.</div>
@@ -289,7 +291,6 @@ foreach ($lessons as $li => $ll) {
 
   <!-- Trainer -->
   <section class="page section cls-panel" id="panel-trainer" style="padding-top:1.4rem">
-    <div class="section__head" style="text-align:left;margin:0 0 1.4rem"><p class="k">Your instructor</p><h2>Trainer</h2></div>
     <div class="trainer-card">
       <?php if (!empty($teacher['profile_image'])): ?>
         <img class="trainer-ava" src="uploading/<?= e($teacher['profile_image']) ?>" alt="" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'trainer-ava',textContent:'<?= e($tInit) ?>'}))">
