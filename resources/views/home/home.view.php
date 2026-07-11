@@ -81,19 +81,32 @@ Video END -->
 <!-- =======================
 Category START -->
 <section id="categories_blog">
+	<style>
+	/* Single clean category tile (no double-card halo) with a soft hover lift. */
+	#categories_blog .category-tile {
+		border: 1px solid #eef1f6;
+		transition: transform .18s ease, box-shadow .18s ease;
+	}
+	#categories_blog .category-tile:hover {
+		transform: translateY(-4px);
+		box-shadow: 0 14px 30px -16px rgba(20, 25, 40, .3) !important;
+	}
+	#categories_blog .category-tile img { width: 64px; height: 64px; object-fit: cover; }
+	#categories_blog .category-tile a { color: inherit; }
+	</style>
 	<div class="container">
 		<div class="row g-4">
 			<?php
 			foreach (($categories ?? []) as $cate) :
 			?>
 				<!-- Category item -->
-				<div class="col-sm-6 col-lg-4 col-xl-3 shadow" >
-					<div class="card card-body shadow rounded-3">
+				<div class="col-sm-6 col-lg-4 col-xl-3">
+					<div class="card card-body shadow-sm rounded-3 category-tile h-100">
 						<div class="d-flex align-items-center">
-							<img class="rounded-circle me-lg-2" src="uploading/<?= e($cate['image']) ?>" alt="" style="width: 70px; height: 70px;">
+							<img class="rounded-circle" src="uploading/<?= e($cate['image']) ?>" alt="">
 							<div class="ms-3">
 								<h5 class="mb-0"><a href="/signin" class="stretched-link"><?= e($cate['title']) ?></a></h5>
-								<span><?= (int) $cate['course_count'] ?> Courses</span>
+								<span class="text-body-secondary"><?= (int) $cate['course_count'] ?> Courses</span>
 							</div>
 						</div>
 					</div>
