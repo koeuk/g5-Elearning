@@ -114,7 +114,17 @@ Featured course START -->
 				<p class="mb-0">Explore top picks of the week</p>
 			</div>
 		</div>
-		<div class="row g-4">
+		<style>
+		/* Featured course cards: uniform image size + aligned footers. */
+		.course-cards .card { display: flex; flex-direction: column; }
+		.course-cards .rounded-top { aspect-ratio: 16 / 10; position: relative; background: #eef1f6; border-radius: .5rem; }
+		.course-cards .card-overlay-hover { height: 100%; }
+		.course-cards .card-img-top { width: 100%; height: 100%; object-fit: cover; display: block; }
+		.course-cards .card-body { display: flex; flex-direction: column; flex: 1 1 auto; }
+		/* Pin the trainer + price row to the bottom so every card's footer lines up. */
+		.course-cards .card-body > div:last-child { margin-top: auto; }
+		</style>
+		<div class="row g-4 course-cards">
 			<?php
 				foreach (($courses ?? []) as $course) :
 									
@@ -125,7 +135,7 @@ Featured course START -->
 					<div class="rounded-top overflow-hidden">
 						<div class="card-overlay-hover">
 							<!-- Image -->
-							<img src="uploading/<?= e($course['image_courses']) ?>" class="card-img-top" alt="course image">
+							<img src="uploading/<?= e($course['image_courses']) ?>" class="card-img-top" alt="course image" onerror="this.style.display='none'">
 						</div>
 						<!-- Hover element -->
 						<div class="card-img-overlay">

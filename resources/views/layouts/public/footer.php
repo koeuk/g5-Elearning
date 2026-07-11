@@ -124,5 +124,67 @@ Footer END -->
 <!-- Template Functions -->
 <script src="vendor/js/functions.js"></script>
 
+<!-- ===================== Guest login popup ===================== -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 rounded-4 overflow-hidden shadow-lg">
+      <div class="modal-header border-0 pb-0">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body px-4 px-sm-5 pb-5 pt-0 text-center">
+        <div class="mb-3">
+          <span class="d-inline-grid" style="width:58px;height:58px;border-radius:16px;background:rgba(242,133,0,.12);color:#F28500;place-items:center;font-size:1.6rem;">
+            <i class="fas fa-graduation-cap"></i>
+          </span>
+        </div>
+        <h3 class="fw-bold mb-1" id="loginModalLabel">Sign in to continue</h3>
+        <p class="text-muted mb-4">Log in to enrol, add courses to your cart and start learning.</p>
+
+        <form action="/access" method="post" class="text-start">
+          <div class="mb-3">
+            <label class="form-label small fw-semibold text-dark">Email address</label>
+            <input type="email" name="email" class="form-control form-control-lg bg-light border-0" placeholder="name@example.com" required autocomplete="email">
+          </div>
+          <div class="mb-4">
+            <label class="form-label small fw-semibold text-dark">Password</label>
+            <div class="input-group">
+              <input type="password" name="password" id="loginModalPw" class="form-control form-control-lg bg-light border-0" placeholder="••••••••" required autocomplete="current-password">
+              <button class="btn bg-light border-0" type="button" id="loginModalEye" aria-label="Show password"><i class="bi bi-eye text-muted"></i></button>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-lg w-100 text-white fw-semibold" style="background:#F28500;">
+            <i class="fas fa-sign-in-alt me-2"></i>Sign in
+          </button>
+        </form>
+
+        <p class="mt-3 mb-0 small text-muted">Don't have an account?
+          <a href="/signup" class="fw-semibold" style="color:#F28500;">Create one</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Guests: intercept any "sign in" link and show the login popup instead of
+  // navigating to the full /signin page.
+  document.addEventListener('click', function (e) {
+    var link = e.target.closest('a[href="/signin"], a[href="signin"]');
+    if (!link) return;
+    e.preventDefault();
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('loginModal')).show();
+  });
+  // Show/hide password toggle inside the popup.
+  (function () {
+    var pw = document.getElementById('loginModalPw'), eye = document.getElementById('loginModalEye');
+    if (!pw || !eye) return;
+    eye.addEventListener('click', function () {
+      var show = pw.type === 'password';
+      pw.type = show ? 'text' : 'password';
+      eye.querySelector('i').className = (show ? 'bi bi-eye-slash' : 'bi bi-eye') + ' text-muted';
+    });
+  })();
+</script>
+
 </body>
 </html>
