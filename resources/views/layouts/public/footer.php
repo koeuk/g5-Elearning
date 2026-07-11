@@ -165,25 +165,106 @@ Footer END -->
   </div>
 </div>
 
+<!-- ===================== Guest sign-up popup ===================== -->
+<div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="signupModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content border-0 rounded-4 overflow-hidden shadow-lg">
+      <div class="modal-header border-0 pb-0">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body px-4 px-sm-5 pb-5 pt-0 text-center">
+        <div class="mb-3">
+          <span class="d-inline-grid" style="width:58px;height:58px;border-radius:16px;background:rgba(242,133,0,.12);color:#F28500;place-items:center;font-size:1.6rem;">
+            <i class="fas fa-user-plus"></i>
+          </span>
+        </div>
+        <h3 class="fw-bold mb-1" id="signupModalLabel">Create your account</h3>
+        <p class="text-muted mb-4">Free to join — start learning in minutes.</p>
+
+        <form action="/create_student" method="post" enctype="multipart/form-data" class="text-start">
+          <div class="row g-3">
+            <div class="col-sm-6">
+              <label class="form-label small fw-semibold text-dark">Full name</label>
+              <input type="text" name="name" class="form-control form-control-lg bg-light border-0" placeholder="Jane Doe" required>
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label small fw-semibold text-dark">Phone</label>
+              <input type="text" name="phone" class="form-control form-control-lg bg-light border-0" placeholder="0XX XXX XXX">
+            </div>
+          </div>
+          <div class="mt-3">
+            <label class="form-label small fw-semibold text-dark">Email address</label>
+            <input type="email" name="email" class="form-control form-control-lg bg-light border-0" placeholder="name@example.com" required>
+          </div>
+          <div class="row g-3 mt-0">
+            <div class="col-sm-6">
+              <label class="form-label small fw-semibold text-dark">Password</label>
+              <div class="input-group">
+                <input type="password" name="password" id="signupModalPw" class="form-control form-control-lg bg-light border-0" placeholder="••••••••" required>
+                <button class="btn bg-light border-0" type="button" id="signupModalEye" aria-label="Show password"><i class="bi bi-eye text-muted"></i></button>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label small fw-semibold text-dark">Confirm password</label>
+              <input type="password" name="password_comfirm" class="form-control form-control-lg bg-light border-0" placeholder="••••••••" required>
+            </div>
+          </div>
+          <div class="d-flex align-items-center gap-4 mt-3">
+            <span class="small fw-semibold text-dark">Gender:</span>
+            <div class="form-check mb-0"><input class="form-check-input" type="radio" name="gender" value="Male" id="suMale" checked><label class="form-check-label" for="suMale">Male</label></div>
+            <div class="form-check mb-0"><input class="form-check-input" type="radio" name="gender" value="Female" id="suFemale"><label class="form-check-label" for="suFemale">Female</label></div>
+          </div>
+          <div class="mt-3">
+            <label class="form-label small fw-semibold text-dark">Profile photo <span class="text-muted fw-normal">(optional)</span></label>
+            <input type="file" name="image" accept="image/*" class="form-control bg-light border-0">
+          </div>
+          <button type="submit" class="btn btn-lg w-100 text-white fw-semibold mt-4" style="background:#F28500;">
+            <i class="fas fa-user-plus me-2"></i>Create account
+          </button>
+        </form>
+
+        <p class="mt-3 mb-0 small text-muted">Already have an account?
+          <a href="/signin" class="fw-semibold" style="color:#F28500;">Sign in</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
-  // Guests: intercept any "sign in" link and show the login popup instead of
-  // navigating to the full /signin page.
+  // Guests: intercept "sign in" / "create account" links and show the matching
+  // popup instead of navigating to the full page. Switching between the two
+  // waits for one to close before opening the other (no stacked backdrops).
+  function eLearnAuthOpen(which) {
+    var other = which === 'loginModal' ? 'signupModal' : 'loginModal';
+    var otherEl = document.getElementById(other);
+    var target = document.getElementById(which);
+    if (otherEl && otherEl.classList.contains('show')) {
+      otherEl.addEventListener('hidden.bs.modal', function h() {
+        otherEl.removeEventListener('hidden.bs.modal', h);
+        bootstrap.Modal.getOrCreateInstance(target).show();
+      });
+      bootstrap.Modal.getOrCreateInstance(otherEl).hide();
+    } else {
+      bootstrap.Modal.getOrCreateInstance(target).show();
+    }
+  }
   document.addEventListener('click', function (e) {
-    var link = e.target.closest('a[href="/signin"], a[href="signin"]');
-    if (!link) return;
-    e.preventDefault();
-    bootstrap.Modal.getOrCreateInstance(document.getElementById('loginModal')).show();
+    var signin = e.target.closest('a[href="/signin"], a[href="signin"]');
+    var signup = e.target.closest('a[href="/signup"], a[href="signup"], a[href="/create_student"]');
+    if (signin) { e.preventDefault(); eLearnAuthOpen('loginModal'); }
+    else if (signup) { e.preventDefault(); eLearnAuthOpen('signupModal'); }
   });
-  // Show/hide password toggle inside the popup.
-  (function () {
-    var pw = document.getElementById('loginModalPw'), eye = document.getElementById('loginModalEye');
+  // Show/hide password toggles inside the popups.
+  [['loginModalPw', 'loginModalEye'], ['signupModalPw', 'signupModalEye']].forEach(function (pair) {
+    var pw = document.getElementById(pair[0]), eye = document.getElementById(pair[1]);
     if (!pw || !eye) return;
     eye.addEventListener('click', function () {
       var show = pw.type === 'password';
       pw.type = show ? 'text' : 'password';
       eye.querySelector('i').className = (show ? 'bi bi-eye-slash' : 'bi bi-eye') + ' text-muted';
     });
-  })();
+  });
 </script>
 
 </body>
